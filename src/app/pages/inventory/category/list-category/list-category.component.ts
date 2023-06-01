@@ -21,7 +21,7 @@ export class ListCategoryComponent {
   nameEditing !: boolean;
   busy !: Subscription;
 
-  public category = [];
+  public category:any;
   public res:any;
 
   pager = {
@@ -174,6 +174,12 @@ export class ListCategoryComponent {
       this.listData = res.data;
       this.pager.total = res.totalCount;
     });
+  }
+
+  valueChange(event:any){
+    debugger
+    console.log("selected value",event.target.value );
+    //this.selected = event.target.value;
   }
 
   async getCategory(){

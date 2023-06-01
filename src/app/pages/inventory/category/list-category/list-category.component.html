@@ -138,13 +138,16 @@
                         *ngIf="rowItem['priorityEdit']"
                         class="edit-padding-fix"
                       >
-                      
-                        <d-select
+                      <select class="devui-form-control" [(ngModel)]="rowItem.categoryId" name="category" (change)="valueChange($event)">
+                        <option [ngValue]="undefined" disabled>Select Any </option>
+                        <option *ngFor="let obj of category" [ngValue]="obj.id" [selected]="obj.id == rowItem.categoryId"> {{obj.name}} </option>
+                      </select>
+                        <!-- <d-select
                           name="category"
                           [filterKey]="rowItem.categoryId"
                           [(ngModel)]="rowItem.categoryId"
                           [options]="category"
-                        ></d-select>
+                        ></d-select> -->
                       </div>
                     </td>
                     <td
