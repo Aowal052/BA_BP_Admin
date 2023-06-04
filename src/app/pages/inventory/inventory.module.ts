@@ -9,7 +9,7 @@ import { AddProductComponent } from './product/add-product/add-product.component
 import { ListProductComponent } from './product/list-product/list-product.component';
 import { SharedModule } from 'src/app/@shared/shared.module';
 import { AdminFormModule } from "../../@shared/components/admin-form/admin-form.module";
-import { DatepickerModule, PaginationModule, TagsInputModule } from 'ng-devui';
+import { DatepickerModule, PaginationModule, TagsInputModule, ToastModule } from 'ng-devui';
 
 
 @NgModule({
@@ -28,6 +28,7 @@ import { DatepickerModule, PaginationModule, TagsInputModule } from 'ng-devui';
         DatepickerModule,
         PaginationModule,
         TagsInputModule,
+        ToastModule
     ]
 })
 export class InventoryModule { }

@@ -13,8 +13,8 @@ export class Products{
     productName?:string;
     defaultPrice?:string;
     description?:string;
-    showDescriptionInPurchase?:boolean;
-    showDescriptionInSales?:boolean;
+    showDescriptionInPurchase:boolean = false;
+    showDescriptionInSales:boolean = false;
     categoryId?:string;
     brand?:string;
     subCategory?:string;

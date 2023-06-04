@@ -20,9 +20,9 @@ export class RegisterComponent implements OnInit {
   showPassword = false;
   showConfirmPassword = false;
 
-  language: string;
+  language: string='';
   i18nValues: any;
-  toastMessage: Message[];
+  toastMessage: Message[]=[];
   languages = LANGUAGES;
 
   formData = {

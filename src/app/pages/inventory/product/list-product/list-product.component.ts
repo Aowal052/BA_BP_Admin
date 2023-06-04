@@ -1,29 +1,37 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, Inject } from '@angular/core';
-import { BreadCrumbService, DialogService, MenuConfig, HelperUtils, EditableTip, TableWidthConfig, FormLayout } from 'ng-devui';
-import { Subscription } from 'rxjs';
+import { Component, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Route, Router } from '@angular/router';
+import { TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
+import { BreadCrumbService, DialogService, MenuConfig, HelperUtils, EditableTip, TableWidthConfig, FormLayout, ToastService } from 'ng-devui';
+import { I18nService } from 'ng-devui/i18n';
+import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
 import { Category, CategoryResponse } from 'src/app/@core/model/CategoryResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { CategoryService } from 'src/app/@core/services/category/CategoryService';
+import { PersonalizeService } from 'src/app/@core/services/personalize.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
+import { ThemeType } from 'src/app/@shared/models/theme';
+import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
   selector: 'app-list-product',
   templateUrl: './list-product.component.html',
   styleUrls: ['./list-product.component.scss']
 })
-export class ListProductComponent {
+export class ListProductComponent implements OnInit{
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
 
-  public category:any;
+  public category:Category[]=[];
   public res:any;
 
+  i18nValues: any;
+  toastMessage:any;
   pager = {
     total: 0,
     pageIndex: 1,
@@ -33,36 +41,7 @@ export class ListProductComponent {
   listData : Product[] = [];
 
   headerNewForm = false;
-  tableWidthConfig: TableWidthConfig[] = [
-    {
-      field: 'productName',
-      width: '200px',
-    },
-    {
-      field: 'productCode',
-      width: '100px',
-    },
-    {
-      field: 'category',
-      width: '100px',
-    },
-    {
-      field: 'description',
-      width: '100px',
-    },
-    {
-      field: 'price',
-      width: '100px',
-    },
-    {
-      field: 'timeline',
-      width: '100px',
-    },
-    {
-      field: 'Actions',
-      width: '100px',
-    },
-  ];
+  
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     labelSize: 'sm',
@@ -80,7 +59,7 @@ export class ListProductComponent {
         label: 'category',
         prop: 'category',
         type: 'select',
-        options:  ['Low', 'Medium', 'High'],
+        options:  [{ id: 48, name: 'আইটেম-৪৫' }],
         required: true,
         rule: {
           validators: [{ required: true }],
@@ -111,6 +90,37 @@ export class ListProductComponent {
       },
     ],
   };
+  tableWidthConfig: TableWidthConfig[] = [
+    {
+      field: 'productName',
+      width: '200px',
+    },
+    {
+      field: 'productCode',
+      width: '100px',
+    },
+    {
+      field: 'category',
+      width: '100px',
+    },
+    {
+      field: 'description',
+      width: '100px',
+    },
+    {
+      field: 'price',
+      width: '100px',
+    },
+    {
+      field: 'timeline',
+      width: '100px',
+    },
+    {
+      field: 'Actions',
+      width: '100px',
+    },
+  ];
+  
   defaultRowData = {
     id: '',
     productName: '',
@@ -119,16 +129,54 @@ export class ListProductComponent {
     description: '',
     defaultPrice: 'Stuck',
   };
-  
-
-  priorities = ['Low', 'Medium', 'High'];
+  language: string;
+  selectedItem: string = '';
+  isSelect : boolean = false;
+  selectedId : string = '';
+  private destroy$ = new Subject<void>();
+  //priorities = ['Low', 'Medium', 'High'];
 
   constructor(
     private breadCrumbService: BreadCrumbService,
     private dialogService: DialogService,
     private service: ProductService,
-    @Inject(CategoryService) private catservice: CategoryService) { }
+    private route: ActivatedRoute,
+    private translate: TranslateService,
+    private router: Router,
+    private i18n: I18nService,
+    private personalizeService: PersonalizeService,
+    @Inject(CategoryService) private catservice: CategoryService) {
+      this.language = this.translate.currentLang;
+     }
   async ngOnInit(): Promise<void> {
+    this.translate
+      .get('productPage')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.i18nValues = res;
+        
+        this.i18nValues = this.translate.instant('productPage');
+      });
+
+      this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event: TranslationChangeEvent) => {
+        this.i18nValues = this.translate.instant('productPage');
+      });
+      this.personalizeService.setRefTheme(ThemeType.Default);
+
+       // oauth
+    this.route.queryParams.pipe(map((param) => param.code)).subscribe((code) => {
+      if (code && code.length > 0) {
+        setTimeout(() => {
+          this.toastMessage = [
+            {
+              severity: 'success',
+              content: this.i18nValues['callbackMessage'],
+            },
+          ];
+        });
+      }
+    });
+    
     this.getList();
     await this.getCategory()
   }
@@ -176,15 +224,30 @@ export class ListProductComponent {
     (await this.service.deleteProduct(ApiEndPoints.DeleteProducts, id))
           .subscribe({
             next: (res:ProductResponse) => {
-              this.getList();
+              if (this.res.statusCode == HttpStatusCode.Ok) {
+                this.getList();
+                this.toastMessage = [
+                  {
+                    severity: 'success',
+                    summary: productPageNotification.productPage.deleteMessage.summary,
+                    content: productPageNotification.productPage.deleteMessage.deleteSuccess,
+                  },
+                ];
+              }
             },
             error: (err) => {
-              Swal.fire('Cancelled', this.res.message , 'error');
+              this.toastMessage = [
+                {
+                  severity: 'error',
+                  summary: productPageNotification.productPage.deleteMessage.summary,
+                  content: productPageNotification.productPage.deleteMessage.deleteFailed,
+                },
+              ];
             }
           })
   }
   async getList() {
-    this.busy = (await this.listDataService.getProducts(ApiEndPoints.GetProducts, this.pager)).subscribe((res:ProductResponse) => {
+    this.busy = (await this.service.getProducts(ApiEndPoints.GetProducts, this.pager)).subscribe((res:ProductResponse) => {
       
       res.$expandConfig = { expand: false };
       this.listData = res.data;
@@ -194,8 +257,14 @@ export class ListProductComponent {
 
   valueChange(event:any){
     debugger
-    console.log("selected value",event.target.value );
+    this.selectedId = event.target.value;
+    this.isSelect = true;
+    this.selectedItem = event.target.options[event.target.selectedIndex].text;
     //this.selected = event.target.value;
+  }
+  // Define the elseBlock property
+  get elseBlock(): boolean {
+    return !this.isSelect;
   }
 
   async getCategory(){
@@ -218,15 +287,27 @@ export class ListProductComponent {
     this.getList();
   }
 
-  newRow() {
+  async newRow() {
     this.headerNewForm = true;
+    //this.updateFormConfigOptions();
   }
 
-  quickRowAdded(e: any) {
+  updateFormConfigOptions() {
     debugger
-    const newData = { ...e };
-    this.listData.unshift(newData);
+    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.category;
+  }
+  async quickRowAdded(e: any) {
+    debugger
+    const formData = await this.arrayToFormData(e);
+    (await this.service.createProduct(ApiEndPoints.AddProduct, formData)).subscribe((res:ProductResponse)=>{
+      this.res = res;
+      debugger
+      if(this.res.statusCode == HttpStatusCode.Ok){
+        debugger
+        this.getList();
+      }
     this.headerNewForm = false;
+    })
   }
 
   quickRowCancel() {
@@ -236,8 +317,9 @@ export class ListProductComponent {
     return true;
   };
 
-  beforeEditEnd = (rowItem: any, field: any) => {
-    if (rowItem && rowItem) {
+   beforeEditEnd = async (rowItem: any, field: any) => {
+    await this.updateproduct(rowItem);
+    if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
       return true;
@@ -261,6 +343,45 @@ export class ListProductComponent {
     }
   ];
 
+  async updateproduct(item:any){
+    const formData = await this.arrayToFormData(item);
+    (await this.service.updateProduct(ApiEndPoints.UpdateProduct, formData)).subscribe({
+      next: (res: ProductResponse) => {
+        this.res = res;
+        if (this.res.statusCode == HttpStatusCode.Ok) {
+          this.toastMessage = [
+            {
+              severity: 'success',
+              summary: productPageNotification.productPage.noticeMessage.summary,
+              content: productPageNotification.productPage.noticeMessage.updateSuccess,
+            },
+          ];
+        }
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.noticeMessage.summary,
+            content: productPageNotification.productPage.noticeMessage.undateFailed,
+          },
+        ];
+      }
+    });
+  }
+
+  async arrayToFormData(array:any) {
+    const formData = new FormData();
+    
+    for (let key in array) {
+      if (array.hasOwnProperty(key)) {
+        formData.append(key, array[key]);
+      }
+    }
+    
+    return formData;
+  }
   navigate(event: MouseEvent, item:any) {
     debugger
     this.canNavigate(item).then((can) => {

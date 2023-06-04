@@ -54,8 +54,9 @@ export class ProductService {
     );
   }
 
-  createProduct(endpoint:string,param:any):Observable<ProductResponse>{
-    return this.http.post<ProductResponse>(this.apiurl + endpoint,param, this.httpOptions).pipe(
+  async createProduct(endpoint:string,param:any):Promise<Observable<ProductResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.post<ProductResponse>(this.apiurl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['login']);

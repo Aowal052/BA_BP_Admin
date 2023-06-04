@@ -14,12 +14,13 @@ export default {
     noticeMessage: {
       summary: 'Login Failed',
       accountContent:
-        'Please input correct username and password, username: Admin, password: DevUI.admin',
+        'Please input correct username and password',
       emailContent:
-        'Please input correct username and password, username: admin@devui.com, password: devuiadmin',
+        'Please input correct username and password',
     },
     other: 'Sign in with',
     register: 'Sign up',
     callbackMessage: 'Github authorization callback succeeded',
   },
 };
+//, username: Admin, password: DevUI.admin  -- , username: admin@devui.com, password: devuiadmin
