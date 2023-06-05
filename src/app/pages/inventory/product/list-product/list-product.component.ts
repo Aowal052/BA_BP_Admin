@@ -26,6 +26,7 @@ export class ListProductComponent implements OnInit{
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
+  categoryDropdown: { id?: number, name?: string }[] = [];
 
   public category:Category[]=[];
   public res:any;
@@ -59,7 +60,7 @@ export class ListProductComponent implements OnInit{
         label: 'category',
         prop: 'category',
         type: 'select',
-        options:  [{ id: 48, name: 'আইটেম-৪৫' }],
+        options:  this.categoryDropdown,
         required: true,
         rule: {
           validators: [{ required: true }],
@@ -67,7 +68,7 @@ export class ListProductComponent implements OnInit{
       },
       {
         label: 'product Code',
-        prop: 'product Code',
+        prop: 'productCode',
         type: 'input',
       },
       {
@@ -124,10 +125,10 @@ export class ListProductComponent implements OnInit{
   defaultRowData = {
     id: '',
     productName: '',
-    productCode: 'Low',
+    productCode: '',
     category: '',
     description: '',
-    defaultPrice: 'Stuck',
+    price: 0,
   };
   language: string;
   selectedItem: string = '';
@@ -273,6 +274,7 @@ export class ListProductComponent implements OnInit{
       this.res = response;
       if(this.res.statusCode == HttpStatusCode.Ok){
         this.category = this.res.data;
+        this.categoryDropdown = this.category.map(item => ({ id: item.id, name: item.name }));
       }
     });
   }
@@ -289,25 +291,47 @@ export class ListProductComponent implements OnInit{
 
   async newRow() {
     this.headerNewForm = true;
-    //this.updateFormConfigOptions();
+    this.updateFormConfigOptions();
   }
 
   updateFormConfigOptions() {
     debugger
-    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.category;
+    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.categoryDropdown;
   }
   async quickRowAdded(e: any) {
     debugger
-    const formData = await this.arrayToFormData(e);
-    (await this.service.createProduct(ApiEndPoints.AddProduct, formData)).subscribe((res:ProductResponse)=>{
-      this.res = res;
-      debugger
-      if(this.res.statusCode == HttpStatusCode.Ok){
-        debugger
-        this.getList();
-      }
-    this.headerNewForm = false;
-    })
+    const formData = new FormData();
+      formData.append('ProductCode', e.productCode||'');
+      formData.append('ProductName', e.productName||'');
+      formData.append('DefaultPrice', e.price||'');
+      formData.append('CategoryId', e.category.id||'');
+      formData.append('Description', e.description || '');
+      (await this.service.updateProduct(ApiEndPoints.AddProduct, formData)).subscribe({
+        next: (res: ProductResponse) => {
+          this.res = res;
+          if (this.res.statusCode == HttpStatusCode.Ok) {
+            this.headerNewForm = false;
+            this.getList();
+            this.toastMessage = [
+              {
+                severity: 'success',
+                summary: productPageNotification.productPage.createMessage.summary,
+                content: productPageNotification.productPage.createMessage.addSuccess,
+              },
+            ];
+          }
+        },
+        error: (error) => {
+          debugger
+          this.toastMessage = [
+            {
+              severity: 'error',
+              summary: productPageNotification.productPage.createMessage.summary,
+              content: productPageNotification.productPage.createMessage.addFailed,
+            },
+          ];
+        }
+      });
   }
 
   quickRowCancel() {

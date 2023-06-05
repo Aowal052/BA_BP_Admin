@@ -25,6 +25,13 @@ export const productPageNotification = {
         deleteSuccess:
           'Delete Operation Successfully done.',
       },
+      createMessage: {
+        summary: 'Operation Result',
+        addFailed:
+          'Please provide correct information for this operation',
+        addSuccess:
+          'Product add Operation Successfully done.',
+      },
       other: 'Sign in with',
       register: 'Sign up',
       callbackMessage: 'Github authorization callback succeeded',

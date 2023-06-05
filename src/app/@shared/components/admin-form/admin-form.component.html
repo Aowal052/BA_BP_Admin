@@ -12,12 +12,16 @@
       />
       <d-select
         *ngIf="item.type === 'select'"
-        [appendToBody]="true"
-        [options]="item.options"
         [name]="item.prop"
+        [appendToBody]="true"
+        [filterKey]="'name'"
         [(ngModel)]="_formData[item.prop]"
-        [dValidateRules]="item.required ? item.rule : []"
-      ></d-select>
+        [searchFn]="searchFn"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="true"
+      >
+      </d-select>
       <div class="devui-input-group devui-dropdown-origin" *ngIf="item.type === 'datePicker'">
         <input
           class="devui-input devui-form-control"
