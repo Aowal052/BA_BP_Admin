@@ -2,6 +2,7 @@ export class ApiEndPoints{
     static readonly Login: string = 'v1/Accounts/Login';
     static readonly GetCategory: string = 'ProductCategory/Get';
     static readonly GetCategoryDroppdown: string = 'ProductCategory/GetForDropdown';
+    static readonly GetForPagination: string = 'ProductCategory/GetForPagination';
     static readonly GetCategoryById: string = 'ProductCategory/GetById';
     static readonly UpdateCategory: string = 'ProductCategory/Update';
     static readonly AddProduct: string = 'v1/Product/Create';
@@ -12,6 +13,7 @@ export class ApiEndPoints{
     static readonly AddCategory: string = 'ProductCategory/Create';
     static readonly AddOrder: string = 'SalesOrder/Create';
     static readonly GetOrders: string = 'SalesOrder/Get';
+    static readonly DeleteCategory: string = 'ProductCategory/Delete';
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation

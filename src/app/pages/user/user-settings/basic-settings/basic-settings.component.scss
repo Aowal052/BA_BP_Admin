@@ -30,6 +30,12 @@
     min-height: 120px;
   }
 }
+.da-settings-header {
+  font-size: $devui-font-size-page-title;
+  font-weight: bold;
+  padding-top: 12px;
+  margin-bottom: 16px;
+}
 
 @media only screen and (max-width: 1280px) {
   .da-settings-layout {

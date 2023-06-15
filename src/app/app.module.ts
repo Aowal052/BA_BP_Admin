@@ -11,7 +11,7 @@ import { Observable, of } from 'rxjs';
 import { I18N } from '../config/language-config';
 
 class I18NLoader implements TranslateLoader {
-  getTranslation(lang: 'zh-cn' | 'en-us'): Observable<Object> {
+  getTranslation(lang: 'en-us'): Observable<Object> {
     return of(I18N[lang]);
   }
 }

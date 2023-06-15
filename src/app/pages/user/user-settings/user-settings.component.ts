@@ -9,15 +9,15 @@ export class UserSettingsComponent implements OnInit {
   menus = [
     {
       isActive: true,
-      title: '基本设置',
+      title: 'Commission Settings',
     },
     {
       isActive: false,
-      title: '安全设置',
+      title: 'Info',
     },
     {
       isActive: false,
-      title: '消息通知',
+      title: 'Offer Setings',
     },
   ];
   constructor() {}

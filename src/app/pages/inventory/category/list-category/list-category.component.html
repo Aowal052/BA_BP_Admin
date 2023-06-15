@@ -8,26 +8,23 @@
 </div>
 
 <div class="da-content-wrapper">
+  <d-toast [value]="toastMessage"></d-toast>
     <da-layout-row [daGutter]="[24, 24]">
       <da-col-item [daSpan]="24" [daXs]="24">
         <div class="da-advance-form" dLoading [loading]="busy">
           <div class="da-advace-form-content">
-            <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+            <d-data-table #dataTable [dataSource]="category" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
               <thead dTableHead>
                 <tr dTableRow>
                   <th dHeadCell>Id</th>
-                  <th dHeadCell>Product Name</th>
-                  <th dHeadCell>Product Code</th>
-                  <th dHeadCell>Category</th>
-                  <th dHeadCell>Description</th>
-                  <th dHeadCell>Price</th>
+                  <th dHeadCell>Category Name</th>
                   <th dHeadCell>Actions</th>
                 </tr>
               </thead>
               <tbody dTableBody>
                 <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                   <tr dTableRow *ngIf="rowIndex === 0">
-                    <td dTableCell [attr.colspan]="tableWidthConfig.length">
+                    <td dTableCell [attr.colspan]="tableWidthConfig.length+1">
                       <div
                         *ngIf="!headerNewForm"
                         (click)="newRow()"
@@ -75,140 +72,22 @@
                       [editableTip]="editableTip"
                       [(editing)]="rowItem['titleEdit']"
                       [rowItem]="rowItem"
-                      [field]="'productName'"
+                      [field]="'name'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
                       <span *ngIf="!rowItem['titleEdit']"
                         >
                         <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
-                        {{ rowItem?.productName }}</span
+                        {{ rowItem?.name }}</span
                       >
                       <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
                         <input
                           class="devui-form-control"
-                          name="productName"
-                          [(ngModel)]="rowItem.productName"
+                          name="categoryName"
+                          [(ngModel)]="rowItem.name"
                           [attr.maxlength]="200"
                           [attr.minlength]="50"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['iterationEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'productCode'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['iterationEdit']">{{
-                        rowItem?.productCode
-                      }}</span>
-                      <div
-                        *ngIf="rowItem['iterationEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.productCode"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['priorityEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'categoryId'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['priorityEdit']"
-                        ><d-tag
-                          [tag]="rowItem?.categoryId"
-                          [labelStyle]="rowItem?.categoryId"
-                        ></d-tag
-                      >{{rowItem.categoryId}}</span>
-                      <div
-                        *ngIf="rowItem['priorityEdit']"
-                        class="edit-padding-fix"
-                      >
-                      <select class="devui-form-control" [(ngModel)]="rowItem.categoryId" name="category" (change)="valueChange($event)">
-                        <option [ngValue]="undefined" disabled>Select Any </option>
-                        <option *ngFor="let obj of category" [ngValue]="obj.id" [selected]="obj.id == rowItem.categoryId"> {{obj.name}} </option>
-                      </select>
-                        <!-- <d-select
-                          name="category"
-                          [filterKey]="rowItem.categoryId"
-                          [(ngModel)]="rowItem.categoryId"
-                          [options]="category"
-                        ></d-select> -->
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['assigneeEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'description'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['assigneeEdit']">
-                        <!-- <d-avatar
-                          [name]="rowItem.description"
-                          [width]="24"
-                          [height]="24"
-                        ></d-avatar> -->
-                        <span style="margin-left: 6px">{{
-                          rowItem.description
-                        }}</span>
-                      </span>
-                      <div
-                        *ngIf="rowItem['assigneeEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.description"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['assigneeEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'description'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['assigneeEdit']">
-                        <!-- <d-avatar
-                          [name]="rowItem.description"
-                          [width]="24"
-                          [height]="24"
-                        ></d-avatar> -->
-                        <span style="margin-left: 6px">{{
-                          rowItem.defaultPrice
-                        }}</span>
-                      </span>
-                      <div
-                        *ngIf="rowItem['assigneeEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.defaultPrice"
                         />
                       </div>
                     </td>
@@ -217,7 +96,7 @@
                         icon="icon-delete"
                         bsStyle="text-dark"
                         title="delete"
-                        (click)="deleteRow(rowIndex)"
+                        (click)="deleteRow(rowItem.id)"
                       ></d-button>
                     </td>
                   </tr>

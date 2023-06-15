@@ -24,31 +24,29 @@ export default function (values: any) {
       menuIcon: 'icon icon-modify',
       children: [
         {
-          title: values.inventory.catgory['title'],
-          children: [
-            {
-              title: values.inventory.catgory['addCategory'],
-              link: '/pages/inventory/add-category',
-            },
-            {
+          
               title: values.inventory.catgory['listCategory'],
-              link: '/pages/inventory/list-category',
-            },
-          ]
+              link: '/pages/inventory/list-category'
         },
         {
-          title: values.inventory.product['title'],
-          children: [
-            {
-              title: values.inventory.product['addProduct'],
-              link: '/pages/inventory/add-product',
-            },
-            {
               title: values.inventory.product['listProduct'],
-              link: '/pages/inventory/list-product',
-            },
-          ]
+              link: '/pages/inventory/list-product'
         }
+      ]
+    },
+    {
+      title: values['operation']['title'],
+      menuIcon: 'icon icon-modify',
+      children: [
+        {
+          
+              title: values.operation.sales['title'],
+              link: '/pages/operation/create-sales'
+        },
+        // {
+        //       title: values.operation.purchase['title'],
+        //       link: '/pages/inventory/list-product'
+        // }
       ]
     },
     {

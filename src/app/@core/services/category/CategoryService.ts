@@ -18,13 +18,13 @@ export class CategoryService {
 
   
 
-  async getCategory(endpoint:string):Promise<Observable<CategoryResponse>>{
+  async getCategory(endpoint:string,pager:any):Promise<Observable<CategoryResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<CategoryResponse>(this.apiurl + endpoint, httpOptions).pipe(
+    return this.http.get<CategoryResponse>(this.apiurl + endpoint + '?pageNumber=' + pager.pageIndex + '&pageSize=' + pager.pageSize, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {
-          this.router.navigate(['login']);
+          this.router.navigate(['abnormal403']);
         }
         return throwError(error);
       })
@@ -37,7 +37,7 @@ export class CategoryService {
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {
-          this.router.navigate(['login']);
+          this.router.navigate(['abnormal403']);
         }
         return throwError(error);
       })
@@ -49,7 +49,7 @@ export class CategoryService {
     return this.http.get<CategoryResponse>(this.apiurl + endpoint + '?id=' + id, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
-          this.router.navigate(['login']);
+          this.router.navigate(['abnormal403']);
         }
         return throwError(error);
       })
@@ -60,9 +60,9 @@ export class CategoryService {
     const httpOptions = await this.service.getHttpOptions();
     return this.http.get<CategoryResponse>(this.apiurl + endpoint+ '?id=' + id, httpOptions).pipe(
       catchError((error) => {
-        // if (error.status === HttpStatusCode.Unauthorized) {
-        //   this.router.navigate(['login']);
-        // }
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['abnormal403']);
+        }
         return throwError(error);
       })
     );
@@ -73,7 +73,7 @@ export class CategoryService {
     return this.http.post<CategoryResponse>(this.apiurl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
-          this.router.navigate(['login']);
+          this.router.navigate(['abnormal403']);
         }
         return throwError(error);
       })

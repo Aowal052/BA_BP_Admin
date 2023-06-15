@@ -47,7 +47,6 @@ export class AdminFormComponent implements OnInit {
   _formData: any = {};
 
   @Input() set formData(val: any) {
-    debugger
     this._formData = JSON.parse(JSON.stringify(val));
   }
 

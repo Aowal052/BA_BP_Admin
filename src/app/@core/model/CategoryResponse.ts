@@ -1,5 +1,5 @@
 export class CategoryResponse{
-    StatusCode?: number;
+    statusCode?: number;
     Message?: string;
     Data?: Category[];
 }

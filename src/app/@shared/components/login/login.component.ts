@@ -35,8 +35,8 @@ export class LoginComponent implements OnInit {
   formData = {
     userAccount: '',
     userAccountPassword: '',
-    userEmail: 'admin@devui.com',
-    userEmailPassword: 'devuiadmin',
+    userEmail: '',
+    userEmailPassword: '',
   };
 
   formRules: { [key: string]: DValidateRules } = {
@@ -91,7 +91,6 @@ export class LoginComponent implements OnInit {
     });
     this.personalizeService.setRefTheme(ThemeType.Default);
 
-    // oauth
     this.route.queryParams.pipe(map((param) => param.code)).subscribe((code) => {
       if (code && code.length > 0) {
         setTimeout(() => {
@@ -163,11 +162,7 @@ export class LoginComponent implements OnInit {
       {
         id: 'tab1',
         title: values['loginWays']['account'],
-      },
-      {
-        id: 'tab2',
-        title: values['loginWays']['email'],
-      },
+      }
     ];
   }
 

@@ -10,6 +10,7 @@ import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { CategoryService } from 'src/app/@core/services/category/CategoryService';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
+import { categoryNotification } from 'src/assets/i18n/en-US/category';
 
 @Component({
   selector: 'app-list-category',
@@ -30,37 +31,18 @@ export class ListCategoryComponent {
     pageSize: 10,
   };
 
+  toastMessage:any;
   listData : Product[] = [];
 
   headerNewForm = false;
   tableWidthConfig: TableWidthConfig[] = [
     {
-      field: 'productName',
-      width: '200px',
-    },
-    {
-      field: 'productCode',
-      width: '100px',
-    },
-    {
-      field: 'category',
-      width: '100px',
-    },
-    {
-      field: 'description',
-      width: '100px',
-    },
-    {
-      field: 'price',
-      width: '100px',
-    },
-    {
-      field: 'timeline',
-      width: '100px',
+      field: 'name',
+      width: '300px',
     },
     {
       field: 'Actions',
-      width: '100px',
+      width: '400px',
     },
   ];
   formConfig: FormConfig = {
@@ -68,56 +50,19 @@ export class ListCategoryComponent {
     labelSize: 'sm',
     items: [
       {
-        label: 'product Name',
-        prop: 'productName',
+        label: 'category Name',
+        prop: 'categoryName',
         type: 'input',
         required: true,
         rule: {
           validators: [{ required: true }],
         },
-      },
-      {
-        label: 'category',
-        prop: 'category',
-        type: 'select',
-        options:  ['Low', 'Medium', 'High'],
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'product Code',
-        prop: 'product Code',
-        type: 'input',
-      },
-      {
-        label: 'description',
-        prop: 'description',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'price',
-        prop: 'price',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
+      }
     ],
   };
   defaultRowData = {
     id: '',
-    productName: '',
-    productCode: 'Low',
-    category: '',
-    description: '',
-    defaultPrice: 'Stuck',
+    categoryName: ''
   };
   
 
@@ -129,7 +74,6 @@ export class ListCategoryComponent {
     private listDataService: ProductService,
     @Inject(CategoryService) private catservice: CategoryService) { }
   async ngOnInit(): Promise<void> {
-    this.getList();
     await this.getCategory()
   }
 
@@ -151,8 +95,8 @@ export class ListCategoryComponent {
           cssClass: 'primary',
           text: 'Ok',
           disabled: false,
-          handler: () => {
-            this.listData.splice(index, 1);
+          handler: async () => {
+            await this.deleteCategory(index);
             results.modalInstance.hide();
           },
         },
@@ -167,50 +111,90 @@ export class ListCategoryComponent {
       ],
     });
   }
-  async getList() {
-    this.busy = (await this.listDataService.getProducts(ApiEndPoints.GetProducts, this.pager)).subscribe((res:ProductResponse) => {
-      
-      res.$expandConfig = { expand: false };
-      this.listData = res.data;
-      this.pager.total = res.totalCount;
-    });
-  }
 
-  valueChange(event:any){
+  async deleteCategory(id:number){
     debugger
-    console.log("selected value",event.target.value );
-    //this.selected = event.target.value;
+    (await this.catservice.deleteCategory(ApiEndPoints.DeleteCategory, id))
+          .subscribe({
+            next: (res:CategoryResponse) => {
+              debugger
+              if (res.statusCode == HttpStatusCode.Ok) {
+                this.getCategory();
+                this.toastMessage = [
+                  {
+                    severity: 'success',
+                    summary: categoryNotification.categoryPage.deleteMessage.summary,
+                    content: categoryNotification.categoryPage.deleteMessage.deleteSuccess,
+                  },
+                ];
+              }
+            },
+            error: (err) => {
+              this.toastMessage = [
+                {
+                  severity: 'error',
+                  summary: categoryNotification.categoryPage.deleteMessage.summary,
+                  content: categoryNotification.categoryPage.deleteMessage.deleteFailed,
+                },
+              ];
+            }
+          })
   }
 
   async getCategory(){
-    (await this.catservice.getCategory(ApiEndPoints.GetCategoryDroppdown)).subscribe((response:CategoryResponse) => {
-      debugger
+    (await this.catservice.getCategory(ApiEndPoints.GetForPagination, this.pager)).subscribe((response:CategoryResponse) => {
       this.res = response;
       if(this.res.statusCode == HttpStatusCode.Ok){
         this.category = this.res.data;
+        this.pager.total = this.res.totalCount;
       }
     });
   }
 
   onPageChange(e: number) {
     this.pager.pageIndex = e;
-    this.getList();
+    this.getCategory();
   }
 
   onSizeChange(e: number) {
     this.pager.pageSize = e;
-    this.getList();
+    this.getCategory();
   }
 
   newRow() {
     this.headerNewForm = true;
   }
 
-  quickRowAdded(e: any) {
+  async quickRowAdded(e: any) {
     debugger
-    const newData = { ...e };
-    this.listData.unshift(newData);
-    this.headerNewForm = false;
+    const formData = new FormData();
+      formData.append('Name', e.categoryName||'');
+      (await this.catservice.addCategory(ApiEndPoints.AddCategory, formData)).subscribe({
+        next: (res: CategoryResponse) => {
+          this.res = res;
+          if (this.res.statusCode == HttpStatusCode.Ok) {
+            this.headerNewForm = false;
+            this.getCategory();
+            this.toastMessage = [
+              {
+                severity: 'success',
+                summary: categoryNotification.categoryPage.createMessage.summary,
+                content: categoryNotification.categoryPage.createMessage.addSuccess,
+              },
+            ];
+          }
+        },
+        error: (error) => {
+          debugger
+          this.toastMessage = [
+            {
+              severity: 'error',
+              summary: categoryNotification.categoryPage.createMessage.summary,
+              content: categoryNotification.categoryPage.createMessage.addFailed,
+            },
+          ];
+        }
+      });
   }
 
   quickRowCancel() {
@@ -220,13 +204,53 @@ export class ListCategoryComponent {
     return true;
   };
 
-  beforeEditEnd = (rowItem: any, field: any) => {
+  beforeEditEnd = async (rowItem: any, field: any) => {
+    await this.updatecategory(rowItem);
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
       return true;
     }
   };
+
+  async updatecategory(item:any){
+    const formData = await this.arrayToFormData(item);
+    (await this.catservice.updateCategory(ApiEndPoints.UpdateCategory, formData)).subscribe({
+      next: (res: CategoryResponse) => {
+        this.res = res;
+        if (this.res.statusCode == HttpStatusCode.Ok) {
+          this.toastMessage = [
+            {
+              severity: 'success',
+              summary: categoryNotification.categoryPage.noticeMessage.summary,
+              content: categoryNotification.categoryPage.noticeMessage.updateSuccess,
+            },
+          ];
+        }
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: categoryNotification.categoryPage.noticeMessage.summary,
+            content: categoryNotification.categoryPage.noticeMessage.undateFailed,
+          },
+        ];
+      }
+    });
+  }
+  async arrayToFormData(array:any) {
+    const formData = new FormData();
+    
+    for (let key in array) {
+      if (array.hasOwnProperty(key)) {
+        formData.append(key, array[key]);
+      }
+    }
+    
+    return formData;
+  }
   breadItem: Array<MenuConfig> = [
     {
       linkType: 'hrefLink',

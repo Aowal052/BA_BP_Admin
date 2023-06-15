@@ -12,8 +12,8 @@ import { FormConfig } from 'src/app/@shared/components/admin-form';
 })
 export class EditableListComponent implements OnInit {
   editableTip = EditableTip.btn;
-  nameEditing: boolean;
-  busy: Subscription;
+  nameEditing!: boolean;
+  busy!: Subscription;
 
   source = [
     { title: '首页' },

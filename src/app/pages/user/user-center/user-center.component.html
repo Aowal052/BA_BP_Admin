@@ -15,11 +15,11 @@
           </div>
         </div>
         <div class="da-floor">
-          <div class="da-floor-title">标签</div>
+          <div class="da-floor-title">Tag</div>
           <d-tags [tags]="user.tags!"> </d-tags>
         </div>
         <div class="da-floor">
-          <div class="da-floor-title">团队</div>
+          <div class="da-floor-title">team</div>
           <div class="da-team" *ngFor="let item of workGroups">
             <d-avatar [name]="item.departmentTitle[0]" [width]="30" [height]="30" [imgSrc]="item.logoSrc"></d-avatar>
             <div class="da-team-title">{{ item?.departmentTitle }}</div>

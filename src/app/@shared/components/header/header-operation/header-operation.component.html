@@ -13,8 +13,8 @@
   </div>
 
   <div class="da-operations-user" dDropDown [trigger]="'hover'" appendToBody dDropDownToggle>
-    <d-avatar [name]="user.userName" [width]="22" [height]="22"></d-avatar>
-    <span class="da-user-name">{{ user.userName }}</span>
+    <d-avatar [name]="user.firstName" [width]="22" [height]="22"></d-avatar>
+    <span class="da-user-name">{{ user.firstName + " " + user.lastName }}</span>
     <ul dDropDownMenu class="devui-dropdown-menu devui-scrollbar" role="menu" style="min-width: 120px">
       <ng-container *ngIf="haveLoggedIn; else login">
         <li role="menuitem">
@@ -33,8 +33,7 @@
       </ng-container>
     </ul>
   </div>
-  <div class="da-language-wrapper" dDropDown [trigger]="'hover'" appendToBody dDropDownToggle>
-    <!-- TODO: svg替换为图标 -->
+  <!-- <div class="da-language-wrapper" dDropDown [trigger]="'hover'" appendToBody dDropDownToggle>
     <svg width="16px" height="16px" viewBox="0 0 16 16">
       <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <path
@@ -55,7 +54,7 @@
         </a>
       </li>
     </ul>
-  </div>
+  </div> -->
 </div>
 
 <ng-template #login>

@@ -269,7 +269,7 @@ export class ListProductComponent implements OnInit{
   }
 
   async getCategory(){
-    (await this.catservice.getCategory(ApiEndPoints.GetCategoryDroppdown)).subscribe((response:CategoryResponse) => {
+    (await this.catservice.getCategory(ApiEndPoints.GetCategoryDroppdown,this.pager)).subscribe((response:CategoryResponse) => {
       debugger
       this.res = response;
       if(this.res.statusCode == HttpStatusCode.Ok){
@@ -299,7 +299,6 @@ export class ListProductComponent implements OnInit{
     this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.categoryDropdown;
   }
   async quickRowAdded(e: any) {
-    debugger
     const formData = new FormData();
       formData.append('ProductCode', e.productCode||'');
       formData.append('ProductName', e.productName||'');

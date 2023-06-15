@@ -18,9 +18,9 @@ export class UserCenterComponent implements OnInit {
   spaceBusy: Subscription = new Subscription();
 
   source = [
-    { title: '个人页' },
+    { title: 'User Center' },
     {
-      title: '个人中心',
+      title: 'User Center',
       link: '/pages/user/center',
     },
   ];
@@ -30,11 +30,11 @@ export class UserCenterComponent implements OnInit {
   tabs = [
     {
       id: 'first',
-      label: 'Articles',
+      label: 'Sales',
     },
     {
       id: 'second',
-      label: 'Project',
+      label: 'Purchase',
     },
   ];
 
@@ -47,9 +47,9 @@ export class UserCenterComponent implements OnInit {
   constructor(private userDataService: UserDataService, private workGroupService: WorkGroupService) {}
 
   ngOnInit() {
-    this.busy = this.userDataService.getUser().subscribe((res) => {
-      this.user = res;
-    });
+    if (localStorage.getItem('userinfo')) {
+      this.user = JSON.parse(localStorage.getItem('userinfo')!);
+    }
     this.workGroupService.getWorkGroups().subscribe((group) => {
       this.workGroups = group;
     });

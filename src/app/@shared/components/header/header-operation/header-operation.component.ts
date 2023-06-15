@@ -12,24 +12,18 @@ import { I18nService } from 'ng-devui/i18n';
   styleUrls: ['./header-operation.component.scss'],
 })
 export class HeaderOperationComponent implements OnInit {
-  user: User;
+  user!: User;
   languages = LANGUAGES;
-  language: string;
+  language: string = 'en-us';
   haveLoggedIn = false;
-  noticeCount: number;
+  noticeCount!: number;
 
   constructor(private route: Router, private authService: AuthService, private translate: TranslateService, private i18n: I18nService) {}
 
   ngOnInit(): void {
-    if (localStorage.getItem('userinfo')) {
-      this.user = JSON.parse(localStorage.getItem('userinfo')!);
+    if (sessionStorage.getItem('userinfo')) {
+      this.user = JSON.parse(sessionStorage.getItem('userinfo')!);
       this.haveLoggedIn = true;
-    } else {
-      this.authService.login('Admin', 'Devui.admin').subscribe((res) => {
-        this.authService.setSession(res);
-        this.user = JSON.parse(localStorage.getItem('userinfo')!);
-        this.haveLoggedIn = true;
-      });
     }
     this.language = this.translate.currentLang;
   }
@@ -39,8 +33,8 @@ export class HeaderOperationComponent implements OnInit {
   }
 
   onLanguageClick(language: string) {
-    this.language = language;
-    localStorage.setItem('lang', this.language);
+    this.language = 'en-us';
+    sessionStorage.setItem('lang', this.language);
     this.i18n.toggleLang(this.language);
     this.translate.use(this.language);
   }

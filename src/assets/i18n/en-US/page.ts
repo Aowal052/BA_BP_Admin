@@ -11,12 +11,25 @@ export default {
       catgory:{
         title: 'Category',
         addCategory: 'Add Category',
-        listCategory: 'List Category',
+        listCategory: 'Category',
       },
       product:{
         title: 'Product',
         addProduct: 'Add Product',
-        listProduct: 'List Product'
+        listProduct: 'Product'
+      }
+    },
+    operation: {
+      title: 'operation',
+      sales:{
+        title: 'Sales',
+        addCategory: 'Add Category',
+        listCategory: 'Category',
+      },
+      purchase :{
+        title: 'purchase ',
+        addProduct: 'Add Product',
+        listProduct: 'Product'
       }
     },
     form: {

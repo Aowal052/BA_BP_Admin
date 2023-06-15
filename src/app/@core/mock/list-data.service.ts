@@ -521,6 +521,12 @@ export class ListDataService extends ListData {
       total: this.basicData.length,
     }).pipe(delay(1000));
   }
+  getMonthlyCommission(pager: ListPager): Observable<any> {
+    return observableOf({
+      pageList: this.pagerList(this.basicData, pager),
+      total: this.basicData.length,
+    }).pipe(delay(1000));
+  }
 
   getOriginSource(pager: ListPager): Observable<any> {
     return observableOf({

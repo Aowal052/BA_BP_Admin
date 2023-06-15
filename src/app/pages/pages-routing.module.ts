@@ -20,6 +20,11 @@ const routes: Routes = [
           import('./inventory/inventory.module').then((m) => m.InventoryModule),
       },
       {
+        path: 'operation',
+        loadChildren: () =>
+          import('./operation/operation.module').then((m) => m.OperationModule),
+      },
+      {
         path: 'form',
         loadChildren: () =>
           import('./form/form.module').then((m) => m.FormModule),

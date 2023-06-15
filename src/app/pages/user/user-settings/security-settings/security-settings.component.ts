@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from 'src/app/@shared/models/user';
 
 @Component({
   selector: 'da-security-settings',
@@ -8,23 +9,30 @@ import { Component, OnInit } from '@angular/core';
 export class SecuritySettingsComponent implements OnInit {
   securityItems = [
     {
-      title: '账户密码',
-      description: '您当前的密码强度为：',
-      results: '强'
+      title: 'Profile',
+      description: 'Name :',
+      results: 'Admin'
     },
     {
-      title: '密保手机',
-      description: '已绑定手机号：',
+      title: 'Mobile',
+      description: 'user mobile :',
       results: '188***1234'
     },
     {
-      title: '绑定邮箱',
-      description: '已绑定邮箱：',
+      title: 'Email',
+      description: 'admin mail :',
       results: 'devui***admin.com'
     }
   ]
 
+  user!: User;
+  haveLoggedIn = false;
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (localStorage.getItem('userinfo')) {
+      this.user = JSON.parse(localStorage.getItem('userinfo')!);
+      this.haveLoggedIn = true;
+    }
+  }
 }

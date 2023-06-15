@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormLayout } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, TableWidthConfig } from 'ng-devui';
+import { Subscription } from 'rxjs';
+import { ListDataService } from 'src/app/@core/mock/list-data.service';
+import { FormConfig } from 'src/app/@shared/components/admin-form';
 
 @Component({
   selector: 'da-basic-settings',
@@ -9,18 +12,21 @@ import { FormLayout } from 'ng-devui';
 export class BasicSettingsComponent implements OnInit {
   verticalLayout: FormLayout = FormLayout.Vertical;
 
+  editableTip = EditableTip.btn;
+  nameEditing!: boolean;
+  busy!: Subscription;
   labelList = [
     {
       id: 1,
-      label: '标签1',
+      label: 'Offer',
     },
     {
       id: 2,
-      label: '标签2',
+      label: 'Category',
     },
     {
       id: 3,
-      label: '标签3',
+      label: 'Info',
     },
   ];
 
@@ -29,7 +35,7 @@ export class BasicSettingsComponent implements OnInit {
   Options = [
     {
       id: 1,
-      label: '中国',
+      label: 'option 1',
     },
   ];
 
@@ -37,8 +43,211 @@ export class BasicSettingsComponent implements OnInit {
     selectValue: this.Options[0],
   };
 
-  imgSrc = 'https://res.hc-cdn.com/x-roma-components/1.0.10/assets/devui/logo.svg';
-  constructor() {}
+  pager = {
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  };
 
-  ngOnInit(): void {}
+  listData: any[] = [
+    {
+      minimumAmount: '50,000',
+      maximumAmount: '99,999',
+      commissionPercent: '1%',
+    },
+    {
+      minimumAmount: '1,00,000',
+      maximumAmount: '1,99,999',
+      commissionPercent: '2%',
+    },
+    {
+      minimumAmount: '2,00,000',
+      maximumAmount: '3,99,999',
+      commissionPercent: '3%',
+    },
+    {
+      minimumAmount: '4,00,000',
+      maximumAmount: '৫,৯৯,৯৯৯',
+      commissionPercent: '4%',
+    },
+    {
+      minimumAmount: '6,00,000',
+      maximumAmount: '6,99,999',
+      commissionPercent: '5%',
+    },
+    {
+      minimumAmount: '৭,০০,০০০ ',
+      maximumAmount: '>৭,০০,০০০ ',
+      commissionPercent: '6%',
+    },
+  ];
+  headerNewForm = false;
+
+  tableWidthConfig: TableWidthConfig[] = [
+    {
+      field: 'minimumAmount',
+      width: '150px',
+    },
+    {
+      field: 'maximumAmount',
+      width: '200px',
+    },
+    {
+      field: 'commissionPercent',
+      width: '200px',
+    },
+  ];
+  defaultRowData = {
+    id: '',
+    title: '',
+    priority: 'Low',
+    iteration: '',
+    assignee: '',
+    status: 'Stuck',
+    timeline: new Date(),
+  };
+  priorities = ['Low', 'Medium', 'High'];
+  formConfig: FormConfig = {
+    layout: FormLayout.Horizontal,
+    items: [
+      {
+        label: 'Id',
+        prop: 'id',
+        type: 'input',
+      },
+      {
+        label: 'Title',
+        prop: 'title',
+        type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
+      },
+      {
+        label: 'Priority',
+        prop: 'priority',
+        type: 'select',
+        options: ['Low', 'Medium', 'High'],
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
+      },
+      {
+        label: 'Iteration',
+        prop: 'iteration',
+        type: 'input',
+      },
+      {
+        label: 'Assignee',
+        prop: 'assignee',
+        type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
+      },
+      {
+        label: 'Status',
+        prop: 'status',
+        type: 'select',
+        options: ['Stuck', 'Done', 'Working on it'],
+      },
+      {
+        label: 'Timeline',
+        prop: 'timeline',
+        type: 'datePicker',
+      },
+    ],
+    labelSize: '',
+  };
+
+  imgSrc = 'https://res.hc-cdn.com/x-roma-components/1.0.10/assets/devui/logo.svg';
+  constructor(private listDataService: ListDataService,private dialogService: DialogService) {}
+
+  ngOnInit(): void {
+    this.getList();
+  }
+
+  getList() {
+    this.busy = this.listDataService.getMonthlyCommission(this.pager).subscribe((res) => {
+      const data = JSON.parse(JSON.stringify(res.pageList));
+      data.$expandConfig = { expand: false };
+      //this.listData = data;
+      this.pager.total = res.total;
+    });
+  }
+
+  beforeEditStart = (rowItem: any, field: any) => {
+    return true;
+  };
+
+  beforeEditEnd = (rowItem: any, field: any) => {
+    if (rowItem && rowItem[field].length < 3) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  onEditEnd(rowItem: any, field: any) {
+    rowItem[field] = false;
+  }
+
+  newRow() {
+    this.headerNewForm = true;
+  }
+
+  quickRowAdded(e: any) {
+    const newData = { ...e };
+    this.listData.unshift(newData);
+    this.headerNewForm = false;
+  }
+
+  quickRowCancel() {
+    this.headerNewForm = false;
+  }
+  onPageChange(e: number) {
+    this.pager.pageIndex = e;
+    this.getList();
+  }
+
+  onSizeChange(e: number) {
+    this.pager.pageSize = e;
+    this.getList();
+  }
+
+  deleteRow(index: number) {
+    const results = this.dialogService.open({
+      id: 'delete-dialog',
+      width: '346px',
+      maxHeight: '600px',
+      title: 'Delete',
+      showAnimate: false,
+      content: 'Are you sure you want to delete it?',
+      backdropCloseable: true,
+      onClose: () => {},
+      buttons: [
+        {
+          cssClass: 'primary',
+          text: 'Ok',
+          disabled: false,
+          handler: () => {
+            this.listData.splice(index, 1);
+            results.modalInstance.hide();
+          },
+        },
+        {
+          id: 'btn-cancel',
+          cssClass: 'common',
+          text: 'Cancel',
+          handler: () => {
+            results.modalInstance.hide();
+          },
+        },
+      ],
+    });
+  }
+  
 }

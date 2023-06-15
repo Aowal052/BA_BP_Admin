@@ -20,17 +20,17 @@
             <da-col-item [daMl]="20" [daMm]="18">
               <div class="da-user-settings-content">
                 <div *ngIf="menus[0].isActive">
-                  <div class="da-settings-header">基本设置</div>
+                  <div class="da-settings-header">Commission Settings</div>
                   <da-basic-settings></da-basic-settings>
                 </div>
 
                 <div *ngIf="menus[1].isActive">
-                  <div class="da-settings-header">安全设置</div>
+                  <div class="da-settings-header">Company Info</div>
                   <da-security-settings></da-security-settings>
                 </div>
 
                 <div *ngIf="menus[2].isActive">
-                  <div class="da-settings-header">消息通知</div>
+                  <div class="da-settings-header">Offer Setings</div>
                   <da-message-notification></da-message-notification>
                 </div>
               </div>

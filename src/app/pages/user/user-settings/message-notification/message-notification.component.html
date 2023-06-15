@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="da-settings-item-operation">
-      <d-toggle [checked]="true"></d-toggle>
+      <d-toggle [checked]="item.isActive" (change)="setcommission(item)"></d-toggle>
     </div>
   </li>
 </ul>
