@@ -7,6 +7,7 @@ export class ApiEndPoints{
     static readonly UpdateCategory: string = 'ProductCategory/Update';
     static readonly AddProduct: string = 'v1/Product/Create';
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
+    static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
     static readonly DeleteProducts: string = 'v1/Product/Delete';
     static readonly UpdateProduct: string = 'v1/Product/Update';
     static readonly GetProductById: string = 'v1/Product/GetById'

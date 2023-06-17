@@ -8,6 +8,7 @@ import { DynamicFormsModule } from 'src/app/@shared/components/dynamic-forms';
 import { DatepickerModule, InputNumberModule, TagsInputModule, ToastModule } from 'ng-devui';
 import { SharedModule } from 'src/app/@shared/shared.module';
 import { FormRoutingModule } from '../form/form-routing.module';
+import { AdminFormModule } from 'src/app/@shared/components/admin-form';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { FormRoutingModule } from '../form/form-routing.module';
     TagsInputModule,
     DatepickerModule,
     InputNumberModule,
+    AdminFormModule,
   ]
 })
 export class OperationModule { }

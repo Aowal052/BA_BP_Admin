@@ -249,7 +249,6 @@ export class ListProductComponent implements OnInit{
   }
   async getList() {
     this.busy = (await this.service.getProducts(ApiEndPoints.GetProducts, this.pager)).subscribe((res:ProductResponse) => {
-      
       res.$expandConfig = { expand: false };
       this.listData = res.data;
       this.pager.total = res.totalCount;

@@ -42,6 +42,20 @@ export class ProductService {
     );
   }
 
+  
+  async getProductDropdown(endpoint:string):Promise<Observable<ProductResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<ProductResponse>(this.apiurl + endpoint, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+
   async getProductsById(endpoint:string,id:number):Promise<Observable<ProductResponse>> {
     const httpOptions = await this.service.getHttpOptions();
     return this.http.get<ProductResponse>(this.apiurl + endpoint + '?id=' + id, httpOptions).pipe(
