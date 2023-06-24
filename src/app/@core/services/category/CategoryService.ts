@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, catchError, throwError } from 'rxjs';
 import { CommonService } from '../CommonService';
 import { CategoryResponse } from '../../model/CategoryResponse';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class CategoryService {
 
   async getCategory(endpoint:string,pager:any):Promise<Observable<CategoryResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<CategoryResponse>(this.apiurl + endpoint + '?pageNumber=' + pager.pageIndex + '&pageSize=' + pager.pageSize, httpOptions).pipe(
+    return this.http.get<CategoryResponse>(environment.baseUrl + endpoint + '?pageNumber=' + pager.pageIndex + '&pageSize=' + pager.pageSize, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {
@@ -33,7 +34,7 @@ export class CategoryService {
 
   async addCategory(endpoint:string,param:any):Promise<Observable<CategoryResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.post<CategoryResponse>(this.apiurl + endpoint,param, httpOptions).pipe(
+    return this.http.post<CategoryResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {
@@ -46,7 +47,7 @@ export class CategoryService {
 
   async getCategoryById(endpoint:string,id:number):Promise<Observable<CategoryResponse>> {
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<CategoryResponse>(this.apiurl + endpoint + '?id=' + id, httpOptions).pipe(
+    return this.http.get<CategoryResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['abnormal403']);
@@ -58,7 +59,7 @@ export class CategoryService {
   
   async deleteCategory(endpoint:string,id:number):Promise<Observable<CategoryResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<CategoryResponse>(this.apiurl + endpoint+ '?id=' + id, httpOptions).pipe(
+    return this.http.get<CategoryResponse>(environment.baseUrl + endpoint+ '?id=' + id, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['abnormal403']);
@@ -70,7 +71,7 @@ export class CategoryService {
 
   async updateCategory(endpoint:string,param:any):Promise<Observable<CategoryResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.post<CategoryResponse>(this.apiurl + endpoint,param, httpOptions).pipe(
+    return this.http.post<CategoryResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['abnormal403']);

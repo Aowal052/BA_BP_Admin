@@ -19,11 +19,11 @@ export class EchartsService {
       orient: 'vertical',
       left: 'auto',
       top: 'center',
-      data: ['可容忍', '满意', '不可容忍', '极端异常', '良好'],
+      data: ['data1', 'data2', 'data3', 'data4', 'data5'],
     },
     series: [
       {
-        name: '访问数量',
+        name: 'series',
         type: 'pie',
         radius: ['50%', '70%'],
         avoidLabelOverlap: false,
@@ -41,11 +41,11 @@ export class EchartsService {
           show: false,
         },
         data: [
-          { value: 335, name: '可容忍' },
-          { value: 310, name: '满意' },
-          { value: 234, name: '不可容忍' },
-          { value: 135, name: '极端异常' },
-          { value: 1548, name: '良好' },
+          { value: 335, name: 'data1' },
+          { value: 310, name: 'data2' },
+          { value: 234, name: 'data3' },
+          { value: 135, name: 'data4' },
+          { value: 1548, name: 'data5' },
         ],
       },
     ],
@@ -57,7 +57,7 @@ export class EchartsService {
       axisPointer: { type: 'cross', label: { backgroundColor: '#6a7985' } },
     },
     legend: {
-      data: ['US', 'Story', 'Task', 'BUG', '类型总量'],
+      data: ['US', 'Story', 'Task', 'BUG', 'data'],
       top: 10,
       left: 15,
     },
@@ -136,7 +136,7 @@ export class EchartsService {
         },
       },
       {
-        name: '类型总量',
+        name: 'data',
         type: 'bar',
         barMaxWidth: 40,
         label: { show: false, color: '#ffffff' },
@@ -154,7 +154,7 @@ export class EchartsService {
       trigger: 'axis',
     },
     legend: {
-      data: ['流量峰值', '平均流量'],
+      data: ['data1', 'data2'],
     },
 
     calculable: true,
@@ -172,7 +172,7 @@ export class EchartsService {
         },
         type: 'category',
         boundaryGap: true,
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        data: ['category1', 'category2', 'category3', 'category4', 'category5', 'category6', 'category6'],
       },
     ],
     yAxis: [
@@ -187,7 +187,7 @@ export class EchartsService {
     ],
     series: [
       {
-        name: '流量峰值',
+        name: 'name',
         type: 'line',
         symbol: 'none',
         smooth: 0.2,
@@ -215,7 +215,7 @@ export class EchartsService {
         },
       },
       {
-        name: '平均流量',
+        name: 'name',
         type: 'line',
         symbol: 'none',
         smooth: 0.2,
@@ -256,12 +256,12 @@ export class EchartsService {
       },
     },
     legend: {
-      data: ['新增用户数', '流失用户数', '总体用户数'],
+      data: ['data1', 'data2', 'data3'],
     },
     xAxis: [
       {
         type: 'category',
-        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        data: ['category1', 'category2', 'category3', 'category4', 'category5', 'category6', 'category7', 'category8', 'category9', 'category10', 'category11', 'category12'],
         axisPointer: {
           type: 'shadow',
         },
@@ -270,28 +270,28 @@ export class EchartsService {
     yAxis: [
       {
         type: 'value',
-        name: '人数',
+        name: 'yAxis',
         min: 0,
         max: 200,
         interval: 50,
         axisLabel: {
-          formatter: '{value} 人',
+          formatter: '{value}',
         },
       },
     ],
     series: [
       {
-        name: '新增用户数',
+        name: 'series',
         type: 'bar',
         data: [50, 60, 70, 80, 90, 180, 135, 162, 60, 20, 100, 90],
       },
       {
-        name: '流失用户数',
+        name: 'series2',
         type: 'bar',
         data: [10, 10, 20, 15, 30, 50, 60, 10, 30, 5, 10, 20],
       },
       {
-        name: '总体用户数',
+        name: 'series3',
         type: 'line',
         data: [60, 70, 80, 90, 100, 190, 150, 180, 80, 80, 150, 120],
       },

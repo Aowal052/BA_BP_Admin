@@ -19,7 +19,6 @@ export default {
   ...abnormal,
   ...personalize,
   ...dashboard,
-  ...login,
   ...register,
   ...sideSetting,
   ...header,

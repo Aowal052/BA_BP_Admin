@@ -40,4 +40,5 @@ export abstract class UserData {
   abstract getUser(): Observable<User>;
   abstract getArticles(): Observable<Article[]>;
   abstract getProjects(): Observable<Project[]>;
+  abstract getSalesReport(endpoint:string): Observable<Project[]>;
 }

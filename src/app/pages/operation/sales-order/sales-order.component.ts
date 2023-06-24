@@ -1,11 +1,18 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
+import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
+import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { DFormData } from 'src/app/@shared/components/dynamic-forms';
+import { orderPageNotification } from 'src/assets/i18n/en-US/order';
+import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
   selector: 'app-sales-order',
@@ -118,16 +125,26 @@ export class SalesOrderComponent {
   selectOptions = [
     {
       id: 1,
-      name: 'Team1',
+      label: 'Team1',
     },
     {
       id: 2,
-      name: 'Team2',
+      label: 'Team2',
     },
     {
       id: 3,
-      name: 'Team3',
+      label: 'Team3',
     },
+  ];
+  selectUnits = [
+    {
+      id: 1,
+      label: 'Pcs',
+    },
+    {
+      id: 2,
+      label: 'Dzn',
+    }
   ];
   tableWidthConfig: TableWidthConfig[] = [
     {
@@ -194,37 +211,27 @@ export class SalesOrderComponent {
     multipleSelectValue: [],
     radioValue: {},
   };
+  masterData = {
+    orderDate:new Date,
+    estimatedDeliveryDate: new Date,
+    selectedCustomer:{},
+    totalPrice: 0,
+    pdc:true,
+    genDiscount:5,
+    otherDiscount:0,
+    netAmount:0,
+    deliveryInstruction:'',
+    deliveryAddress:'',
+    remarks:''
+  }
   productRowData = {
     product: '',
-    quantity: '',
-    unit: '',
+    quantity: 0,
+    unit: {},
     unitPrice: 0,
     totalPrice: 0,
 
   };
-  headerNewForm = false;
-  columnsLayout: FormLayout = FormLayout.Columns;
-  msgs: Array<Object> = [];
-  existProjectNames = ['123', '123456', 'DevUI'];
-  formItems: DFormData = {};
-  selectedDate2 = new Date;
-  toastMessage:any;
-  busy !: Subscription;
-  listData : Product[] = [];
-  productList: Product[] = [];
-  editableTip = EditableTip.btn;
-  constructor(private dialogService: DialogService,private service: ProductService){}
-  async ngOnInit() {
-    await this.getProductDropdown();
-    this.multipleSelectConfig = {
-      key: 'multipleSelect',
-      label: 'Options(Multiple selection with delete)',
-      isSearch: true,
-      multiple: 'true',
-      labelization: { enable: true, labelMaxWidth: '120px' },
-      options: this.selectOptions,
-    };
-  }
   dateConfig = {
     timePicker: true,
     dateConverter: null,
@@ -235,21 +242,209 @@ export class SalesOrderComponent {
       time: 'y-MM-dd HH:mm:ss'
     }
   };
+  active = false;
+  headerNewForm = false;
+  columnsLayout: FormLayout = FormLayout.Columns;
+  msgs: Array<Object> = [];
+  existProjectNames = ['123', '123456', 'DevUI'];
+  formItems: DFormData = {};
+  selectedDate2 = new Date;
+  toastMessage:any;
+  busy !: Subscription;
+  data:any;
+  listData : any[] = [];
+  productInfo?:Product;
+  productList: any[] = [];
+  customerList: any[] = [];
+  dropdownProductList:any[] = [];
+  customerDropdownList:any[] = [];
+  editableTip = EditableTip.btn;
+  constructor(
+    private dialogService: DialogService,
+    private service: OrderService,
+    private proService: ProductService,
+    private router: Router,){}
+  async ngOnInit() {
+    await this.getProductDropdown();
+    await this.getCustomerDropdown();
+    this.multipleSelectConfig = {
+      key: 'multipleSelect',
+      label: 'Options(Multiple selection with delete)',
+      isSearch: true,
+      multiple: 'true',
+      labelization: { enable: true, labelMaxWidth: '120px' },
+      options: this.selectOptions,
+    };
+  }
 
   async newRow() {
     this.headerNewForm = true;
     this.updateFormConfigOptions();
   }
+  async changeGenDisVal(event:boolean){
+    if(!event){
+      this.masterData.genDiscount = 8;
+      await this.genarateMasterInfo(this.customerList);
+    }
+    else if(event){
+      this.masterData.genDiscount = 5;
+      await this.genarateMasterInfo(this.customerList);
+    }
+  }
+  addOtherDiscount(val:number){
+    this.masterData.netAmount = this.masterData.netAmount - (val/100)*this.masterData.netAmount;
+    this.active = true;
+  }
+
+  async placeOrder(master:any){
+    const masterData = this.createFormData(master);
+    const products = this.createFormData(this.listData);
+    debugger
+    // Append master data
+    const formData = new FormData();
+      formData.append('salesOrderMasterDto.customerId', master.selectedCustomer.id.toString());
+      formData.append('salesOrderMasterDto.deliveryAddress', master.deliveryAddress);
+      formData.append('salesOrderMasterDto.deliveryInstruction', master.deliveryInstruction);
+      formData.append('salesOrderMasterDto.orderDate', master.orderDate.toISOString());
+      formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
+      formData.append('salesOrderMasterDto.basicDiscount', master.genDiscount.toString());
+      formData.append('salesOrderMasterDto.otherDiscount', master.otherDiscount.toString());
+      formData.append('salesOrderMasterDto.estimatedDeliveryDate', master.estimatedDeliveryDate.toISOString());
+      formData.append('salesOrderMasterDto.remarks', master.remarks);
+
+      // Append list data
+      for (let i = 0; i < this.listData.length; i++) {
+        const item = this.listData[i];
+        formData.append(`salesOrderDetailsDto[${i}].productId`, item.productId.toString());
+        formData.append(`salesOrderDetailsDto[${i}].productDescription`, item.productDescription);
+        formData.append(`salesOrderDetailsDto[${i}].quantity`, item.quantity.toString());
+        formData.append(`salesOrderDetailsDto[${i}].unitId`, item.unitId.toString());
+        formData.append(`salesOrderDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
+        formData.append(`salesOrderDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
+      }
+      (await this.service.createOrder(ApiEndPoints.CreateSales, formData)).subscribe({
+        next: (res: OrderResponse) => {
+          debugger
+          this.data = res;
+          if (this.data.statusCode == HttpStatusCode.Ok) {
+            this.headerNewForm = false;
+            this.toastMessage = [
+              {
+                severity: 'success',
+                summary: orderPageNotification.orderPage.createMessage.summary,
+                content: orderPageNotification.orderPage.createMessage.addSuccess,
+              },
+            ];
+            this.router.navigate(['/pages', 'user', 'center']);
+          }
+        },
+        error: (error) => {
+          debugger
+          this.toastMessage = [
+            {
+              severity: 'error',
+              summary: orderPageNotification.orderPage.createMessage.summary,
+              content: orderPageNotification.orderPage.createMessage.addFailed,
+            },
+          ];
+        }
+      });
+      
+  }
+
+  convertObjectKeysToCamelCase(obj: any): any {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(this.convertObjectKeysToCamelCase);
+    }
+
+    const camelCaseObj: any = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const camelCaseKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+        camelCaseObj[camelCaseKey] = this.convertObjectKeysToCamelCase(value);
+      }
+    }
+
+    return camelCaseObj;
+  }
+
+  createFormData(arrayData: any[]): FormData {
+    const formData = new FormData();
+  
+    // Check if arrayData is an array
+    if (Array.isArray(arrayData)) {
+      // Append the array data to the FormData
+      arrayData.forEach((item: any, index: number) => {
+        const itemKey = `arrayData[${index}]`;
+        const convertedItem = this.convertObjectKeysToCamelCase(item);
+  
+        for (const key in convertedItem) {
+          const value = convertedItem[key];
+          const fieldKey = `${itemKey}.${key}`;
+  
+          formData.append(fieldKey, value);
+        }
+      });
+    }
+  
+    return formData;
+  }
+  
+
+  async genarateMasterInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+    this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
+    debugger
+
+  }
+  async getCustomerDropdown() {
+    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res:CustomerResponse) => {
+      this.customerDropdownList = res.data;
+      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));;
+    });
+  }
 
   async getProductDropdown() {
-    this.busy = (await this.service.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
-      this.productList = res.data;
+    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
+      this.dropdownProductList = res.data;
+      this.productList = res.data.map(({ id, productName }) => ({ id: id, label: productName }));
     });
   }
 
   updateFormConfigOptions() {
     debugger
     //this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.categoryDropdown;
+  }
+
+  changeProduct(product:any){
+    this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
+    this.productRowData.quantity = 1;
+    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+    this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
+    this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
+  }
+
+  genarateTotalPrice(productRowData:any){
+    this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
+    debugger
+  }
+
+  modifyTotalPrice(event:any,productRow:any){
+    if(event.id===2 && productRow.unit.id != 2)
+    {
+      this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
+      this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
+    }
+    else if(event.id === 1){
+      this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+      this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
+    }
   }
 
   getValue(value:any) {
@@ -319,7 +514,7 @@ export class SalesOrderComponent {
     }
   };
 
-  async deleteRow(index: number) {
+  deleteRow(index: number) {
     const results = this.dialogService.open({
       id: 'delete-dialog',
       width: '346px',
@@ -334,8 +529,8 @@ export class SalesOrderComponent {
           cssClass: 'primary',
           text: 'Ok',
           disabled: false,
-          handler: async () => {
-            //await this.deleteProduct(index);
+          handler: () => {
+            this.listData.splice(index, 1);
             results.modalInstance.hide();
           },
         },

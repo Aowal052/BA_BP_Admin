@@ -250,7 +250,7 @@ export class ListDataService extends ListData {
     {
       name: 'Angular9',
       title: 'Angular9',
-      content: 'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念...',
+      content: 'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -266,7 +266,7 @@ export class ListDataService extends ListData {
       name: 'NG-evUI',
       title: 'NG-DevUI',
       content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计...',
+        'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -281,7 +281,7 @@ export class ListDataService extends ListData {
     {
       name: 'BootStrap',
       title: 'BootStrap',
-      content: 'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相...',
+      content: 'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -297,7 +297,7 @@ export class ListDataService extends ListData {
       name: 'React',
       title: 'React',
       imgSrc: 'https://codingthesmartway.com/wp-content/uploads/2019/12/logo_react.png',
-      content: 'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"...',
+      content: 'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -314,7 +314,7 @@ export class ListDataService extends ListData {
       title: 'Vue',
       imgSrc: 'https://vuejs.org/images/logo.png',
       content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计blablabla....',
+        'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -331,7 +331,7 @@ export class ListDataService extends ListData {
       title: 'Webpack',
       imgSrc: 'https://webpack.js.org/icon-square-small.85ba630cf0c5f29ae3e3.svg',
       content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计lalalalala....',
+        'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -347,7 +347,7 @@ export class ListDataService extends ListData {
       name: 'DevUI13',
       title: 'DevUI13',
       content:
-        'DevUI是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计...',
+        'DevUIVmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -363,7 +363,7 @@ export class ListDataService extends ListData {
       name: 'BootStrap22',
       title: 'BootStrap22',
       content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
+        'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -380,7 +380,7 @@ export class ListDataService extends ListData {
       title: 'React11',
       imgSrc: 'https://codingthesmartway.com/wp-content/uploads/2019/12/logo_react.png',
       content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
+        'DevUI Vmjjt Qpqjcb Ffwmwnxdn Tfasdften Yidwthcsafi',
       actions: [
         {
           icon: 'icon-star-o',
@@ -389,123 +389,6 @@ export class ListDataService extends ListData {
         {
           icon: 'icon-fork',
           num: '9000',
-        },
-      ],
-    },
-    {
-      name: 'Vue11',
-      title: 'Vue22',
-      imgSrc: 'https://vuejs.org/images/logo.png',
-      content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '1234',
-        },
-        {
-          icon: 'icon-fork',
-          num: '1234',
-        },
-      ],
-    },
-    {
-      name: 'Webpack33',
-      title: 'Webpack33',
-      imgSrc: 'https://webpack.js.org/icon-square-small.85ba630cf0c5f29ae3e3.svg',
-      content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '2345',
-        },
-        {
-          icon: 'icon-fork',
-          num: '2345',
-        },
-      ],
-    },
-    {
-      name: 'DevUI12',
-      title: 'DevUI12',
-      content:
-        'DevUI是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计...',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '3456',
-        },
-        {
-          icon: 'icon-fork',
-          num: '3456',
-        },
-      ],
-    },
-    {
-      name: 'BootStrap44',
-      title: 'BootStrap44',
-      content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '4567',
-        },
-        {
-          icon: 'icon-fork',
-          num: '4567',
-        },
-      ],
-    },
-    {
-      name: 'React55',
-      title: 'React55',
-      imgSrc: 'https://codingthesmartway.com/wp-content/uploads/2019/12/logo_react.png',
-      content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '5678',
-        },
-        {
-          icon: 'icon-fork',
-          num: '5678',
-        },
-      ],
-    },
-    {
-      name: 'Vue123',
-      title: 'Vue123',
-      imgSrc: 'https://vuejs.org/images/logo.png',
-      content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '7890',
-        },
-        {
-          icon: 'icon-fork',
-          num: '7890',
-        },
-      ],
-    },
-    {
-      name: 'DevUI Admin',
-      title: 'DevUI Admin',
-      imgSrc: 'https://webpack.js.org/icon-square-small.85ba630cf0c5f29ae3e3.svg',
-      content:
-        'DevUI 是面向企业中后台产品的开源前端解决方案，其设计价值观基于"至简"、"沉浸"、"灵活"三种自然与人文相结合的理念，旨在为设计....',
-      actions: [
-        {
-          icon: 'icon-star-o',
-          num: '10000',
-        },
-        {
-          icon: 'icon-fork',
-          num: '10000',
         },
       ],
     },

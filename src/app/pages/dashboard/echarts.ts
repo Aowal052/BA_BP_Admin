@@ -4,7 +4,7 @@ export const echartServiceOption = {
     confine: true,
   },
   legend: {
-    data: ['服务水位'],
+    data: ['data'],
     type: 'scroll',
     show: false,
     orient: 'horizontal',
@@ -115,7 +115,7 @@ export const echartServiceOption = {
   },
   series: [
     {
-      name: '服务水位',
+      name: 'name',
       data: [
         21.69, 30.16, 11.64, 11.64, 31.22, 17.46, 14.81, 44.44, 28.57, 14.81, 12.7, 35.98, 23.28, 16.93, 19.58, 8.99, 11.64, 4.23, 5.29,
         1.06, 3.7, 3.17, 3.17, 5.82, 16.4, 15.87, 18.52, 13.76, 19.05, 26.46, 30.16, 24.87, 23.81, 24.87, 16.93, 17.99, 13.76, 10.58, 20.63,
@@ -261,7 +261,7 @@ export const mapOption = {
     showDelay: 0,
     transitionDuration: 0.2,
     formatter: function (params: any) {
-      return `用户数 <br/> ${params.name}: ${params.value}`;
+      return `data <br/> ${params.name}: ${params.value}`;
     },
   },
   visualMap: {

@@ -29,7 +29,7 @@ export class VerticalFormComponent {
         {
           pattern: /^[a-zA-Z0-9]+(\s+[a-zA-Z0-9]+)*$/,
           message: {
-            'zh-cn': '用户名仅允许输入数字与大小写字母',
+            'zh-cn': 'The user name cannot contain characters except uppercase, lowercase letters or numbers.',
             'en-us': 'The user name cannot contain characters except uppercase, lowercase letters or numbers.',
           },
         },
@@ -38,7 +38,7 @@ export class VerticalFormComponent {
         {
           sameName: this.checkName.bind(this),
           message: {
-            'zh-cn': '用户名重名',
+            'zh-cn': 'Duplicate name.',
             'en-us': 'Duplicate name.',
           },
         },
@@ -47,7 +47,7 @@ export class VerticalFormComponent {
     passwordRules: {
       validators: [{ required: true }, { minlength: 6 }, { maxlength: 15 }, { pattern: /^[a-zA-Z0-9]+(\s+[a-zA-Z0-9]+)*$/ }],
       message: {
-        'zh-cn': '密码为6-15位数字和字母',
+        'zh-cn': 'Enter a password that contains 6 to 15 digits and letters.',
         'en-us': 'Enter a password that contains 6 to 15 digits and letters.',
       },
     },
@@ -56,7 +56,7 @@ export class VerticalFormComponent {
       {
         sameToPassWord: this.sameToPassWord.bind(this),
         message: {
-          'zh-cn': '密码与确认密码不一致',
+          'zh-cn': 'Ensure that the two passwords are the same.',
           'en-us': 'Ensure that the two passwords are the same.',
         },
       },
@@ -65,7 +65,7 @@ export class VerticalFormComponent {
       {
         pattern: /^[a-zA-Z0-9]+(\s+[a-zA-Z0-9]+)*$/,
         message: {
-          'zh-cn': '密码必须包含数字和字母',
+          'zh-cn': 'The password must contain only letters and digits.',
           'en-us': 'The password must contain only letters and digits.',
         },
       },

@@ -95,7 +95,7 @@ export class DynamicFormComponent implements OnInit {
               {
                 pattern: /^[a-zA-Z0-9]+(\s+[a-zA-Z0-9]+)*$/,
                 message: {
-                  'zh-cn': '仅允许输入数字与大小写字母',
+                  'zh-cn': 'The user name cannot contain characters except uppercase and lowercase letters.',
                   'en-us': 'The user name cannot contain characters except uppercase and lowercase letters.',
                 },
               },
@@ -104,7 +104,7 @@ export class DynamicFormComponent implements OnInit {
               {
                 sameName: this.checkName.bind(this),
                 message: {
-                  'zh-cn': '用户名重名',
+                  'zh-cn': 'Duplicate name.',
                   'en-us': 'Duplicate name.',
                 },
               },
@@ -211,7 +211,7 @@ export class DynamicFormComponent implements OnInit {
     for (const item of value) {
       if (item.id === '2') {
         message = {
-          'zh-cn': `当前日期队列已满`,
+          'zh-cn': `The task queue on the current execution day (Tuesday) is full.`,
           'en-us': 'The task queue on the current execution day (Tuesday) is full.',
         };
       }

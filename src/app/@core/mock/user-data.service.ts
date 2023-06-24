@@ -7,6 +7,9 @@ import { Article, Project, User, UserData } from '../data/userData';
   providedIn: 'root',
 })
 export class UserDataService extends UserData {
+  getArticles(): Observable<Article[]> {
+    throw new Error('Method not implemented.');
+  }
   private user: User = {
     imgSrc: 'https://res.hc-cdn.com/x-roma-components/1.0.10/assets/devui/logo.svg',
     name: 'Admin',
@@ -339,7 +342,7 @@ export class UserDataService extends UserData {
     return observableOf(this.user);
   }
 
-  getArticles(): Observable<any> {
+  getSalesReport(endpoint:string): Observable<any> {
     return observableOf(this.articles).pipe(delay(300));
   }
 

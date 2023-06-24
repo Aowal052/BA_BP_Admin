@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/@core/data/userData';
 import { WorkGroup } from 'src/app/@core/data/work-group';
+import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { UserDataService } from 'src/app/@core/mock/user-data.service';
 import { WorkGroupService } from 'src/app/@core/mock/work-group.service';
 
@@ -59,21 +60,21 @@ export class UserCenterComponent implements OnInit {
   getListData() {
     switch (this.activeTab) {
       case 'first':
-        this.getArticles();
+        this.getSalesReport();
         return;
       case 'second':
-        this.getProjects();
+        this.getPurchesReport();
         return;
     }
   }
 
-  getArticles() {
-    this.spaceBusy = this.userDataService.getArticles().subscribe((res) => {
+  getSalesReport() {
+    this.spaceBusy = this.userDataService.getSalesReport(ApiEndPoints.GetCategory).subscribe((res) => {
       this.articles = res;
     });
   }
 
-  getProjects() {
+  getPurchesReport() {
     this.spaceBusy = this.userDataService.getProjects().subscribe((res) => {
       this.projects = res;
     });

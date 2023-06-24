@@ -43,7 +43,7 @@ export class RegisterComponent implements OnInit {
       { required: true },
       {
         sameToPassWord: this.sameToPassWord.bind(this),
-        message: { 'en-us': 'Ensure that the two passwords are the same.', 'zh-cn': '请确保密码一致' },
+        message: { 'en-us': 'Ensure that the two passwords are the same.', 'zh-cn': 'Ensure that the two passwords are the same.' },
       },
       { minlength: 6 },
       { maxlength: 15 },

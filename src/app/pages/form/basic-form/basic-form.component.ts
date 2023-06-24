@@ -70,7 +70,7 @@ export class BasicFormComponent {
     for (const item of value) {
       if (item.id === '2') {
         message = {
-          'zh-cn': `当前日期队列已满`,
+          'zh-cn': `The task queue on the current execution day (Tuesday) is full.`,
           'en-us': 'The task queue on the current execution day (Tuesday) is full.',
         };
       }

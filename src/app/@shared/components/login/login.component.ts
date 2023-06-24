@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
   showPassword = false;
 
   tabItems: any;
-  language: string;
+  language: string = "en-us";
   i18nValues: any;
   toastMessage: any;
   languages = LANGUAGES;
@@ -55,8 +55,12 @@ export class LoginComponent implements OnInit {
       validators: [{ required: true }, { email: true }],
     },
     passwordRules: {
-      validators: [{ required: true }, { minlength: 4 }, { maxlength: 15 }, { pattern: /^[a-zA-Z0-9\d@$!%*?&.]+(\s+[a-zA-Z0-9]+)*$/ }],
-      message: 'Enter a password that contains 4 to 15 digits and letters.',
+      validators: [
+        { required: true }, 
+        { minlength: 5 }, 
+        { maxlength: 15 }, 
+        { pattern: /^[a-zA-Z0-9\d@$!%*?&.]+(\s+[a-zA-Z0-9]+)*$/ }],
+      message: 'Enter a password that contains 5 to 15 digits and letters.',
     },
   };
 
@@ -77,6 +81,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.onLanguageClick('en-us')
     this.translate
       .get('loginPage')
       .pipe(takeUntil(this.destroy$))
@@ -151,6 +156,7 @@ export class LoginComponent implements OnInit {
   }
 
   onLanguageClick(language: string) {
+    debugger
     this.language = language;
     localStorage.setItem('lang', this.language);
     this.i18n.toggleLang(this.language);
