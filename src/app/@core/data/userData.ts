@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { OrderResponse } from '../model/OrderResponse';
 
 export interface Team {
   name?: string;
@@ -38,7 +39,7 @@ export interface Project {
 
 export abstract class UserData {
   abstract getUser(): Observable<User>;
-  abstract getArticles(): Observable<Article[]>;
+  abstract getArticles(endpoint:string,pager:any): Promise<Observable<any>>;
   abstract getProjects(): Observable<Project[]>;
-  abstract getSalesReport(endpoint:string): Observable<Project[]>;
+  abstract getSalesReport(endpoint:string,pager:any): Promise<Observable<OrderResponse>>;
 }

@@ -21,11 +21,11 @@
               <thead dTableHead>
                 <tr dTableRow>
                   <th dHeadCell>Id</th>
-                  <th dHeadCell>Product Name</th>
-                  <th dHeadCell>Product Code</th>
-                  <th dHeadCell>Category</th>
-                  <th dHeadCell>Description</th>
-                  <th dHeadCell>Price</th>
+                  <th dHeadCell>CustomerName</th>
+                  <th dHeadCell>Address</th>
+                  <th dHeadCell>ContactPerson</th>
+                  <th dHeadCell>CpMobile</th>
+                  <th dHeadCell>CreditLimit</th>
                   <th dHeadCell>Actions</th>
                 </tr>
               </thead>
@@ -55,8 +55,6 @@
                   <tr dTableRow>
                     <td
                       dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
                       [(editing)]="rowItem['idEdit']"
                       [rowItem]="rowItem"
                       [field]="'id'"
@@ -69,7 +67,7 @@
                           class="devui-form-control"
                           name="id"
                           [(ngModel)]="rowItem.id"
-                          [attr.maxlength]="100"
+                          [attr.maxlength]="50"
                           [attr.minlength]="3"
                         />
                       </div>
@@ -78,24 +76,48 @@
                       dTableCell
                       [editable]="true"
                       [editableTip]="editableTip"
-                      [(editing)]="rowItem['titleName']"
+                      [(editing)]="rowItem['titleEdit']"
                       [rowItem]="rowItem"
-                      [field]="'productName'"
+                      [field]="'CustomerName'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
-                      <span *ngIf="!rowItem['titleName']"
+                      <span *ngIf="!rowItem['titleEdit']"
                         >
                         <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
-                        {{ rowItem?.productName }}</span
+                        {{ rowItem?.customerName }}</span
                       >
                       <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
                         <input
                           class="devui-form-control"
-                          name="productName"
-                          [(ngModel)]="rowItem.productName"
-                          [attr.maxlength]="200"
-                          [attr.minlength]="50"
+                          name="customerName"
+                          [(ngModel)]="rowItem.customerName"
+                          [attr.maxlength]="300"
+                          [attr.minlength]="100"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['AddressEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'Address'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['AddressEdit']">{{
+                        rowItem?.address
+                      }}</span>
+                      <div
+                        *ngIf="rowItem['AddressEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.address"
                         />
                       </div>
                     </td>
@@ -105,12 +127,12 @@
                       [editableTip]="editableTip"
                       [(editing)]="rowItem['iterationEdit']"
                       [rowItem]="rowItem"
-                      [field]="'productCode'"
+                      [field]="'ContactPerson'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
                       <span *ngIf="!rowItem['iterationEdit']">{{
-                        rowItem?.productCode
+                        rowItem?.contactPerson
                       }}</span>
                       <div
                         *ngIf="rowItem['iterationEdit']"
@@ -119,45 +141,8 @@
                         <input
                           dTextInput
                           size="sm"
-                          [(ngModel)]="rowItem.productCode"
+                          [(ngModel)]="rowItem.contactPerson"
                         />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['priorityEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'categoryId'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                        <span *ngIf="!rowItem['priorityEdit']">
-                            <span *ngIf="isSelect && selectedId == rowItem.categoryId; else elseBlock">
-                                {{selectedItem}}
-                            </span>
-                            <ng-template #elseBlock>
-                                {{rowItem.categoryName}}
-                              </ng-template>
-                            <span *ngIf="!isSelect">
-                                
-                            </span>
-                        </span>
-                      <div 
-                      *ngIf="rowItem['priorityEdit']"
-                        class="edit-padding-fix"
-                      >
-                      <select class="devui-form-control" [(ngModel)]="rowItem.categoryId" name="categoryId" (change)="valueChange($event)">
-                        <option [ngValue]="rowItem.categoryId" disabled>{{rowItem.categoryName}}</option>
-                        <option *ngFor="let obj of category" [ngValue]="obj.id" [selected]="obj.id == rowItem.categoryId"> {{obj.name}} </option>
-                      </select>
-                        <!-- <d-select
-                          name="category"
-                          [filterKey]="rowItem.categoryId"
-                          [(ngModel)]="rowItem.categoryId"
-                          [options]="category"
-                        ></d-select> -->
                       </div>
                     </td>
                     <td
@@ -166,7 +151,7 @@
                       [editableTip]="editableTip"
                       [(editing)]="rowItem['assigneeEdit']"
                       [rowItem]="rowItem"
-                      [field]="'description'"
+                      [field]="'CpMobile'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
@@ -177,7 +162,7 @@
                           [height]="24"
                         ></d-avatar> -->
                         <span style="margin-left: 6px">{{
-                          rowItem.description
+                          rowItem.cpMobile
                         }}</span>
                       </span>
                       <div
@@ -187,7 +172,7 @@
                         <input
                           dTextInput
                           size="sm"
-                          [(ngModel)]="rowItem.description"
+                          [(ngModel)]="rowItem.cpMobile"
                         />
                       </div>
                     </td>
@@ -195,25 +180,30 @@
                       dTableCell
                       [editable]="true"
                       [editableTip]="editableTip"
-                      [(editing)]="rowItem['priceEdit']"
+                      [(editing)]="rowItem['creditLimitEdit']"
                       [rowItem]="rowItem"
-                      [field]="'defaultPrice'"
+                      [field]="'CreditLimit'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
-                      <span *ngIf="!rowItem['priceEdit']">
+                      <span *ngIf="!rowItem['creditLimitEdit']">
+                        <!-- <d-avatar
+                          [name]="rowItem.description"
+                          [width]="24"
+                          [height]="24"
+                        ></d-avatar> -->
                         <span style="margin-left: 6px">{{
-                          rowItem.defaultPrice
+                          rowItem.creditLimit
                         }}</span>
                       </span>
                       <div
-                        *ngIf="rowItem['priceEdit']"
+                        *ngIf="rowItem['creditLimitEdit']"
                         class="edit-padding-fix"
                       >
                         <input
                           dTextInput
                           size="sm"
-                          [(ngModel)]="rowItem.defaultPrice"
+                          [(ngModel)]="rowItem.creditLimit"
                         />
                       </div>
                     </td>

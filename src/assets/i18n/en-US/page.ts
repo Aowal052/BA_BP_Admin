@@ -17,6 +17,10 @@ export default {
         title: 'Product',
         addProduct: 'Add Product',
         listProduct: 'Product'
+      },
+      customer:{
+        title: 'Customer',
+        customer: 'customer'
       }
     },
     operation: {

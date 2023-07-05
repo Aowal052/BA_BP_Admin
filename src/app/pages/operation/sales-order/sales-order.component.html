@@ -261,7 +261,7 @@
                                           icon="icon-delete"
                                           bsStyle="text-dark"
                                           title="delete"
-                                          (click)="deleteRow(rowItem.id)"
+                                          (click)="deleteRow(rowIndex)"
                                         ></d-button>
                                       </td>
                                     </tr>
@@ -341,7 +341,7 @@
                                         <d-form-item>
                                           <d-form-label></d-form-label>
                                           <d-form-control class="form-control-width">
-                                              <d-checkbox name="pdc" label="Pay Delivery Cast" (change)="changeGenDisVal($event)" [isShowTitle]="false" [(ngModel)]="masterData.pdc"></d-checkbox>
+                                              <d-checkbox name="pdc" label="Paied Delivery Cost By Customer" (change)="changeGenDisVal($event)" [isShowTitle]="false" [(ngModel)]="masterData.pdc"></d-checkbox>
                                               
                                           </d-form-control>
                                         </d-form-item>

@@ -217,7 +217,7 @@ export class SalesOrderComponent {
     selectedCustomer:{},
     totalPrice: 0,
     pdc:true,
-    genDiscount:5,
+    genDiscount:8,
     otherDiscount:0,
     netAmount:0,
     deliveryInstruction:'',
@@ -283,7 +283,7 @@ export class SalesOrderComponent {
   }
   async changeGenDisVal(event:boolean){
     if(!event){
-      this.masterData.genDiscount = 8;
+      this.masterData.genDiscount = 5;
       await this.genarateMasterInfo(this.customerList);
     }
     else if(event){
@@ -344,7 +344,7 @@ export class SalesOrderComponent {
             {
               severity: 'error',
               summary: orderPageNotification.orderPage.createMessage.summary,
-              content: orderPageNotification.orderPage.createMessage.addFailed,
+              content: error.error.error,
             },
           ];
         }
@@ -400,6 +400,7 @@ export class SalesOrderComponent {
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
     const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
     this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
+    this.masterData.totalPrice = totalPrice;
     debugger
 
   }
@@ -489,13 +490,25 @@ export class SalesOrderComponent {
   }
 
   async quickRowAdded(e: any) {
-    debugger
+    debugger;
     e.unitName = e.unit.label;
     e.productName = e.product.label;
     e.unitId = e.unit.id;
     e.productId = e.product.id;
+  
+    // Check if product.id already exists in this.listData
+    const productExists = this.listData.some((item) => item.productId === e.productId);
+  
+    if (productExists) {
+      this.showToast('error', 'Error', 'Your product alredy is in the list.');
+      return;
+    }
+  
     const newData = { ...e };
     this.listData.unshift(newData);
+    const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+    this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
+    this.masterData.totalPrice = totalPrice;
   }
 
   quickRowCancel() {
@@ -515,6 +528,7 @@ export class SalesOrderComponent {
   };
 
   deleteRow(index: number) {
+    debugger
     const results = this.dialogService.open({
       id: 'delete-dialog',
       width: '346px',
@@ -531,6 +545,9 @@ export class SalesOrderComponent {
           disabled: false,
           handler: () => {
             this.listData.splice(index, 1);
+            const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+            this.masterData.totalPrice = totalPrice;
+            this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
             results.modalInstance.hide();
           },
         },

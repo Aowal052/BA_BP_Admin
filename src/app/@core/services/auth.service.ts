@@ -5,6 +5,7 @@ import { AuthResponse } from '../model/AuthResponse';
 import { HttpClient, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ApiEndPoints } from '../helper/ApiEndPoints';
+import { environment } from 'src/environments/environment';
 
 const USERS = [
   {
@@ -53,7 +54,7 @@ export class AuthService {
   };
 
   login(param: any, endpoint: string):Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(this.apiurl+endpoint,param,this.httpOptions).pipe(
+    return this.http.post<AuthResponse>(environment.baseUrl+endpoint,param,this.httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['login']);

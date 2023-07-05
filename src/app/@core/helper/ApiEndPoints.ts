@@ -1,6 +1,10 @@
 export class ApiEndPoints{
     static readonly Login: string = 'v1/Accounts/Login';
+    static readonly GetUser: string = 'v1/Accounts/Get';
+    static readonly CreateCustomer: string = 'Customer/Create';
+    static readonly UpdateCustomer: string = 'Customer/Update';
     static readonly GetCategory: string = 'ProductCategory/Get';
+    static readonly GetSalesReport: string = 'SalesOrder/Get';
     static readonly GetCategoryDroppdown: string = 'ProductCategory/GetForDropdown';
     static readonly GetForPagination: string = 'ProductCategory/GetForPagination';
     static readonly GetCategoryById: string = 'ProductCategory/GetById';
@@ -9,6 +13,7 @@ export class ApiEndPoints{
     static readonly CreateSales:string = 'SalesOrder/Create';
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
     static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
+    static readonly GetCustomers: string = 'Customer/Get';
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';
     static readonly DeleteProducts: string = 'v1/Product/Delete';
     static readonly UpdateProduct: string = 'v1/Product/Update';

@@ -5,6 +5,7 @@ import { InventoryComponent } from './inventory.component';
 import { ListCategoryComponent } from './category/list-category/list-category.component';
 import { AddProductComponent } from './product/add-product/add-product.component';
 import { ListProductComponent } from './product/list-product/list-product.component';
+import { CustomerComponent } from './customer/customer.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
       { path: 'list-category', component: ListCategoryComponent },
       { path: 'add-product', component: AddProductComponent },
       { path: 'list-product', component: ListProductComponent },
+      { path: 'customer', component: CustomerComponent },
     ],
   }
 ];

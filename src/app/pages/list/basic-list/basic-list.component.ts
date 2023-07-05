@@ -134,10 +134,10 @@ export class BasicListComponent implements OnInit {
     pageSize: 10,
   };
 
-  busy: Subscription;
-
+  busy!: Subscription;
+  toastMessage:any;
   @ViewChild('EditorTemplate', { static: true })
-  EditorTemplate: TemplateRef<any>;
+  EditorTemplate!: TemplateRef<any>;
 
   constructor(private listDataService: ListDataService, private dialogService: DialogService, private cdr: ChangeDetectorRef) {}
 

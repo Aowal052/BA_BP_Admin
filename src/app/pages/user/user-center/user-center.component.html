@@ -51,30 +51,68 @@
 </div>
 
 <ng-template #articleTemp let-listData="listData">
-  <div class="da-articles" *ngFor="let item of listData">
-    <a class="da-title" routerLink="#">{{ item?.title }}</a>
-    <div class="da-desc mt-12">{{ item?.desc }}</div>
-    <div class="da-sub-row mt-12">
-      <d-avatar [name]="item?.author" [width]="26" [height]="26"></d-avatar>
-      <a class="da-is-link ml6" [routerLink]="item?.authorUrl">{{ item?.author }}</a>
-      <span class="da-gray-text"> 发布在 </span>
-      <a class="da-is-link" [routerLink]="item?.articleUrl">{{ item?.articlePlatform }}</a>
-    </div>
-    <div class="da-actions mt-12">
-      <div class="da-action" (click)="actionHandler('starNum', item)" [ngClass]="{ 'is-attached': item.starNumAttached }">
-        <i class="icon icon-star-o"></i>
-        <div class="gray-text">{{ item?.starNum }}</div>
-      </div>
-      <div class="da-action" [ngClass]="{ 'is-attached': item.agreeAttached }" (click)="actionHandler('agree', item)">
-        <i class="icon icon-like"></i>
-        <div class="da-gray-text">{{ item?.agree }}</div>
-      </div>
-
-      <div class="da-action" [ngClass]="{ 'is-attached': item.messageAttached }" (click)="actionHandler('message', item)">
-        <i class="icon icon-message"></i>
-        <div class="da-gray-text">{{ item?.message }}</div>
-      </div>
-    </div>
+    <d-data-table
+    #datatable
+    [dataSource]="articles"
+    [borderType]="searchForm.borderType"
+    [size]="searchForm.size"
+    [tableLayout]="searchForm.layout"
+    [scrollable]="true"
+  >
+    <d-column field="orderCode" header="Order Code" [width]="'100px'">
+      <d-cell>
+        <ng-template let-cellItem="cellItem">
+          {{ cellItem }}
+        </ng-template>
+      </d-cell>
+    </d-column>
+    <d-column field="customerName" header="Customer Name" [width]="'300px'">
+      <d-cell>
+        <ng-template let-cellItem="cellItem">
+          <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'300px'">
+            {{ cellItem }}
+          </span>
+        </ng-template>
+      </d-cell>
+    </d-column>
+    <d-column field="customerPhone" header="Customer Phone" [width]="'100px'">
+      <d-cell>
+        <ng-template let-cellItem="cellItem">
+          <d-tag [tag]="cellItem" [labelStyle]="cellItem"></d-tag>
+        </ng-template>
+      </d-cell>
+    </d-column>
+    <d-column field="orderAmount" header="Order Amount" [width]="'100px'">
+      <d-cell>
+        <ng-template let-cellItem="cellItem">
+          {{ cellItem }} BDT
+        </ng-template>
+      </d-cell>
+    </d-column>
+    <d-column field="orderDate" header="Order Date" [width]="'100px'">
+      <d-cell>
+        <ng-template let-cellItem="cellItem">
+          <div class="over-flow-ellipsis">
+            <span style="margin-left: 6px">{{ cellItem }}</span>
+          </div>
+        </ng-template>
+      </d-cell>
+    </d-column>
+  </d-data-table>
+  <div class="da-list-footer">
+    <d-pagination
+      [size]="'sm'"
+      [total]="pager.total"
+      [(pageSize)]="pager.pageSize"
+      [(pageIndex)]="pager.pageIndex"
+      [canViewTotal]="true"
+      [canChangePageSize]="true"
+      [canJumpPage]="true"
+      [maxItems]="5"
+      (pageIndexChange)="onPageChange($event)"
+      (pageSizeChange)="onSizeChange($event)"
+    >
+    </d-pagination>
   </div>
 </ng-template>
 
