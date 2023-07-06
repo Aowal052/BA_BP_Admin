@@ -17,5 +17,6 @@ export interface Customer {
     cpDesignation?:string;
     cpDepartment?:string;
     cpMobile?:string;
-    CreditLimit?: number;
+    creditLimit?: number;
+    defaultDiscount:number;
   }

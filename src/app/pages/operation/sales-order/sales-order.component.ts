@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
+import { CommonService } from 'src/app/@core/services/CommonService';
+import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
@@ -48,17 +50,12 @@ export class SalesOrderComponent {
     }
   ];
 
-  OwnerOptions = [
-    { id: '1', name: 'Owner1' },
-    { id: '2', name: 'Owner2' },
-    { id: '3', name: 'Owner3' },
-    { id: '4', name: 'Owner4' },
-  ];
-  ExecutorOptions = [
-    { id: '1', name: 'Executor1' },
-    { id: '2', name: 'Executor2' },
-    { id: '3', name: 'Executor3' },
-    { id: '4', name: 'Executor4' },
+  DiscountOptions = [
+    { id: '1', name: 'Online Discount' },
+    { id: '2', name: 'Depot Maintanence' },
+    { id: '3', name: 'Special Cost' },
+    { id: '4', name: 'Eid Offer' },
+    { id: '5', name: 'Promotional Offer' },
   ];
   labelList = [
     {
@@ -215,9 +212,11 @@ export class SalesOrderComponent {
     orderDate:new Date,
     estimatedDeliveryDate: new Date,
     selectedCustomer:{},
+    selectedDiscount:{},
     totalPrice: 0,
     pdc:true,
-    genDiscount:8,
+    genDiscount:0,
+    orderAmDiscount:0,
     otherDiscount:0,
     netAmount:0,
     deliveryInstruction:'',
@@ -246,12 +245,13 @@ export class SalesOrderComponent {
   headerNewForm = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   msgs: Array<Object> = [];
-  existProjectNames = ['123', '123456', 'DevUI'];
+  discountTypes = ['Online Discount', 'Eid Discount', 'Special Discount'];
   formItems: DFormData = {};
   selectedDate2 = new Date;
   toastMessage:any;
   busy !: Subscription;
   data:any;
+  customerInfo!:Customer;
   listData : any[] = [];
   productInfo?:Product;
   productList: any[] = [];
@@ -263,7 +263,9 @@ export class SalesOrderComponent {
     private dialogService: DialogService,
     private service: OrderService,
     private proService: ProductService,
-    private router: Router,){}
+    private custService: CustomerService,
+    private router: Router,
+    private comService:CommonService){}
   async ngOnInit() {
     await this.getProductDropdown();
     await this.getCustomerDropdown();
@@ -283,7 +285,7 @@ export class SalesOrderComponent {
   }
   async changeGenDisVal(event:boolean){
     if(!event){
-      this.masterData.genDiscount = 5;
+      this.masterData.genDiscount = 8;
       await this.genarateMasterInfo(this.customerList);
     }
     else if(event){
@@ -308,7 +310,8 @@ export class SalesOrderComponent {
       formData.append('salesOrderMasterDto.orderDate', master.orderDate.toISOString());
       formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
       formData.append('salesOrderMasterDto.basicDiscount', master.genDiscount.toString());
-      formData.append('salesOrderMasterDto.otherDiscount', master.otherDiscount.toString());
+      formData.append('salesOrderMasterDto.DiscountType', master.selectedDiscount.name.toString());
+      formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount.toString());
       formData.append('salesOrderMasterDto.estimatedDeliveryDate', master.estimatedDeliveryDate.toISOString());
       formData.append('salesOrderMasterDto.remarks', master.remarks);
 
@@ -401,6 +404,17 @@ export class SalesOrderComponent {
     const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
     this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
     this.masterData.totalPrice = totalPrice;
+    this.busy = (await this.custService.getCustomerById(ApiEndPoints.GetCustomerById,data.id)).subscribe((res:CustomerResponse) => {
+      this.customerInfo = res.data[0];
+      
+      const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+      this.masterData.netAmount =totalPrice - (this.customerInfo.defaultDiscount / 100)* totalPrice;
+      this.masterData.totalPrice = totalPrice;
+      this.masterData.genDiscount = this.customerInfo.defaultDiscount;
+      var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
+      this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
+      this.masterData.orderAmDiscount = discount;
+    });
     debugger
 
   }
@@ -462,13 +476,13 @@ export class SalesOrderComponent {
     }
     return of(message).pipe(delay(300));
   }
-  checkName(value: string) {
-    let res = true;
-    if (this.existProjectNames.indexOf(value) !== -1) {
-      res = false;
-    }
-    return of(res).pipe(delay(500));
-  }
+  // checkName(value: string) {
+  //   let res = true;
+  //   if (this.existProjectNames.indexOf(value) !== -1) {
+  //     res = false;
+  //   }
+  //   return of(res).pipe(delay(500));
+  // }
   submitProjectForm({ valid }: any) {
     if (valid) {
       of(this.formItems)
@@ -506,9 +520,6 @@ export class SalesOrderComponent {
   
     const newData = { ...e };
     this.listData.unshift(newData);
-    const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-    this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
-    this.masterData.totalPrice = totalPrice;
   }
 
   quickRowCancel() {

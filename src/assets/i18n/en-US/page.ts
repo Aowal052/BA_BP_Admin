@@ -59,5 +59,10 @@ export default {
       center: 'User Center',
       settings: 'User Settings',
     },
+    settings: {
+      title: 'Setting',
+      commision: 'Commisions',
+      offer: 'Offers'
+    },
   },
 };

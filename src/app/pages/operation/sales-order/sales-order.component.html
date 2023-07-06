@@ -287,10 +287,10 @@
                                               <d-form-label [required]="true">Order Date</d-form-label>
                                               <d-form-control class="form-control-width">
                                                   <input class="devui-input devui-form-control" placeholder="y/MM/dd"
-                                                      readonly (click)="datePicker2.toggle()" name="dp"
+                                                      readonly (click)="datePicker1.toggle()" name="orderDate"
                                                       [(ngModel)]="masterData.orderDate" autocomplete="off" dDatepicker
-                                                      #datePicker2="datepicker"
-                                                      (selectedDateChange)="getValue($event)"
+                                                      #datePicker1="datepicker"
+                                                      (orderDate)="getValue($event)"
                                                       [cssClass]="'custom-css-class'" />
                                               </d-form-control>
                                           </d-form-item>
@@ -301,12 +301,16 @@
                                           <d-form-item>
                                               <d-form-label [required]="true">Estimated Delivery Date</d-form-label>
                                               <d-form-control class="form-control-width">
-                                                  <input class="devui-input devui-form-control" placeholder="y/MM/dd"
-                                                      readonly (click)="datePicker2.toggle()" name="dp"
-                                                      [(ngModel)]="masterData.estimatedDeliveryDate" autocomplete="off" dDatepicker
-                                                      #datePicker2="datepicker"
-                                                      (selectedDateChange)="getValue($event)"
-                                                      [cssClass]="'custom-css-class'" />
+                                                  <input 
+                                                  class="devui-input devui-form-control"
+                                                  placeholder="y/MM/dd"
+                                                  readonly (click)="datePicker2.toggle()"
+                                                  name="estimatedDeliveryDate"
+                                                  [(ngModel)]="masterData.estimatedDeliveryDate" 
+                                                  autocomplete="off" dDatepicker
+                                                  #datePicker2="datepicker"
+                                                  (estimatedDeliveryDate)="getValue($event)"
+                                                  [cssClass]="'custom-css-class'" />
                                               </d-form-control>
                                           </d-form-item>
                                       </div>
@@ -338,29 +342,46 @@
                                   </da-col-item>
                                   <da-col-item [daXs]="6" [daMs]="24">
                                       <div class="u-1-3">
-                                        <d-form-item>
-                                          <d-form-label></d-form-label>
-                                          <d-form-control class="form-control-width">
-                                              <d-checkbox name="pdc" label="Paied Delivery Cost By Customer" (change)="changeGenDisVal($event)" [isShowTitle]="false" [(ngModel)]="masterData.pdc"></d-checkbox>
-                                              
-                                          </d-form-control>
-                                        </d-form-item>
+                                          <d-form-item>
+                                              <d-form-label [required]="true">Gen. Discount(%)</d-form-label>
+                                              <d-form-control class="form-control-width">
+                                                  <input
+                                                   dTextInput
+                                                   readonly
+                                                   name="genDiscount"
+                                                   [(ngModel)]="masterData.genDiscount" />
+                                              </d-form-control>
+                                          </d-form-item>
                                       </div>
-                                    </da-col-item>
-                                    <da-col-item [daXs]="6" [daMs]="24">
-                                        <div class="u-1-3">
-                                            <d-form-item>
-                                                <d-form-label [required]="true">Gen. Discount(%)</d-form-label>
-                                                <d-form-control class="form-control-width">
-                                                    <input
-                                                     dTextInput
-                                                     readonly
-                                                     name="genDiscount"
-                                                     [(ngModel)]="masterData.genDiscount" />
-                                                </d-form-control>
-                                            </d-form-item>
-                                        </div>
-                                    </da-col-item>
+                                  </da-col-item>
+                                  <da-col-item [daXs]="6" [daMs]="24">
+                                      <div class="u-1-3">
+                                          <d-form-item>
+                                              <d-form-label [required]="true">Order Amount Discount(%)</d-form-label>
+                                              <d-form-control class="form-control-width">
+                                                  <input
+                                                   dTextInput
+                                                   readonly
+                                                   name="orderAmDiscount"
+                                                   [(ngModel)]="masterData.orderAmDiscount" />
+                                              </d-form-control>
+                                          </d-form-item>
+                                      </div>
+                                  </da-col-item>
+                                  <da-col-item [daXs]="6" [daMs]="24">
+                                      <div class="u-1-3">
+                                          <d-form-item>
+                                              <d-form-label [required]="true">Discount Types</d-form-label>
+                                              <d-form-control class="form-control-width">
+                                                  <d-select [options]="DiscountOptions"
+                                                      name="selectedDiscount"
+                                                      [isSearch]="true" [filterKey]="'name'"
+                                                      placeholder="Select Offer"
+                                                      [(ngModel)]="masterData.selectedDiscount"></d-select>
+                                              </d-form-control>
+                                          </d-form-item>
+                                      </div>
+                                  </da-col-item>
                                     <da-col-item [daXs]="6" [daMs]="24">
                                         <div class="u-1-3">
                                             <d-form-item>

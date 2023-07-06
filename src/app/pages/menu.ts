@@ -127,5 +127,14 @@ export default function (values: any) {
       link: '/pages/user',
       menuIcon: 'icon icon-mine',
     },
+    {
+      title: values['settings']['title'],
+      children: [
+        { title: values['settings']['commision'], link: '/pages/user/center' },
+        { title: values['settings']['offer'], link: '/pages/user/settings' },
+      ],
+      link: '/pages/settings',
+      menuIcon: 'icon icon-mine',
+    },
   ];
 }

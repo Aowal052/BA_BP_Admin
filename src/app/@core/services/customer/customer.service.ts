@@ -57,22 +57,10 @@ export class CustomerService {
       })
     );
   }
-  async getProductDropdown(endpoint:string):Promise<Observable<ProductResponse>>{
-    const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<ProductResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
-      catchError((error) => {
-        debugger
-        if (error.status === HttpStatusCode.Unauthorized) {
-          this.router.navigate(['login']);
-        }
-        return throwError(error);
-      })
-    );
-  }
 
-  async getProductsById(endpoint:string,id:number):Promise<Observable<ProductResponse>> {
+  async getCustomerById(endpoint:string,id:number):Promise<Observable<CustomerResponse>> {
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<ProductResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
+    return this.http.get<CustomerResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['login']);
@@ -107,9 +95,9 @@ export class CustomerService {
     );
   }
 
-  async deleteProduct(endpoint:string,id:number):Promise<Observable<ProductResponse>>{
+  async deleteCustomer(endpoint:string,id:number):Promise<Observable<CustomerResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<ProductResponse>(environment.baseUrl + endpoint+ '?id=' + id, httpOptions).pipe(
+    return this.http.get<CustomerResponse>(environment.baseUrl + endpoint+ '?id=' + id, httpOptions).pipe(
       catchError((error) => {
         // if (error.status === HttpStatusCode.Unauthorized) {
         //   this.router.navigate(['login']);

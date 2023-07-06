@@ -340,7 +340,13 @@ export class ListProductComponent implements OnInit{
   };
 
    beforeEditEnd = async (rowItem: any, field: any) => {
-    await this.updateproduct(rowItem);
+    
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
+    }
+    await this.updateproduct(data);
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {

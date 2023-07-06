@@ -318,7 +318,7 @@ export class CustomerComponent {
           text: 'Ok',
           disabled: false,
           handler: async () => {
-            await this.deleteProduct(index);
+            await this.deleteCustomer(index);
             results.modalInstance.hide();
           },
         },
@@ -333,11 +333,11 @@ export class CustomerComponent {
       ],
     });
   }
-  async deleteProduct(id:number){
+  async deleteCustomer(id:number){
     debugger
-    (await this.service.deleteProduct(ApiEndPoints.DeleteProducts, id))
+    (await this.service.deleteCustomer(ApiEndPoints.DeleteCustomer, id))
           .subscribe({
-            next: (res:ProductResponse) => {
+            next: (res:CustomerResponse) => {
               if (this.res.statusCode == HttpStatusCode.Ok) {
                 this.getList();
                 this.toastMessage = [
@@ -470,7 +470,7 @@ export class CustomerComponent {
     var data = {
       id:rowItem.id,
       key:field,
-      value:rowItem[field.toUpperCase()]
+      value:rowItem[field]
     }
     await this.updateproduct(data);
     if (rowItem && rowItem[field].length < 3) {
