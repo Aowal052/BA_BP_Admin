@@ -130,8 +130,8 @@ export default function (values: any) {
     {
       title: values['settings']['title'],
       children: [
-        { title: values['settings']['commision'], link: '/pages/user/center' },
-        { title: values['settings']['offer'], link: '/pages/user/settings' },
+        { title: values['settings']['commision'], link: '/pages/settings/create-commission' },
+        { title: values['settings']['offer'], link: '/pages/settings/create-offer' },
       ],
       link: '/pages/settings',
       menuIcon: 'icon icon-mine',

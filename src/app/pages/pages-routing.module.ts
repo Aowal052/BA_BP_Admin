@@ -45,6 +45,11 @@ const routes: Routes = [
           import('./user/user.module').then((m) => m.UserModule),
       },
       {
+        path: 'settings',
+        loadChildren: () =>
+          import('./settings/settings.module').then((m) => m.SettingsModule),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

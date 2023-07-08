@@ -6,26 +6,22 @@ import { BreadCrumbService, DialogService, EditableTip, FormLayout, HelperUtils,
 import { I18nService } from 'ng-devui/i18n';
 import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { Category, CategoryResponse } from 'src/app/@core/model/CategoryResponse';
 import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
-import { CategoryService } from 'src/app/@core/services/category/CategoryService';
 import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
-import { ProductService } from 'src/app/@core/services/product/product.service';
 import { UserService } from 'src/app/@core/services/user/user.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { ThemeType } from 'src/app/@shared/models/theme';
-import { User } from 'src/app/@shared/models/user';
 import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
-  selector: 'app-customer',
-  templateUrl: './customer.component.html',
-  styleUrls: ['./customer.component.scss']
+  selector: 'app-commission',
+  templateUrl: './commission.component.html',
+  styleUrls: ['./commission.component.scss']
 })
-export class CustomerComponent {
+export class CommissionComponent {
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
@@ -487,12 +483,12 @@ export class CustomerComponent {
     {
       linkType: 'routerLink',
       link: './home',
-      name: 'Inventory'
+      name: 'Settings'
     },
     {
       linkType: 'routerLink',
-      link: 'customer',
-      name: 'Customer'
+      link: 'create-commission',
+      name: 'Commission'
     }
   ];
 
