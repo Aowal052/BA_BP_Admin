@@ -1,5 +1,5 @@
 export default {
-  list: {
+  workorder: {
     breadcrumb: {
       home: 'Home',
       formPage: 'Work Order',

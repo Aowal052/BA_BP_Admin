@@ -14,6 +14,8 @@ export class ApiEndPoints{
     static readonly UpdateCategory: string = 'ProductCategory/Update';
     static readonly AddProduct: string = 'v1/Product/Create';
     static readonly CreateSales:string = 'SalesOrder/Create';
+    static readonly UpdateSales:string = 'SalesOrder/Update';
+    static readonly UpdateStatusAsync:string = 'v1/Approve/UpdateStatusAsync';
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
     static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';
@@ -23,6 +25,9 @@ export class ApiEndPoints{
     static readonly AddCategory: string = 'ProductCategory/Create';
     static readonly AddOrder: string = 'SalesOrder/Create';
     static readonly GetOrders: string = 'SalesOrder/Get';
+    static readonly GetOrderDetailById: string = 'SalesOrder/GetOrderDetailById';
+    static readonly DeleteMasterDetailById: string = 'SalesOrder/DeleteMasterDetailById';
+    static readonly GetOrderMasterById: string = 'SalesOrder/GetOrderMasterById';
     static readonly DeleteCategory: string = 'ProductCategory/Delete';
     // Additional static messages can be added here
 

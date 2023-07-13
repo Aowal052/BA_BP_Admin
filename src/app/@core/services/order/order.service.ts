@@ -26,11 +26,81 @@ export class OrderService {
       Authorization: 'Bearer ' + this.getToken() // Adding the bearer token here
     })
   };
-
+  async UpdateStatus(endpoint:string,param:any):Promise<Observable<OrderResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.post<OrderResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+      catchError((error) => {
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
   async createOrder(endpoint:string,param:any):Promise<Observable<OrderResponse>>{
     const httpOptions = await this.service.getHttpOptions();
     return this.http.post<OrderResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+  async getSalesOrders(endpoint:string,pager:any): Promise<Observable<any>> {
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?pageNumber=' + pager.pageIndex + '&pageSize=' + pager.pageSize, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+  async getOrderDetails(endpoint:string,id:number): Promise<Observable<OrderResponse>> {
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+  async getOrderMasterInfoById(endpoint:string,id:number): Promise<Observable<OrderResponse>> {
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+  async GetOrderMasterById(endpoint:string,id:number): Promise<Observable<OrderResponse>> {
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+  async deleteMasterDetailById(endpoint:string,id:number): Promise<Observable<OrderResponse>> {
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
+      catchError((error) => {
+        debugger
         if (error.status === HttpStatusCode.Unauthorized) {
           this.router.navigate(['login']);
         }

@@ -50,6 +50,11 @@ const routes: Routes = [
           import('./settings/settings.module').then((m) => m.SettingsModule),
       },
       {
+        path: 'workorder',
+        loadChildren: () =>
+          import('./work-order/work-order.module').then((m) => m.WorkOrderModule),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',
