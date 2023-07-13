@@ -28,11 +28,9 @@
             "styles": [
               "src/styles.scss", 
               "node_modules/ng-devui/devui.min.css", 
-              "node_modules/@devui-design/icons/icomoon/devui-icon.css",
-              "node_modules/bootstrap/dist/css/bootstrap.css"
+              "node_modules/@devui-design/icons/icomoon/devui-icon.css"
             ],
             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
