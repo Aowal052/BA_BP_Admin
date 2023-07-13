@@ -6,7 +6,11 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CommonService {
-
+   dateFormate: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  };
   SaleAmountOfferOptions = [
     { id: '1', name: 'Sales Offer', min: 50000, max:99999, disc:1 },
     { id: '2', name: 'Sales Offer' , min: 100000, max:199999, disc:2 },
@@ -39,6 +43,47 @@ export class CommonService {
     
     // Return the discount value if an offer is found, otherwise return 0
     return offer ? offer.disc : 0;
+  }
+  async createFormData(arrayData: any[]): Promise<FormData> {
+    const formData = new FormData();
+  
+    // Check if arrayData is an array
+    if (Array.isArray(arrayData)) {
+      // Append the array data to the FormData
+      arrayData.forEach(async (item: any, index: number) => {
+        const itemKey = `arrayData[${index}]`;
+        const convertedItem = await this.convertObjectKeysToCamelCase(item);
+  
+        for (const key in convertedItem) {
+          const value = convertedItem[key];
+          const fieldKey = `${itemKey}.${key}`;
+  
+          formData.append(fieldKey, value);
+        }
+      });
+    }
+  
+    return formData;
+  }
+  async convertObjectKeysToCamelCase(obj: any): Promise<any> {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(this.convertObjectKeysToCamelCase);
+    }
+
+    const camelCaseObj: any = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const camelCaseKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+        camelCaseObj[camelCaseKey] = this.convertObjectKeysToCamelCase(value);
+      }
+    }
+
+    return camelCaseObj;
   }
 
 }

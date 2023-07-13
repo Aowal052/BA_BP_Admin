@@ -18,6 +18,8 @@ export const orderPageNotification = {
         summary: 'Operation Result',
         addFailed:
           'Please provide correct information for this operation',
+        updateSuccess:
+          'Order Updated Operation Successfully done.',
         addSuccess:
           'Order Submission Operation Successfully done.',
       },

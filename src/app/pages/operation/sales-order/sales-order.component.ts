@@ -309,8 +309,9 @@ export class SalesOrderComponent {
       formData.append('salesOrderMasterDto.deliveryInstruction', master.deliveryInstruction);
       formData.append('salesOrderMasterDto.orderDate', master.orderDate.toISOString());
       formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
-      formData.append('salesOrderMasterDto.basicDiscount', master.genDiscount.toString());
-      formData.append('salesOrderMasterDto.DiscountType', master.selectedDiscount.name.toString());
+      formData.append('salesOrderMasterDto.GeneralDiscount', master.genDiscount.toString());
+      formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
+      formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name.toString());
       formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount.toString());
       formData.append('salesOrderMasterDto.estimatedDeliveryDate', master.estimatedDeliveryDate.toISOString());
       formData.append('salesOrderMasterDto.remarks', master.remarks);

@@ -64,5 +64,9 @@ export default {
       commision: 'Commisions',
       offer: 'Offers'
     },
+    workorders: {
+      title: 'Work Orders',
+      workorder: 'Work Orders',
+    },
   },
 };
