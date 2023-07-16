@@ -7,11 +7,8 @@ export const environment = {
   //baseUrl:'https://175.29.181.232:8010/api/'
   //baseUrl:'https://localhost:7143/api/'
   
-<<<<<<< HEAD
   baseUrl:'http://172.16.61.221:8055/api/'
-=======
   //baseUrl:'http://172.16.61.221:8055/api/'
->>>>>>> 9573ca8c5be1c0fd4084304f42a6318e189741c4
   //baseUrl:'https://172.16.61.221:8010/api/'
 };
 
