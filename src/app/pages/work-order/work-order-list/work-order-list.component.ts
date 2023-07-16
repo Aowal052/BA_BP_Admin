@@ -2,6 +2,7 @@ import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, TableWidthConfig } from 'ng-devui';
+import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
@@ -226,6 +227,21 @@ export class WorkOrderListComponent {
   selectedId : string = '';
   msgs: Array<Object> = [];
   data:any;
+  selectedDate1 = new Date();
+  selectedDate2 = null;
+  selectedDate3 = null;
+  disabled = true;
+  dateConfig = {
+    timePicker: true,
+    dateConverter: null,
+    min: 2019,
+    max: 2040,
+    format: {
+      date: 'MM.dd.y',
+      time: 'y-MM-dd HH:mm:ss'
+    }
+  };
+  appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   constructor(
     private listDataService: ListDataService, 
     private service:OrderService,
@@ -245,6 +261,9 @@ export class WorkOrderListComponent {
     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
     this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
+  }
+  getValue(value:any) {
+    console.log(value);
   }
   search() {
     this.getList();
