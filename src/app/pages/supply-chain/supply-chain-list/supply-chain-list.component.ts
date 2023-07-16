@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Subscription } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { StringHelper } from 'src/app/@core/helper/StringHelper';
@@ -21,6 +21,8 @@ import { orderPageNotification } from 'src/assets/i18n/en-US/order';
   templateUrl: './supply-chain-list.component.html',
   styleUrls: ['./supply-chain-list.component.scss']
 })
+
+
 
 
 export class SupplyChainListComponent implements OnInit{
@@ -109,6 +111,24 @@ export class SupplyChainListComponent implements OnInit{
       field: 'Total Price',
       width: '100px',
     },
+  ];
+
+  breadItem: Array<MenuConfig> = [
+    {
+      linkType: 'hrefLink',
+      link: '',
+      name: 'Home'
+    },
+    {
+      linkType: 'routerLink',
+      link: './home',
+      name: 'Supply Chain'
+    },
+    {
+      linkType: 'routerLink',
+      link: 'supply-chain-list',
+      name: 'Delivery Challan Entry'
+    }
   ];
 
   basicDataSource: any[] = [];
@@ -443,7 +463,10 @@ export class SupplyChainListComponent implements OnInit{
 //     });
 //   }
   
-  
+items: Array<any> = [];
+onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+  this.items.push(rowItem);
+}
   async placeDeliveryOrder(master:any){
     const masterData = await this.comService.createFormData(master);
     //const products = await this.comService.createFormData(this.listData);
@@ -467,7 +490,7 @@ formData.append('salesOrderMasterDto.estimatedDeliveryDate', new Date(master.est
 formData.append('salesOrderMasterDto.remarks', master.remarks);
 
 //Append list data
-for (let i = 0; i < this.listData.length; i++) {
+for (let i = 0; i < this.items.length; i++) {
 const item = this.listData[i];
 formData.append(`salesOrderDetailsDto[${i}].productId`, item.productId.toString());
 formData.append(`salesOrderDetailsDto[${i}].productDescription`, item.productDescription);

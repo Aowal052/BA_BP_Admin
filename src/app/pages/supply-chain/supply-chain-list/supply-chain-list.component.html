@@ -1,5 +1,13 @@
 <div class="da-list-wrap">
-    <div class="da-content-banner">
+  <div class="da-content-banner">
+    <d-breadcrumb>
+        <d-breadcrumb-item *ngFor="let item of breadItem">
+          <!-- <a rel="noopener" (click)="navigate($event, item)">{{ item.name }}</a> -->
+          <a rel="noopener">{{ item.name }}</a>
+        </d-breadcrumb-item>
+      </d-breadcrumb>
+</div>
+    <!-- <div class="da-content-banner">
         <d-breadcrumb>
             <d-breadcrumb-item><a routerLink="/">{{ 'supplychainlist.breadcrumb.home' | translate }}</a></d-breadcrumb-item>
             <d-breadcrumb-item>{{ 'supplychainlist.breadcrumb.formPage' | translate }}</d-breadcrumb-item>
@@ -9,7 +17,7 @@
             {{ 'supplychainlist.basicList.title' | translate }}
         </div>
         <div>{{ 'supplychainlist.basicList.description' | translate }}</div>
-    </div>
+    </div> -->
     <div class="da-content-wrapper" >
         <d-toast [value]="msgs"></d-toast>
         <da-layout-row [daGutter]="[24, 24]">
@@ -223,7 +231,7 @@
           </tr>
         </thead>
         <tbody dTableBody >
-          <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+          <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
             <tr dTableRow [ngClass]="{ 'da-table-row-selected': rowItem.$checked }">
               <td 
                 dTableCell
@@ -232,7 +240,7 @@
                >
                 <d-checkbox
                   [ngModelOptions]="{ standalone: true }"
-                  
+                  (ngModelChange)="onRowCheckChange($event, rowIndex, nestedIndex, rowItem)"
                   [ngModel]="rowItem.$checked"
                   [halfchecked]="rowItem.$halfChecked"
                   [disabled]="rowItem.$checkDisabled"
