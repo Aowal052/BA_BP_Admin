@@ -63,16 +63,16 @@ export class WorkOrderListComponent {
 
   sizeOptions = ['sm', 'md', 'lg'];
 
-  layoutOptions = ['auto', 'fixed'];
+  StatusOptions = ['Approved', 'Rejected'];
 
   searchForm: {
     borderType: '' | 'borderless' | 'bordered';
     size: 'sm' | 'md' | 'lg';
-    layout: 'auto' | 'fixed';
+    layout: 'Select Status' | 'fixed';
   } = {
     borderType: '',
     size: 'md',
-    layout: 'auto',
+    layout: 'Select Status',
   };
 
   tableWidthConfig: TableWidthConfig[] = [
@@ -203,6 +203,11 @@ export class WorkOrderListComponent {
     { id: 4, name: 'Eid Offer' },
     { id: 5, name: 'Promotional Offer' },
   ];
+  searchModel = {
+    fromDate: new Date(),
+    orderId:'',
+    status:'',
+  }
   masterData = {
     id:0,
     orderDate:(new Date).toDateString(),
@@ -465,7 +470,7 @@ export class WorkOrderListComponent {
     this.searchForm = {
       borderType: '',
       size: 'md',
-      layout: 'auto',
+      layout: 'Select Status',
     };
     this.pager.pageIndex = 1;
     this.getList();
