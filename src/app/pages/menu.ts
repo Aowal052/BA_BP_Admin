@@ -144,5 +144,13 @@ export default function (values: any) {
       link: '/pages/workorders',
       menuIcon: 'icon icon-mine',
     },
+    {
+      title: values['supplychains']['title'],
+      children: [
+        { title: values['supplychains']['supplychainlist'], link: '/pages/supplychain/supply-chain-list' },
+      ],
+      link: '/pages/supplychains',
+      menuIcon: 'icon icon-mine',
+    },
   ];
 }

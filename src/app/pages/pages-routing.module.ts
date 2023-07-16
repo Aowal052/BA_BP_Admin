@@ -55,6 +55,11 @@ const routes: Routes = [
           import('./work-order/work-order.module').then((m) => m.WorkOrderModule),
       },
       {
+        path: 'supplychain',
+        loadChildren: () =>
+          import('./supply-chain/supply-chain.module').then((m) => m.SupplyChainModule),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

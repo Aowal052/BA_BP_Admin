@@ -29,6 +29,10 @@ export class ApiEndPoints{
     static readonly DeleteMasterDetailById: string = 'SalesOrder/DeleteMasterDetailById';
     static readonly GetOrderMasterById: string = 'SalesOrder/GetOrderMasterById';
     static readonly DeleteCategory: string = 'ProductCategory/Delete';
+
+    static readonly GetSalesInvoiceById: string = 'SalesInvoice/GetById';
+
+    static readonly AddDeliveryChallan:string = 'SalesOrder/ChallanCreate';
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation

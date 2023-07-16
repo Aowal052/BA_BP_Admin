@@ -51,6 +51,7 @@ export default {
       advanceList: 'Advance List',
       treeList: 'Tree List',
     },
+    
     abnormal: {
       title: 'Abnormal',
     },
@@ -67,6 +68,11 @@ export default {
     workorders: {
       title: 'Work Orders',
       workorder: 'Work Orders',
+    },
+    supplychains: {
+      title: 'Supply Chain',
+      supplychainlist: 'Supply Chain',
+      
     },
   },
 };
