@@ -10,9 +10,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class OrderService {
-  createInvoice(AddDeliveryChallan: string, formData: FormData) {
-    throw new Error('Method not implemented.');
-  }
 
   constructor(
     private http:HttpClient,

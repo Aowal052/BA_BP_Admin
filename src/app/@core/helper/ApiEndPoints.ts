@@ -32,7 +32,10 @@ export class ApiEndPoints{
 
     static readonly GetSalesInvoiceById: string = 'SalesInvoice/GetById';
 
+
     static readonly AddDeliveryChallan:string = 'SalesOrder/ChallanCreate';
+    static readonly GetChallanMasterList:string = 'SalesOrder/GetChallanMasterAsync';
+    
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation

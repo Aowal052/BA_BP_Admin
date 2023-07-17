@@ -5,6 +5,7 @@ import { CommonService } from '../CommonService';
 import { Observable, catchError, throwError } from 'rxjs';
 import { SalesInvoiceResponse } from '../../model/SalesInvoiceResponse';
 import { environment } from 'src/environments/environment';
+import { OrderResponse } from '../../model/OrderResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -50,4 +51,19 @@ export class SalesInvoiceService {
         })
       );
     }
+
+    async getChallanMasterListDetails(endpoint:string,pager:any): Promise<Observable<any>> {
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.post<SalesInvoiceResponse>(environment.baseUrl + endpoint , pager, httpOptions).pipe(
+        catchError((error) => {
+          debugger
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
+    
 }
+
