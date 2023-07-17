@@ -231,6 +231,7 @@ export class ChallanListComponent implements OnInit{
   ];
   masterData = {
     id:0,
+    challanNo:0,
     orderDate:(new Date).toDateString(),
     orderNumber:0,
     estimatedDeliveryDate: new Date,
@@ -304,41 +305,42 @@ export class ChallanListComponent implements OnInit{
     });
   }
   async viewRow(row: any, index: number) {
-    this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetOrderDetailById, row.id)).subscribe((res:OrderResponse) => {
+    this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id)).subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       debugger
       this.listData = data;
-      //const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
     });
     await this.getCustomerDropdown();
-    this.busy = (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res:OrderResponse) => {
-      const data = res.data;
-      this.orderMaster = data;
-      const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-      const genDiscount = (res.data[0].generalDiscount / 100)* totalPrice;
-      let netPrice = totalPrice - genDiscount;
-      const otherDiscount = res.data[0].otherDiscount>0?(res.data[0].otherDiscount/100)*(totalPrice - genDiscount):0;
-      netPrice = netPrice -otherDiscount;
-      this.masterData.netAmount =netPrice;
-      var discount = this.comService.getDiscountByParcent(this.masterData.netAmount);
-      netPrice = netPrice - (discount / 100)* netPrice;
-      this.masterData.orderAmDiscount = discount;
-      this.masterData.totalPrice = totalPrice;
-      this.masterData.netAmount = netPrice;
-      this.masterData.id = res.data[0].id;
-      this.masterData.orderNumber = res.data[0].orderNo
-      this.masterData.selectedCustomer = {id:res.data[0].customerId,label:res.data[0].customerName}
-      this.masterData.deliveryAddress = res.data[0].deliveryAddress;
-      this.masterData.deliveryInstruction = res.data[0].deliveryInstruction;
-      this.masterData.estimatedDeliveryDate = res.data[0].estimatedDeliveryDate;
-      this.masterData.otherDiscount = res.data[0].otherDiscount;
-      this.masterData.genDiscount = res.data[0].generalDiscount;
-      this.masterData.remarks = res.data[0].remarks;
-      const orderDate = new Date(res.data[0].orderDate);
-      this.masterData.orderDate = orderDate.toLocaleDateString(undefined, this.comService.dateFormate);
-     // this.masterData.selectedDiscount = {id:Number(this.DiscountOptions.find(x=>x.name== res.data[0].discountTypes)?.id),name:res.data[0].discountTypes}
 
-    });
+    const master = this.basicDataSource.find(x=>x.id==row.id);
+    // (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res:OrderResponse) => {
+    //   const data = res.data;
+    //   this.orderMaster = data;
+    //   const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+    //   const genDiscount = (res.data[0].generalDiscount / 100)* totalPrice;
+    //   let netPrice = totalPrice - genDiscount;
+    //   const otherDiscount = res.data[0].otherDiscount>0?(res.data[0].otherDiscount/100)*(totalPrice - genDiscount):0;
+    //   netPrice = netPrice -otherDiscount;
+    //   this.masterData.netAmount =netPrice;
+    //   var discount = this.comService.getDiscountByParcent(this.masterData.netAmount);
+    //   netPrice = netPrice - (discount / 100)* netPrice;
+    //   this.masterData.orderAmDiscount = discount;
+    //   this.masterData.totalPrice = totalPrice;
+    //   this.masterData.netAmount = netPrice;
+    //   this.masterData.id = res.data[0].id;
+    //   this.masterData.orderNumber = res.data[0].orderNo
+    //   this.masterData.selectedCustomer = {id:res.data[0].customerId,label:res.data[0].customerName}
+    //   this.masterData.deliveryAddress = res.data[0].deliveryAddress;
+    //   this.masterData.deliveryInstruction = res.data[0].deliveryInstruction;
+    //   this.masterData.estimatedDeliveryDate = res.data[0].estimatedDeliveryDate;
+    //   this.masterData.otherDiscount = res.data[0].otherDiscount;
+    //   this.masterData.genDiscount = res.data[0].generalDiscount;
+    //   this.masterData.remarks = res.data[0].remarks;
+    //   const orderDate = new Date(res.data[0].orderDate);
+    //   this.masterData.orderDate = orderDate.toLocaleDateString(undefined, this.comService.dateFormate);
+    //  // this.masterData.selectedDiscount = {id:Number(this.DiscountOptions.find(x=>x.name== res.data[0].discountTypes)?.id),name:res.data[0].discountTypes}
+
+    // });
     this.editRowIndex = index;
     this.formData = row;
     this.editForm = this.dialogService.open({

@@ -53,33 +53,24 @@
                         
                           <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
                               [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true" >
-                                <d-column field="challanNo" header="Challan No" [width]="'100px'" >
+                                <d-column field="invoiceNo" header="Challan No" [width]="'100px'" >
                                     <d-cell>
-                                    <!-- <ng-template let-cellItem="challanNo">
+                                    <ng-template let-cellItem="cellItem">
                                         {{ cellItem }}
-                                    </ng-template> -->
+                                    </ng-template>
                                     </d-cell>
                                 </d-column>
-                                  <d-column field="challanDate" header="Challan Date" [width]="'100px'" >
-                                    <!-- <d-cell>
-                                      <ng-template let-cellItem="cellItem">
-                                        {{ cellItem }}
-                                      </ng-template>
-                                    </d-cell> -->
-                                  </d-column>
-                                  <d-column field="orderNo" header="Order No" [width]="'100px'" >
-                                    <!-- <d-cell>
-                                      <ng-template let-cellItem="cellItem">
-                                        {{ cellItem }}
-                                      </ng-template>
-                                    </d-cell> -->
-                                  </d-column>
-                                  <d-column field="orderDate" header="Order Date" [width]="'100px'">
+                                  <d-column field="invoiceDate" header="Challan Date" [width]="'100px'" >
                                     <d-cell>
                                       <ng-template let-cellItem="cellItem">
-                                        <div class="over-flow-ellipsis">
-                                          <span style="margin-left: 6px">{{ cellItem }}</span>
-                                        </div>
+                                        {{ cellItem }}
+                                      </ng-template>
+                                    </d-cell>
+                                  </d-column>
+                                  <d-column field="orderNo" header="Order No" [width]="'100px'" >
+                                    <d-cell>
+                                      <ng-template let-cellItem="cellItem">
+                                        {{ cellItem }}
                                       </ng-template>
                                     </d-cell>
                                   </d-column>
@@ -97,7 +88,7 @@
                                   <d-column field="Actions" header="Actions" [width]="'150px'">
                                     <d-cell>
                                         <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
-                                            <div class="btn-group over-flow-ellipsis" *ngIf="rowItem.status == 'Approved' ">
+                                            <div class="btn-group over-flow-ellipsis">
                                               <d-button icon="icon-edit" bsStyle="text-dark" title="edit"
                                                          (click)="viewRow(rowItem, rowIndex)"></d-button>
                                             </div>
