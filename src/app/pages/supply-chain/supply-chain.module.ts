@@ -7,11 +7,13 @@ import { DatepickerModule, InputNumberModule, PaginationModule, TagsInputModule,
 import { AdminFormModule } from 'src/app/@shared/components/admin-form';
 import { SharedModule } from 'src/app/@shared/shared.module';
 import { SupplyChainListComponent } from './supply-chain-list/supply-chain-list.component';
+import { ChallanListComponent } from './challan-list/challan-list.component';
 
 
 @NgModule({
   declarations: [
-    SupplyChainListComponent
+    SupplyChainListComponent,
+    ChallanListComponent
   ],
   imports: [
     CommonModule,

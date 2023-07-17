@@ -148,6 +148,7 @@ export default function (values: any) {
       title: values['supplychains']['title'],
       children: [
         { title: values['supplychains']['supplychainlist'], link: '/pages/supplychain/supply-chain-list' },
+        { title: values['supplychains']['challanlists'], link: '/pages/supplychain/challan-list' },
       ],
       link: '/pages/supplychains',
       menuIcon: 'icon icon-mine',
