@@ -490,7 +490,7 @@ formData.append('InvoiceMasterDto.remarks', master.remarks);
 
 //Append list data
 for (let i = 0; i < this.items.length; i++) {
-const item = this.listData[i];
+const item = this.items[i];
 formData.append(`InvoiceDetailsDto[${i}].productId`, item.productId.toString());
 formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
 formData.append(`InvoiceDetailsDto[${i}].quantity`, item.quantity.toString());
