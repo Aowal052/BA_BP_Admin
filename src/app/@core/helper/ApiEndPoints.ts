@@ -15,7 +15,7 @@ export class ApiEndPoints{
     static readonly AddProduct: string = 'v1/Product/Create';
     static readonly CreateSales:string = 'SalesOrder/Create';
     static readonly UpdateSales:string = 'SalesOrder/Update';
-    static readonly UpdateStatusAsync:string = 'v1/Approve/UpdateStatusAsync';
+    static readonly UpdateStatusAsync:string = 'v1/CRM/UpdateStatusAsync';
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
     static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';
@@ -33,9 +33,9 @@ export class ApiEndPoints{
     static readonly GetSalesInvoiceById: string = 'SalesInvoice/GetById';
 
 
-    static readonly AddDeliveryChallan:string = 'SalesOrder/ChallanCreate';
-    static readonly GetChallanMasterList:string = 'SalesOrder/GetChallanMasterAsync';
-    static readonly GetChallanDetailsList:string = 'SalesOrder/GetChallanDetailsById';
+    static readonly AddDeliveryChallan:string = 'v1/CRM/ChallanCreate';
+    static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
+    static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation
