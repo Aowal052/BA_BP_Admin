@@ -119,32 +119,60 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label>Customer Name : {{masterData.selectedCustomer.label}}</d-form-label>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                      <div class="u-1-2">
-                        <d-form-item>
-                          <d-form-label>Ref No : {{masterData.orderNumber}}</d-form-label>
-                        </d-form-item>
-                      </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
-                        <d-form-label > </d-form-label>
+                        <d-form-label>Invoice No : {{master.invoiceNo}}</d-form-label>
                       </d-form-item>
                     </div>
                 </da-col-item>
+                <da-col-item [daXs]="12" [daMs]="24">
+                  <div class="u-1-2">
+                    <d-form-item>
+                      <d-form-label>Invoice Date : {{master.invoiceDate}}</d-form-label>
+                    </d-form-item>
+                  </div>
+              </da-col-item>
                   <da-col-item [daXs]="12" [daMs]="24">
-                      <div class="u-1-3">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Customer Name : {{ master.customerName}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Gate Pass No : {{master.gatePassId}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Customer Address : {{ master.customerAddress}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                 
+                  <da-col-item [daXs]="12" [daMs]="24">
+                      <div class="u-1-2">
                         <d-form-item>
-                          <d-form-label>Order Date : {{masterData.orderDate}}</d-form-label>
+                          <d-form-label>Ref No : {{master.orderNo}}</d-form-label>
                         </d-form-item>
                       </div>
                   </da-col-item>
-  
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <!-- <d-form-item>
+                          <d-form-label > Location : Main Location</d-form-label>
+                      </d-form-item> -->
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Order Date : {{master.orderDate}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
                 </da-layout-row>
               </da-row-item>
         
@@ -171,7 +199,7 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label >Destination : {{masterData.deliveryAddress}}</d-form-label>
+                        <d-form-label >Destination : {{master.deliveryAddress}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
@@ -184,70 +212,31 @@
       <h3>Product Details Info</h3>
       
       <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
-          <thead dTableHead [checkable]="true">
+          <thead dTableHead >
             <tr dTableRow>
               <th dHeadCell>Id</th>
               <th dHeadCell>Product Name</th>
-              <th dHeadCell>Quantity</th>
+              <th dHeadCell>Order Qnty</th>
               <th dHeadCell>Unit</th>
-              <th dHeadCell>Prev Del Qnty</th>
-              <th dHeadCell>Del Qnty</th>
+              <th dHeadCell>Unit Rate</th>
+              <th dHeadCell>Delivery Qnty</th>
               <th dHeadCell>Total Price</th>
               <!-- <th dHeadCell>Actions</th> -->
             </tr>
           </thead>
           <tbody dTableBody >
             <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
-              <tr dTableRow [ngClass]="{ 'da-table-row-selected': rowItem.$checked }">
-                <td 
-                  dTableCell
-                  class="devui-checkable-cell"
-                  [field]="'checkbox'"
-                 >
-                  <d-checkbox
-                    [ngModelOptions]="{ standalone: true }"
-                    (ngModelChange)="onRowCheckChange($event, rowIndex, nestedIndex, rowItem)"
-                    [ngModel]="rowItem.$checked"
-                    [halfchecked]="rowItem.$halfChecked"
-                    [disabled]="rowItem.$checkDisabled"
-                    dTooltip
-                    [content]="rowItem.$checkBoxTips"
-                    [position]="['top', 'right', 'bottom', 'left']"
-                    [showAnimation]="false"
-                  >
-                  </d-checkbox>
-                 
-                </td>
+              <tr dTableRow >
+                
                 <td
                   dTableCell
-                  [editable]="true"
                   [field]="'id'"
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
                   <span >{{ rowIndex + 1 }}</span>
-                  
-                    <input type="hidden"
-                      class="devui-form-control"
-                      name="id"
-                      [(ngModel)]="rowItem.id"
-                      [attr.maxlength]="100"
-                      [attr.minlength]="3"
-                    />
                  
                 </td>
-                
-                <!-- <td
-                  dTableCell
-                  [rowItem]="rowItem"
-                  [field]="'id'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                  
-                >
-                  <span >{{ rowIndex + 1 }}</span>
-                  
-                </td> -->
                 <td
                   dTableCell
                   [rowItem]="rowItem"
@@ -260,27 +249,12 @@
                 </td>
                 <td
                   dTableCell
-                  [editable]="true"
-                  [editableTip]="editableTip"
-                  [(editing)]="rowItem['quantityEdit']"
                   [rowItem]="rowItem"
                   [field]="'quantity'"
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
-                  <span *ngIf="!rowItem['quantityEdit']">{{
-                    rowItem?.quantity
-                  }}</span>
-                  <div
-                    *ngIf="rowItem['quantityEdit']"
-                    class="edit-padding-fix"
-                  >
-                    <input
-                      dTextInput
-                      size="sm"
-                      [(ngModel)]="rowItem.quantity"
-                    />
-                  </div>
+                  <span >{{ rowItem?.quantity }}</span>
                 </td>
                 <td
                   dTableCell
@@ -289,36 +263,26 @@
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
-            
                     <span style="margin-left: 6px">{{ rowItem.unitName }}</span>
-               
+                </td>
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'unitRate'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                    <span style="margin-left: 6px">{{ rowItem.unitPrice }}</span>
+                </td>
                 
-                </td>
                 <td
                   dTableCell
                   [rowItem]="rowItem"
-                  [field]="'prevQnty'"
+                  [field]="'deliveryQuantity'"
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
-                  <span >{{ rowItem?.prevQnty }}</span>
-                  
-                </td>
-                <td
-                  dTableCell
-                  [editable]="true"
-                  [editableTip]="editableTip"
-                  [(editing)]="rowItem['delQntyEdit']"
-                  [rowItem]="rowItem"
-                  [field]="'delQnty'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                >
-                    <input
-                      dTextInput
-                      size="sm"
-                      [(ngModel)]="rowItem.delQnty"
-                    />
+                <span style="margin-left: 6px">{{ rowItem.deliveryQuantity }}</span>
                   
                 </td>
                 <td

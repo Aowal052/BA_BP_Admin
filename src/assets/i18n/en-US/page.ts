@@ -72,7 +72,8 @@ export default {
     supplychains: {
       title: 'Supply Chain',
       supplychainlist: 'Challan Create',
-      challanlists: 'Challan List'
+      challanlists: 'Challan List',
+      gatepasscreate: 'Gate Pass Create'
       
     },
   },

@@ -77,6 +77,19 @@ export class SalesInvoiceService {
         })
       );
     }
+
+    async getApprovedSalesOrder(endpoint:string,pager:any): Promise<Observable<any>> {
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?pageNumber=' + pager.pageIndex + '&pageSize=' + pager.pageSize, httpOptions).pipe(
+        catchError((error) => {
+          debugger
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
     
 }
 
