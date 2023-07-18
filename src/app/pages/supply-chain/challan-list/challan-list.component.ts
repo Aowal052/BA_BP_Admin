@@ -304,6 +304,8 @@ export class ChallanListComponent implements OnInit{
       this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
     });
   }
+  
+   master:any =[];
   async viewRow(row: any, index: number) {
     this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id)).subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
@@ -312,10 +314,13 @@ export class ChallanListComponent implements OnInit{
     });
     await this.getCustomerDropdown();
 
-    const master = this.basicDataSource.find(x=>x.id==row.id);
+    this.master = this.basicDataSource.find(x=>x.id==row.id);
+
+    
+
     // (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res:OrderResponse) => {
     //   const data = res.data;
-    //   this.orderMaster = data;
+    //   this.orderMaster = master;
     //   const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
     //   const genDiscount = (res.data[0].generalDiscount / 100)* totalPrice;
     //   let netPrice = totalPrice - genDiscount;

@@ -119,14 +119,28 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label>Customer Name : {{masterData.selectedCustomer.label}}</d-form-label>
+                        <d-form-label>Challan No : {{master.orderNo}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Customer Name : {{ master.customerName}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
                   <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Invoice No : {{master.invoiceDate}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
                       <div class="u-1-2">
                         <d-form-item>
-                          <d-form-label>Ref No : {{masterData.orderNumber}}</d-form-label>
+                          <d-form-label>Ref No : {{master.orderNo}}</d-form-label>
                         </d-form-item>
                       </div>
                   </da-col-item>
@@ -171,7 +185,7 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label >Destination : {{masterData.deliveryAddress}}</d-form-label>
+                        <d-form-label >Destination : {{master.deliveryAddress}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
