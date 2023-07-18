@@ -353,6 +353,7 @@ export class ListProductComponent implements OnInit{
       return true;
     }
   };
+  
   breadItem: Array<MenuConfig> = [
     {
       linkType: 'hrefLink',
