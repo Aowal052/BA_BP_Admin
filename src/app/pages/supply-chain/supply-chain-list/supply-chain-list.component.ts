@@ -13,6 +13,7 @@ import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
+import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 
@@ -266,6 +267,7 @@ export class SupplyChainListComponent implements OnInit{
     private comService: CommonService,
     private proService:ProductService,
     private dialogService: DialogService, 
+    private SaleInvservice:SalesInvoiceService,
     private cdr: ChangeDetectorRef,
     private router: Router,) {}
 
@@ -326,7 +328,7 @@ export class SupplyChainListComponent implements OnInit{
   //   //this.selected = event.target.value;
   // }
   async getList() {
-    this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetOrders, this.pager)).subscribe((res:OrderResponse) => {
+    this.busy = (await this.SaleInvservice.getApprovedSalesOrder(ApiEndPoints.GetApprovedSalesOrder, this.pager)).subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
@@ -430,38 +432,6 @@ export class SupplyChainListComponent implements OnInit{
   selectRange(value:any) {
     console.log(value);
   }
-
-//  async approveOrder(item:any){
-//   const formData = new FormData();
-//   formData.append('OrderId', item.orderCode.toString());
-//   formData.append('Status', StringHelper.Approved.toString());
-//   debugger
-//   (await this.service.createInvoice(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
-//     next: (res: SalesInvoiceResponse) => {
-//       this.data = res;
-//       if (res.statusCode == HttpStatusCode.Ok) {
-//         this.msgs = [
-//           {
-//             severity: 'success',
-//             summary: orderPageNotification.orderPage.createMessage.summary,
-//             content: orderPageNotification.orderPage.createMessage.updateSuccess,
-//           },
-//         ];
-//       }
-//       this.getList();
-//       this.editForm.modalInstance.hide();
-//     },
-//     error: (error) => {
-//       this.msgs = [
-//         {
-//           severity: 'error',
-//           summary: orderPageNotification.orderPage.createMessage.summary,
-//           content: error.error.error,
-//         },
-//       ];
-//     }
-//     });
-//   }
   
 items: Array<any> = [];
 onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
@@ -469,8 +439,6 @@ onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowIte
 }
   async placeDeliveryOrder(master:any){
     const masterData = await this.comService.createFormData(master);
-    //const products = await this.comService.createFormData(this.listData);
-    // Append master data
     
     const formData = new FormData();
     debugger

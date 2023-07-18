@@ -1,12 +1,9 @@
-import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Subscription } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
-import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
@@ -14,14 +11,16 @@ import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
-import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 
 @Component({
-  selector: 'app-challan-list',
-  templateUrl: './challan-list.component.html',
-  styleUrls: ['./challan-list.component.scss']
+  selector: 'app-gate-pass-create',
+  templateUrl: './gate-pass-create.component.html',
+  styleUrls: ['./gate-pass-create.component.scss']
 })
-export class ChallanListComponent implements OnInit{
+export class GatePassCreateComponent implements OnInit{
+
+  
+  
   filterAreaShow = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   multipleSelectConfig: any;
@@ -74,7 +73,22 @@ export class ChallanListComponent implements OnInit{
     size: 'md',
     layout: 'auto',
   };
-
+  //---------------GatePass Date Start
+  selectedDate1 = new Date();
+  selectedDate2 = null;
+  selectedDate3 = null;
+  disabled = true;
+  dateConfig = {
+    timePicker: true,
+    dateConverter: null,
+    min: 2019,
+    max: 2050,
+    format: {
+      date: 'MM.dd.y',
+      time: 'y-MM-dd HH:mm:ss'
+    }
+  };
+   //---------------GatePass Date End
   tableWidthConfig: TableWidthConfig[] = [
     {
       field: 'id',
@@ -120,7 +134,7 @@ export class ChallanListComponent implements OnInit{
     {
       linkType: 'routerLink',
       link: 'challan-list',
-      name: 'Delivery Challan List'
+      name: 'Gate Pass Create'
     }
   ];
 

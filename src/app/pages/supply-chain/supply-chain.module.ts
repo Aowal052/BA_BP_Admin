@@ -8,12 +8,14 @@ import { AdminFormModule } from 'src/app/@shared/components/admin-form';
 import { SharedModule } from 'src/app/@shared/shared.module';
 import { SupplyChainListComponent } from './supply-chain-list/supply-chain-list.component';
 import { ChallanListComponent } from './challan-list/challan-list.component';
+import { GatePassCreateComponent } from './gate-pass-create/gate-pass-create.component';
 
 
 @NgModule({
   declarations: [
     SupplyChainListComponent,
-    ChallanListComponent
+    ChallanListComponent,
+    GatePassCreateComponent
   ],
   imports: [
     CommonModule,

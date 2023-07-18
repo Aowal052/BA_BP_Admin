@@ -36,6 +36,7 @@ export class ApiEndPoints{
     static readonly AddDeliveryChallan:string = 'v1/CRM/ChallanCreate';
     static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
     static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
+    static readonly GetApprovedSalesOrder:string = 'v1/CRM/GetApprovedSalesOrder';
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation
