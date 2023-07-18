@@ -60,6 +60,11 @@ const routes: Routes = [
           import('./supply-chain/supply-chain.module').then((m) => m.SupplyChainModule),
       },
       {
+        path: 'invoice',
+        loadChildren: () =>
+          import('./PDFs/pdf.module').then((m) => m.PDFModule),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',
