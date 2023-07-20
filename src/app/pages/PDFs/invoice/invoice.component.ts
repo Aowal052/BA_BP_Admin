@@ -67,7 +67,7 @@ export class InvoiceComponent {
     remarks:''
   }
   @ViewChild('htmlElementToConvert') htmlElementToConvert!: ElementRef;
-  convertToPDF() {
+  generateInvoice() {
     const doc = new jsPDF();
     const element = this.htmlElementToConvert.nativeElement;
   
@@ -80,6 +80,65 @@ export class InvoiceComponent {
       doc.save('converted.pdf');
     });
   }
+
+  // generateInvoice() {
+  //   // Create a new jsPDF instance
+  //   const doc = new jsPDF();
+  // const element = this.htmlElementToConvert.nativeElement;
+  //   // Set the font size and position for the invoice title
+  //   doc.setFontSize(16);
+  //   doc.text('Sales Invoice', 10, 10);
+  //   doc.html(element)
+  
+  //   // Set the font size and position for the customer details
+  //   doc.setFontSize(12);
+  //   doc.text('Customer Name: John Doe', 10, 30);
+  //   doc.text('Address: 123 Main St, City, Country', 10, 40);
+    
+  //   // Set the font size and position for the table headers
+  //   doc.setFontSize(12);
+  //   const headers = ['Product', 'Quantity', 'Price', 'Total'];
+  //   const tableTop = 60;
+  //   const tableLeft = 10;
+  //   const columnWidth = 40;
+  //   const rowHeight = 10;
+  //   const cellPadding = 2;
+    
+  //   // Draw the table headers
+  //   headers.forEach((header, columnIndex) => {
+  //     const x = tableLeft + columnIndex * columnWidth;
+  //     const y = tableTop;
+  //     doc.text(header, x, y);
+  //   });
+    
+  //   // Set the font size and position for the table rows
+  //   doc.setFontSize(10);
+  //   const products = [
+  //     { name: 'Product 1', quantity: 2, price: 10, total: 20 },
+  //     { name: 'Product 2', quantity: 3, price: 15, total: 45 },
+  //     { name: 'Product 3', quantity: 1, price: 20, total: 20 },
+  //   ];
+    
+  //   // Draw the table rows
+  //   products.forEach((product, rowIndex) => {
+  //     const x = tableLeft;
+  //     const y = tableTop + (rowIndex + 1) * rowHeight;
+  //     doc.text(product.name, x, y);
+  //     doc.text(product.quantity.toString(), x + columnWidth, y);
+  //     doc.text(product.price.toString(), x + columnWidth * 2, y);
+  //     doc.text(product.total.toString(), x + columnWidth * 3, y);
+  //   });
+  
+  //   // Calculate the total amount
+  //   const totalAmount = products.reduce((sum, product) => sum + product.total, 0);
+  
+  //   // Set the font size and position for the total amount
+  //   doc.setFontSize(12);
+  //   doc.text(`Total Amount: $${totalAmount.toFixed(2)}`, 10, tableTop + (products.length + 2) * rowHeight);
+  
+  //   // Save the PDF file
+  //   doc.save('sales-invoice.pdf');
+  // }
 
   beforeEditStart = (rowItem: any, field: any) => {
     return true;

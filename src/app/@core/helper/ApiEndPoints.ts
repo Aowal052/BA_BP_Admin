@@ -26,6 +26,7 @@ export class ApiEndPoints{
     static readonly AddOrder: string = 'SalesOrder/Create';
     static readonly GetOrders: string = 'SalesOrder/Get';
     static readonly GetOrderDetailById: string = 'SalesOrder/GetOrderDetailById';
+    static readonly GetDetailByIdForChallan: string = 'v1/CRM/GetDetailsByIdForChallanAsync';
     static readonly DeleteMasterDetailById: string = 'SalesOrder/DeleteMasterDetailById';
     static readonly GetOrderMasterById: string = 'SalesOrder/GetOrderMasterById';
     static readonly DeleteCategory: string = 'ProductCategory/Delete';

@@ -7,17 +7,6 @@
         </d-breadcrumb-item>
       </d-breadcrumb>
 </div>
-    <!-- <div class="da-content-banner">
-        <d-breadcrumb>
-            <d-breadcrumb-item><a routerLink="/">{{ 'supplychainlist.breadcrumb.home' | translate }}</a></d-breadcrumb-item>
-            <d-breadcrumb-item>{{ 'supplychainlist.breadcrumb.formPage' | translate }}</d-breadcrumb-item>
-            <d-breadcrumb-item>{{ 'supplychainlist.breadcrumb.basicList' | translate }}</d-breadcrumb-item>
-        </d-breadcrumb>
-        <div class="da-content-banner-title">
-            {{ 'supplychainlist.basicList.title' | translate }}
-        </div>
-        <div>{{ 'supplychainlist.basicList.description' | translate }}</div>
-    </div> -->
     <div class="da-content-wrapper" >
         <d-toast [value]="msgs"></d-toast>
         <da-layout-row [daGutter]="[24, 24]">
@@ -264,18 +253,6 @@
                   />
                
               </td>
-              
-              <!-- <td
-                dTableCell
-                [rowItem]="rowItem"
-                [field]="'id'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-                
-              >
-                <span >{{ rowIndex + 1 }}</span>
-                
-              </td> -->
               <td
                 dTableCell
                 [rowItem]="rowItem"
@@ -325,11 +302,11 @@
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'prevQnty'"
+                [field]="'remainingQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
-                <span >{{ rowItem?.prevQnty }}</span>
+                <span >{{ rowItem?.deliveryQuantity }}</span>
                 
               </td>
               <td
@@ -338,14 +315,14 @@
                 [editableTip]="editableTip"
                 [(editing)]="rowItem['delQntyEdit']"
                 [rowItem]="rowItem"
-                [field]="'delQnty'"
+                [field]="'deliveryQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
                   <input
                     dTextInput
                     size="sm"
-                    [(ngModel)]="rowItem.delQnty"
+                    [(ngModel)]="rowItem.remainingQuantity"
                   />
                 
               </td>
@@ -367,7 +344,7 @@
 
         <div>
             <d-form-operation>
-                <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="placeDeliveryOrder(masterData)">Submit</d-button>
+                <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="CreateChallan(masterData)">Submit</d-button>
                 <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
               </d-form-operation>
         </div>

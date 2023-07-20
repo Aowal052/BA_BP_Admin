@@ -1,6 +1,5 @@
 
 <div #htmlElementToConvert>
-    <h3>Master Info</h3>
     <h1>Invoice</h1>
     <address contenteditable>
         <p>Jonathan Neal</p>
@@ -47,7 +46,7 @@
             </tr>
         </tbody>
     </table>
-    <a class="add">+</a>
+    <!-- <a class="add">+</a> -->
     <table class="balance">
         <tr>
             <th><span contenteditable>Total</span></th>
@@ -77,4 +76,4 @@
     
 
   
-  <button (click)="convertToPDF()">Convert to PDF</button>
+  <button (click)="generateInvoice()">Convert to PDF</button>
