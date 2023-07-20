@@ -65,6 +65,27 @@ export class CommonService {
   
     return formData;
   }
+  async createFormDataObj(arrayData: any): Promise<FormData> {
+    const formData = new FormData();
+  
+    // Check if arrayData is an array
+    if (Array.isArray(arrayData)) {
+      // Append the array data to the FormData
+      arrayData.forEach(async (item: any, index: number) => {
+        const itemKey = `arrayData[${index}]`;
+        const convertedItem = await this.convertObjectKeysToCamelCase(item);
+  
+        for (const key in convertedItem) {
+          const value = convertedItem[key];
+          const fieldKey = `${itemKey}.${key}`;
+  
+          formData.append(fieldKey, value);
+        }
+      });
+    }
+  
+    return formData;
+  }
   async convertObjectKeysToCamelCase(obj: any): Promise<any> {
     if (typeof obj !== 'object' || obj === null) {
       return obj;

@@ -1,4 +1,4 @@
-export class GatePassResponse{
+export class VehicleResponse{
     statusCode?:number;
     Message?:string;
     totalCount:number = 0;
