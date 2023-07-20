@@ -11,7 +11,7 @@ import { ListDataService } from 'src/app/@core/mock/list-data.service';
 })
 export class AdvanceListComponent implements OnInit {
   @ViewChild(DataTableComponent, { static: true })
-  datatable: DataTableComponent;
+  datatable!: DataTableComponent;
   basicDataSource = [];
   originData = [];
   deleteList: Item[] = [];
@@ -142,7 +142,7 @@ export class AdvanceListComponent implements OnInit {
 
   editableTip = EditableTip.btn;
 
-  busy: Subscription;
+  busy!: Subscription;
 
   constructor(private listDataService: ListDataService, private dialogService: DialogService) {}
 

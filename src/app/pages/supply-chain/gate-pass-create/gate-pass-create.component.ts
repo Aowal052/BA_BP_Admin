@@ -1,12 +1,18 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { orderPageNotification } from 'dist/devui-admin/assets/i18n/en-US/order';
+import { DatePipe, DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Subscription } from 'rxjs';
+import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
+import { GatePassResponse } from 'src/app/@core/model/GatePassResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
+import { VehicleResponse } from 'src/app/@core/model/VehicleResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
+import { GatePassService } from 'src/app/@core/services/gatepass/gate-pass.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
@@ -202,14 +208,15 @@ export class GatePassCreateComponent implements OnInit{
 
   pager = {
     total: 0,
-    pageIndex: 1,
-    pageSize: 10,
+    PageIndex: 1,
+    PageSize: 10,
     fromDate:null,
     toDate:null,
-    customerId:null,
-    challanNo:null,
-    orderNo:null
+    customerId:0,
+    challanNo:'',
+    orderNo:0
   };
+  
   rangeStart = new Date();
   rangeEnd = new Date();
   editableTip = EditableTip.btn;
@@ -240,43 +247,40 @@ export class GatePassCreateComponent implements OnInit{
       label: 'Dzn',
     }
   ];
+   selectedVehicle = { id: 0, label: '', driverName: '' };
   masterData = {
     id:0,
     challanNo:0,
     orderDate:(new Date).toDateString(),
     orderNumber:0,
     estimatedDeliveryDate: new Date,
-    selectedCustomer:{id:0,label:''},
+    selectedVehicle:{ id: 0, label: ''},//{id:0,label:'',driverName:''},
     selectedDiscount: { id: 0, name: '' },
-    totalPrice: 0,
-    pdc:true,
-    genDiscount:0,
-    orderAmDiscount:0,
-    otherDiscount:0,
-    netAmount:0,
-    deliveryInstruction:'',
-    deliveryAddress:'',
-    remarks:''
+    driverName: '',
+    driverLicenseNo: '',
+    driverPhone: '',
+    remarks:'',
+    selectedDate1:''
   }
-  customerDropdownList:any[] = [];
-  customerList: any[] = [];
+  VehicleDropdownList:any[] = [];
+  vehicleList: any[] = [];
   selectedItem: string = '';
   isSelect : boolean = false;
   selectedId : string = '';
   msgs: Array<Object> = [];
   data:any;
+  IsActive:boolean = false;
   constructor(
-    private listDataService: ListDataService, 
-    private service:OrderService,
     private SaleInvservice:SalesInvoiceService,
-    private comService: CommonService,
-    private proService:ProductService,
+    private GatepassService:GatePassService,
     private dialogService: DialogService, 
-    private cdr: ChangeDetectorRef,
-    private router: Router,) {}
+    private service:OrderService,
+    private comService: CommonService,
+    ) {}
 
   ngOnInit() {
     this.getList();
+    this.getVehicleDropdown();
   }
 
   search() {
@@ -295,13 +299,27 @@ export class GatePassCreateComponent implements OnInit{
   };
   
   async getList() {
-    this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, this.pager))
+    //const masterData = await this.comService.createFormDataObj(this.pager);
+    this.busy = (await this.GatepassService.getChallanList(ApiEndPoints.GetChallanListGatePass, this.pager))
                .subscribe((res:SalesInvoiceResponse) => {
+                debugger;
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
     });
   }
+
+  async getVehicleDropdown() {
+    debugger
+    this.busy = (await this.GatepassService.getVehicleDropdown(ApiEndPoints.GetVehicleDropdown))
+                 .subscribe((res:VehicleResponse) => {
+      this.VehicleDropdownList = res.data;
+      this.vehicleList = res.data.map(({ id, vehicleNo,driverName }) => ({ id: id, label: vehicleNo, driverName:driverName }));
+    });
+  }
+
+
+   //this.basicDataSource.find(x=>x.id==row.id);
 
   async viewRow(row: any, index: number) {
     this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id))
@@ -332,12 +350,12 @@ export class GatePassCreateComponent implements OnInit{
     this.msgs = [{ severity: type, summary: title, detail: msg }];
   }
   onPageChange(e: number) {
-    this.pager.pageIndex = e;
+    this.pager.PageIndex = e;
     this.getList();
   }
 
   onSizeChange(e: number) {
-    this.pager.pageSize = e;
+    this.pager.PageSize = e;
     this.getList();
   }
 
@@ -347,7 +365,7 @@ export class GatePassCreateComponent implements OnInit{
       size: 'md',
       layout: 'auto',
     };
-    this.pager.pageIndex = 1;
+    this.pager.PageIndex = 1;
     this.getList();
   }
 
@@ -372,11 +390,78 @@ export class GatePassCreateComponent implements OnInit{
 
 
   
+
+deleteList: Item[] = [];
 items: Array<any> = [];
 onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-  this.items.push(rowItem);
+  debugger
+  if(checked == true)
+  {
+    this.items.push(rowItem);
+  } 
+  else{
+    this.items.splice(rowItem,1);
+  }
+  
+  //rowItem.$halfChecked = false;
+  if(this.items.length>0)
+  {
+    this.IsActive = true;
+  } 
+  else{
+    this.IsActive = false;
+  }
 }
+async placeGatePass(master:any){
+  const masterData = await this.comService.createFormData(master);
+  
+  const formData = new FormData();
  
+  debugger
+  const gatePassDate = master.selectedDate1; // Assuming you have the Date object
+
+  // Formatting the date as 'YYYY-MM-DD' (e.g., '2023-07-20')
+  const formattedDate = `${gatePassDate.getFullYear()}-${String(gatePassDate.getMonth() + 1).padStart(2, '0')}-${String(gatePassDate.getDate()).padStart(2, '0')}`;
+formData.append('GatePassDate',formattedDate);
+debugger
+formData.append('VehicleId', master.selectedVehicle.id);
+
+
+//Append list data
+for (let i = 0; i < this.items.length; i++) {
+const item = this.items[i];
+formData.append(`InvoiceNo`, item.invoiceNo);
+}
+
+(await this.GatepassService.createGatePass(ApiEndPoints.CreateGatePass, formData)).subscribe({
+next: (res: GatePassResponse) => {
+this.data = res;
+if (res.statusCode == HttpStatusCode.Ok) {
+  this.msgs = [
+    {
+      severity: 'success',
+      summary: orderPageNotification.orderPage.createMessage.summary,
+      content: orderPageNotification.orderPage.createMessage.updateSuccess,
+    },
+  ];
+}
+this.editForm.modalInstance.hide();
+},
+error: (error) => {
+this.msgs = [
+  {
+    severity: 'error',
+    summary: orderPageNotification.orderPage.createMessage.summary,
+    content: error.error.error,
+  },
+];
+}
+});
+}
+
+// onCheckAllChange() {
+//   this.deleteList = this.datatable.getCheckedRows();
+// }
   cancelRequest(){
     this.editForm.modalInstance.hide();
   }

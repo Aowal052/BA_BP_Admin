@@ -28,7 +28,8 @@
                                                             dActiveFormControl>
                                                             <input class="devui-input devui-form-control"
                                                                 placeholder="y/MM/dd" (click)="datePicker1.toggle()"
-                                                                name="dp" [(ngModel)]="selectedDate1" autocomplete="off"
+                                                                name="dp" 
+                                                                [(ngModel)]="masterData.selectedDate1" autocomplete="off"
                                                                 dDatepicker #datePicker1="datepicker" />
                                                             <div *ngIf="selectedDate1"
                                                                 class="devui-input-group-addon close-icon-wrapper"
@@ -49,11 +50,12 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Vehicle No</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <d-select [options]="selectUnits" name="UnitId"
+                                                        <d-select [options]="vehicleList"
+                                                            name="VehicleId"
                                                             [isSearch]="true" [filterKey]="'label'"
-                                                            placeholder="Select Unit">
-                                                        </d-select>
-                                                    </d-form-control>
+                                                            placeholder="Select Vehicle"
+                                                            [(ngModel)]="masterData.selectedVehicle"></d-select>
+                                                      </d-form-control>
                                                 </d-form-item>
                                             </div>
                                         </da-col-item>
@@ -62,7 +64,8 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Driver Name</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <input dTextInput />
+                                                        <input dTextInput name="driverName" [(ngModel)]="masterData.driverName" />
+                                                        
                                                     </d-form-control>
                                                 </d-form-item>
                                             </div>
@@ -72,7 +75,7 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Driver Licence</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <input dTextInput />
+                                                        <input dTextInput name="driverName" [(ngModel)]="masterData.driverLicenseNo" />
                                                     </d-form-control>
                                                 </d-form-item>
                                             </div>
@@ -82,7 +85,7 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Driver Phone No</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <input dTextInput />
+                                                        <input dTextInput name="driverName" [(ngModel)]="masterData.driverPhone" />
                                                     </d-form-control>
                                                 </d-form-item>
                                             </div>
@@ -92,9 +95,10 @@
                             </da-layout-col>
                         </div>
 
-                        <d-form-operation>
-                            <d-button bsStyle="primary" class="mr-element-spacing" circled="true"
-                                style="margin-right: 4px !important">Submit</d-button>
+                        <d-form-operation *ngIf="IsActive" >
+                            <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="placeGatePass(masterData)">Submit</d-button>
+                            <!-- <d-button  bsStyle="primary" class="mr-element-spacing" circled="true"
+                                style="margin-right: 4px !important" [disabled]="!items.length">Submit</d-button> -->
                             <d-button bsStyle="common" circled="true">Cancel</d-button>
                         </d-form-operation>
                     </form>
@@ -146,9 +150,28 @@
                         </div>
                     </div>
                     <div class="list-content" dLoading [loading]="busy">
-
                         <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
-                            [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true">
+                            [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true"
+                            >
+                            <d-column class="devui-checkable-cell"
+                            [field]="'checkbox'" header="Select" [width]="'70px'">
+                                <d-cell>
+                                    <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                                        <d-checkbox
+                                        [ngModelOptions]="{ standalone: true }"
+                                        (ngModelChange)="onRowCheckChange($event, rowIndex, nestedIndex, rowItem)"
+                                        [ngModel]="rowItem.$checked"
+                                        [halfchecked]="rowItem.$halfChecked"
+                                        [disabled]="rowItem.$checkDisabled"
+                                        dTooltip
+                                        [content]="rowItem.$checkBoxTips"
+                                        [position]="['top', 'right', 'bottom', 'left']"
+                                        [showAnimation]="false"
+                                >
+                                </d-checkbox>
+                                    </ng-template>
+                                </d-cell>
+                            </d-column>
                             <d-column field="invoiceNo" header="Challan No" [width]="'70px'">
                                 <d-cell>
                                     <ng-template let-cellItem="cellItem">
@@ -163,7 +186,7 @@
                                     </ng-template>
                                 </d-cell>
                             </d-column>
-                            <d-column field="customerName" header="Customer Name" [width]="'100px'">
+                            <d-column field="customerName" header="Customer Name" [width]="'200px'">
                                 <d-cell>
                                     <ng-template let-cellItem="cellItem">
                                         <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
@@ -172,16 +195,13 @@
                                     </ng-template>
                                 </d-cell>
                             </d-column>
-                            <d-column field="productName" header="Product Name" [width]="'150px'">
-                            </d-column>
-                            <d-column field="totalQnty" header="Total Quantity" [width]="'70px'">
-                            </d-column>
-                            
+                            <d-column field="totalQuantity" header="Total Quantity" [width]="'70px'">
+                            </d-column>   
                         </d-data-table>
                     </div>
                     <div class="da-list-footer">
-                        <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.pageSize"
-                            [(pageIndex)]="pager.pageIndex" [canViewTotal]="true" [canChangePageSize]="true"
+                        <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.PageSize"
+                            [(pageIndex)]="pager.PageIndex" [canViewTotal]="true" [canChangePageSize]="true"
                             [canJumpPage]="true" [maxItems]="5" (pageIndexChange)="onPageChange($event)"
                             (pageSizeChange)="onSizeChange($event)">
                         </d-pagination>
