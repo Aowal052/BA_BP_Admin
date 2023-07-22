@@ -205,14 +205,17 @@ export class SupplyChainListComponent implements OnInit {
   editableTip = EditableTip.btn;
   listData!: any[];
   orderMaster!: any[];
-  productRowData = {
+  productRowData = [{
     product: '',
     quantity: 0,
     unit: {},
     unitPrice: 0,
+    remainingQuantity:0,
+    deliveredQuantity:0,
     totalPrice: 0,
-
-  };
+    productId:0,
+    unitId:0
+  }];
   productInfo?: Product;
   dropdownProductList: any[] = [];
   productList: any[] = [];
@@ -275,13 +278,13 @@ export class SupplyChainListComponent implements OnInit {
     this.getList();
     this.getProductList();
   }
-  changeProduct(product: any) {
-    this.productInfo = this.dropdownProductList.find(x => x.id == product.id);
-    this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice) ?? 0;
-    this.productRowData.unit = this.selectUnits.find(x => x.id == 1) ?? {};
-    this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
-  }
+  // changeProduct(product: any) {
+  //   this.productInfo = this.dropdownProductList.find(x => x.id == product.id);
+  //   this.productRowData.quantity = 1;
+  //   this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice) ?? 0;
+  //   this.productRowData.unit = this.selectUnits.find(x => x.id == 1) ?? {};
+  //   this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
+  // }
   search() {
     this.getList();
   }
@@ -340,12 +343,26 @@ export class SupplyChainListComponent implements OnInit {
       this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
     });
   }
+  genarateTotalPrice(productRowData:any,index:number){
+    debugger
+    this.productRowData[index].totalPrice = productRowData.remainingQuantity * productRowData.unitPrice;
+    debugger
+  }
   async viewRow(row: any, index: number) {
     this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetDetailByIdForChallan, row.orderCode)).subscribe(async (res: OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
-      debugger
       this.listData = data;
-      //await this.getCustomerDropdown();
+      for(var i=0;i<=data.length-1;i++){
+        this.productRowData[i].deliveredQuantity = data[i].deliveryQuantity,
+        this.productRowData[i].product = data[i].productName,
+        this.productRowData[i].remainingQuantity = data[i].remainingQuantity,
+        this.productRowData[i].quantity = data[i].quantity,
+        this.productRowData[i].totalPrice = data[i].totalPrice,
+        this.productRowData[i].unit = data[i].unitName,
+        this.productRowData[i].unitPrice = data[i].unitPrice,
+        this.productRowData[i].productId = data[i].productId,
+        this.productRowData[i].unitId = data[i].unitId
+      }
     });
     this.busy = (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res: OrderResponse) => {
       debugger
@@ -472,7 +489,7 @@ export class SupplyChainListComponent implements OnInit {
       formData.append(`InvoiceDetailsDto[${i}].quantity`, item.quantity.toString());
       formData.append(`InvoiceDetailsDto[${i}].unitId`, item.unitId.toString());
       formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
-      formData.append(`InvoiceDetailsDto[${i}].deliveryQuantity`, item.delQnty == undefined ? 0 : item.delQnty);
+      formData.append(`InvoiceDetailsDto[${i}].deliveryQuantity`, item.remainingQuantity == undefined ? 0 : item.remainingQuantity);
       formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
     }
     (await this.service.createOrder(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({

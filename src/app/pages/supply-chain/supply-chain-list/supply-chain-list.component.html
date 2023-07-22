@@ -200,7 +200,7 @@
         
     <h3>Product Details Info</h3>
     
-    <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+    <d-data-table #dataTable [dataSource]="productRowData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
         <thead dTableHead [checkable]="true">
           <tr dTableRow>
             <th dHeadCell>Id</th>
@@ -256,11 +256,11 @@
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'productName'"
+                [field]="'product'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
-                <span > {{ rowItem?.productName }}</span>
+                <span > {{ rowItem?.product }}</span>
               
               </td>
               <td
@@ -290,23 +290,23 @@
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'unitName'"
+                [field]="'unit'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
           
-                  <span style="margin-left: 6px">{{ rowItem.unitName }}</span>
+                  <span style="margin-left: 6px">{{ rowItem.unit }}</span>
              
               
               </td>
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'remainingQuantity'"
+                [field]="'deliveredQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
-                <span >{{ rowItem?.deliveryQuantity }}</span>
+                <span >{{ rowItem?.deliveredQuantity }}</span>
                 
               </td>
               <td
@@ -315,13 +315,15 @@
                 [editableTip]="editableTip"
                 [(editing)]="rowItem['delQntyEdit']"
                 [rowItem]="rowItem"
-                [field]="'deliveryQuantity'"
+                [field]="'remainingQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
                   <input
                     dTextInput
                     size="sm"
+                    [maxlength]="rowItem.remainingQuantity"
+                    (change)="genarateTotalPrice(rowItem,rowIndex)"
                     [(ngModel)]="rowItem.remainingQuantity"
                   />
                 

@@ -1,7 +1,6 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { orderPageNotification } from 'dist/devui-admin/assets/i18n/en-US/order';
 import { DatePipe, DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Subscription } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
@@ -17,6 +16,7 @@ import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
+import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 
 @Component({
   selector: 'app-gate-pass-create',
