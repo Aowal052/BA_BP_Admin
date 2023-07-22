@@ -7,17 +7,6 @@
         </d-breadcrumb-item>
       </d-breadcrumb>
 </div>
-    <!-- <div class="da-content-banner">
-        <d-breadcrumb>
-            <d-breadcrumb-item><a routerLink="/">{{ 'supplychainlist.breadcrumb.home' | translate }}</a></d-breadcrumb-item>
-            <d-breadcrumb-item>{{ 'supplychainlist.breadcrumb.formPage' | translate }}</d-breadcrumb-item>
-            <d-breadcrumb-item>{{ 'supplychainlist.breadcrumb.basicList' | translate }}</d-breadcrumb-item>
-        </d-breadcrumb>
-        <div class="da-content-banner-title">
-            {{ 'supplychainlist.basicList.title' | translate }}
-        </div>
-        <div>{{ 'supplychainlist.basicList.description' | translate }}</div>
-    </div> -->
     <div class="da-content-wrapper" >
         <d-toast [value]="msgs"></d-toast>
         <da-layout-row [daGutter]="[24, 24]">
@@ -211,7 +200,7 @@
         
     <h3>Product Details Info</h3>
     
-    <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+    <d-data-table #dataTable [dataSource]="productRowData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
         <thead dTableHead [checkable]="true">
           <tr dTableRow>
             <th dHeadCell>Id</th>
@@ -267,11 +256,11 @@
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'productName'"
+                [field]="'product'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
-                <span > {{ rowItem?.productName }}</span>
+                <span > {{ rowItem?.product }}</span>
               
               </td>
               <td
@@ -301,23 +290,23 @@
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'unitName'"
+                [field]="'unit'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
           
-                  <span style="margin-left: 6px">{{ rowItem.unitName }}</span>
+                  <span style="margin-left: 6px">{{ rowItem.unit }}</span>
              
               
               </td>
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'prevQnty'"
+                [field]="'deliveredQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
-                <span >{{ rowItem?.prevQnty }}</span>
+                <span >{{ rowItem?.deliveredQuantity }}</span>
                 
               </td>
               <td
@@ -326,14 +315,16 @@
                 [editableTip]="editableTip"
                 [(editing)]="rowItem['delQntyEdit']"
                 [rowItem]="rowItem"
-                [field]="'delQnty'"
+                [field]="'remainingQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
                   <input
                     dTextInput
                     size="sm"
-                    [(ngModel)]="rowItem.delQnty"
+                    [maxlength]="rowItem.remainingQuantity"
+                    (change)="genarateTotalPrice(rowItem,rowIndex)"
+                    [(ngModel)]="rowItem.remainingQuantity"
                   />
                 
               </td>
@@ -355,7 +346,7 @@
 
         <div>
             <d-form-operation>
-                <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="placeDeliveryOrder(masterData)">Submit</d-button>
+                <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="CreateChallan(masterData)">Submit</d-button>
                 <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
               </d-form-operation>
         </div>

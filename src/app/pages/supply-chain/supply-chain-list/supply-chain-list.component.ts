@@ -26,7 +26,7 @@ import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 
 
 
-export class SupplyChainListComponent implements OnInit{
+export class SupplyChainListComponent implements OnInit {
   filterAreaShow = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   multipleSelectConfig: any;
@@ -74,10 +74,10 @@ export class SupplyChainListComponent implements OnInit{
     size: 'sm' | 'md' | 'lg';
     layout: 'auto' | 'fixed';
   } = {
-    borderType: '',
-    size: 'md',
-    layout: 'auto',
-  };
+      borderType: '',
+      size: 'md',
+      layout: 'auto',
+    };
 
   tableWidthConfig: TableWidthConfig[] = [
     {
@@ -203,21 +203,24 @@ export class SupplyChainListComponent implements OnInit{
   rangeStart = new Date();
   rangeEnd = new Date();
   editableTip = EditableTip.btn;
-  listData!:any[];
-  orderMaster!:any[];
-  productRowData = {
+  listData!: any[];
+  orderMaster!: any[];
+  productRowData = [{
     product: '',
     quantity: 0,
     unit: {},
     unitPrice: 0,
+    remainingQuantity:0,
+    deliveredQuantity:0,
     totalPrice: 0,
-
-  };
-  productInfo?:Product;
-  dropdownProductList:any[] = [];
+    productId:0,
+    unitId:0
+  }];
+  productInfo?: Product;
+  dropdownProductList: any[] = [];
   productList: any[] = [];
   busy!: Subscription;
-  toastMessage:any;
+  toastMessage: any;
   @ViewChild('EditorTemplate', { static: true })
   EditorTemplate!: TemplateRef<any>;
   selectUnits = [
@@ -238,50 +241,50 @@ export class SupplyChainListComponent implements OnInit{
   //   { id: 5, name: 'Promotional Offer' },
   // ];
   masterData = {
-    id:0,
-    orderDate:(new Date).toDateString(),
-    orderNumber:0,
+    id: 0,
+    orderDate: (new Date).toDateString(),
+    orderNumber: 0,
     estimatedDeliveryDate: new Date,
-    selectedCustomer:{id:0,label:''},
+    selectedCustomer: { id: 0, label: '' },
     selectedDiscount: { id: 0, name: '' },
     totalPrice: 0,
-    pdc:true,
-    genDiscount:0,
-    orderAmDiscount:0,
-    otherDiscount:0,
-    netAmount:0,
-    deliveryInstruction:'',
-    deliveryAddress:'',
-    remarks:''
+    pdc: true,
+    genDiscount: 0,
+    orderAmDiscount: 0,
+    otherDiscount: 0,
+    netAmount: 0,
+    deliveryInstruction: '',
+    deliveryAddress: '',
+    remarks: ''
   }
-  customerDropdownList:any[] = [];
+  customerDropdownList: any[] = [];
   customerList: any[] = [];
   selectedItem: string = '';
-  isSelect : boolean = false;
-  selectedId : string = '';
+  isSelect: boolean = false;
+  selectedId: string = '';
   msgs: Array<Object> = [];
-  data:any;
+  data: any;
   constructor(
-    private listDataService: ListDataService, 
-    private service:OrderService,
+    private listDataService: ListDataService,
+    private service: OrderService,
     private comService: CommonService,
-    private proService:ProductService,
-    private dialogService: DialogService, 
-    private SaleInvservice:SalesInvoiceService,
+    private proService: ProductService,
+    private dialogService: DialogService,
+    private SaleInvservice: SalesInvoiceService,
     private cdr: ChangeDetectorRef,
-    private router: Router,) {}
+    private router: Router,) { }
 
   ngOnInit() {
     this.getList();
     this.getProductList();
   }
-  changeProduct(product:any){
-    this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
-    this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-    this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
-    this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
-  }
+  // changeProduct(product: any) {
+  //   this.productInfo = this.dropdownProductList.find(x => x.id == product.id);
+  //   this.productRowData.quantity = 1;
+  //   this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice) ?? 0;
+  //   this.productRowData.unit = this.selectUnits.find(x => x.id == 1) ?? {};
+  //   this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
+  // }
   search() {
     this.getList();
   }
@@ -303,7 +306,7 @@ export class SupplyChainListComponent implements OnInit{
   //   this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
   //   debugger
   // }
-   beforeEditEnd = async (rowItem: any, field: any) => {
+  beforeEditEnd = async (rowItem: any, field: any) => {
     //await this.updateproduct(rowItem);
     if (rowItem && rowItem[field].length < 3) {
       return false;
@@ -311,9 +314,9 @@ export class SupplyChainListComponent implements OnInit{
       return true;
     }
   };
-  
+
   async getProductList() {
-    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:OrderResponse) => {
+    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res: OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.dropdownProductList = data;
       this.productList = res.data.map(({ id, productName }) => ({ id: id, label: productName }));
@@ -328,43 +331,57 @@ export class SupplyChainListComponent implements OnInit{
   //   //this.selected = event.target.value;
   // }
   async getList() {
-    this.busy = (await this.SaleInvservice.getApprovedSalesOrder(ApiEndPoints.GetApprovedSalesOrder, this.pager)).subscribe((res:SalesInvoiceResponse) => {
+    this.busy = (await this.SaleInvservice.getApprovedSalesOrder(ApiEndPoints.GetApprovedSalesOrder, this.pager)).subscribe((res: SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
     });
   }
   async getCustomerDropdown() {
-    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res:CustomerResponse) => {
+    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res: CustomerResponse) => {
       this.customerDropdownList = res.data;
       this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
     });
   }
+  genarateTotalPrice(productRowData:any,index:number){
+    debugger
+    this.productRowData[index].totalPrice = productRowData.remainingQuantity * productRowData.unitPrice;
+    debugger
+  }
   async viewRow(row: any, index: number) {
-    this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetOrderDetailById, row.id)).subscribe((res:OrderResponse) => {
+    this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetDetailByIdForChallan, row.orderCode)).subscribe(async (res: OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
-      debugger
       this.listData = data;
-      //const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+      for(var i=0;i<=data.length-1;i++){
+        this.productRowData[i].deliveredQuantity = data[i].deliveryQuantity,
+        this.productRowData[i].product = data[i].productName,
+        this.productRowData[i].remainingQuantity = data[i].remainingQuantity,
+        this.productRowData[i].quantity = data[i].quantity,
+        this.productRowData[i].totalPrice = data[i].totalPrice,
+        this.productRowData[i].unit = data[i].unitName,
+        this.productRowData[i].unitPrice = data[i].unitPrice,
+        this.productRowData[i].productId = data[i].productId,
+        this.productRowData[i].unitId = data[i].unitId
+      }
     });
-    await this.getCustomerDropdown();
-    this.busy = (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res:OrderResponse) => {
+    this.busy = (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res: OrderResponse) => {
+      debugger
       const data = res.data;
       this.orderMaster = data;
-      const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-      const genDiscount = (res.data[0].generalDiscount / 100)* totalPrice;
-      let netPrice = totalPrice - genDiscount;
-      const otherDiscount = res.data[0].otherDiscount>0?(res.data[0].otherDiscount/100)*(totalPrice - genDiscount):0;
-      netPrice = netPrice -otherDiscount;
-      this.masterData.netAmount =netPrice;
+      //const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+      //const genDiscount = (res.data[0].generalDiscount / 100) * totalPrice;
+      //let netPrice = totalPrice - genDiscount;
+      //const otherDiscount = res.data[0].otherDiscount > 0 ? (res.data[0].otherDiscount / 100) * (totalPrice - genDiscount) : 0;
+      //netPrice = netPrice - otherDiscount;
+      //this.masterData.netAmount = netPrice;
       var discount = this.comService.getDiscountByParcent(this.masterData.netAmount);
-      netPrice = netPrice - (discount / 100)* netPrice;
+      //netPrice = netPrice - (discount / 100) * netPrice;
       this.masterData.orderAmDiscount = discount;
-      this.masterData.totalPrice = totalPrice;
-      this.masterData.netAmount = netPrice;
-      this.masterData.id = res.data[0].id;
+      //this.masterData.totalPrice = totalPrice;
+      //this.masterData.netAmount = netPrice;
+      //this.masterData.id = res.data[0].id;
       this.masterData.orderNumber = res.data[0].orderNo
-      this.masterData.selectedCustomer = {id:res.data[0].customerId,label:res.data[0].customerName}
+      this.masterData.selectedCustomer = { id: res.data[0].customerId, label: res.data[0].customerName }
       this.masterData.deliveryAddress = res.data[0].deliveryAddress;
       this.masterData.deliveryInstruction = res.data[0].deliveryInstruction;
       this.masterData.estimatedDeliveryDate = res.data[0].estimatedDeliveryDate;
@@ -373,7 +390,7 @@ export class SupplyChainListComponent implements OnInit{
       this.masterData.remarks = res.data[0].remarks;
       const orderDate = new Date(res.data[0].orderDate);
       this.masterData.orderDate = orderDate.toLocaleDateString(undefined, this.comService.dateFormate);
-     // this.masterData.selectedDiscount = {id:Number(this.DiscountOptions.find(x=>x.name== res.data[0].discountTypes)?.id),name:res.data[0].discountTypes}
+      // this.masterData.selectedDiscount = {id:Number(this.DiscountOptions.find(x=>x.name== res.data[0].discountTypes)?.id),name:res.data[0].discountTypes}
 
     });
     this.editRowIndex = index;
@@ -386,7 +403,7 @@ export class SupplyChainListComponent implements OnInit{
       showAnimate: true,
       contentTemplate: this.EditorTemplate,
       backdropCloseable: true,
-      onClose: () => {},
+      onClose: () => { },
       buttons: [
       ],
     });
@@ -423,76 +440,84 @@ export class SupplyChainListComponent implements OnInit{
     this.editForm!.modalInstance.hide();
     this.editRowIndex = -1;
   }
-  selectStart(value:any) {
+  selectStart(value: any) {
     console.log('start', value);
   }
-  selectEnd(value:any) {
+  selectEnd(value: any) {
     console.log('end', value);
   }
-  selectRange(value:any) {
+  selectRange(value: any) {
     console.log(value);
   }
-  
-items: Array<any> = [];
-onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-  this.items.push(rowItem);
-}
-  async placeDeliveryOrder(master:any){
-    const masterData = await this.comService.createFormData(master);
-    
-    const formData = new FormData();
-    debugger
-var orderDate = new Date(master.orderDate);
-formData.append('InvoiceMasterDto.OrderNo', master.orderNumber.toString());
-formData.append('InvoiceMasterDto.customerId', master.selectedCustomer.id.toString());
-formData.append('InvoiceMasterDto.deliveryAddress', master.deliveryAddress);
-formData.append('InvoiceMasterDto.deliveryInstruction', master.deliveryInstruction);
-formData.append('InvoiceMasterDto.orderDate',  orderDate.toISOString());
-formData.append('InvoiceMasterDto.netAmount', master.netAmount.toString());
-formData.append('InvoiceMasterDto.GeneralDiscount', master.genDiscount.toString());
-formData.append('InvoiceMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
-formData.append('InvoiceMasterDto.DiscountTypes', master.selectedDiscount.name!=undefined?master.selectedDiscount.name.toString():'');
-formData.append('InvoiceMasterDto.OtherDiscount', master.otherDiscount!=undefined?master.otherDiscount.toString():0);
-formData.append('InvoiceMasterDto.estimatedDeliveryDate', new Date(master.estimatedDeliveryDate).toISOString());
-formData.append('InvoiceMasterDto.remarks', master.remarks);
 
-//Append list data
-for (let i = 0; i < this.items.length; i++) {
-const item = this.items[i];
-formData.append(`InvoiceDetailsDto[${i}].productId`, item.productId.toString());
-formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
-formData.append(`InvoiceDetailsDto[${i}].quantity`, item.quantity.toString());
-formData.append(`InvoiceDetailsDto[${i}].unitId`, item.unitId.toString());
-formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
-formData.append(`InvoiceDetailsDto[${i}].deliveryQuantity`, item.delQnty==undefined?0:item.delQnty);
-formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
-}
-(await this.service.createOrder(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
-next: (res: SalesInvoiceResponse) => {
-  this.data = res;
-  if (res.statusCode == HttpStatusCode.Ok) {
-    this.msgs = [
-      {
-        severity: 'success',
-        summary: orderPageNotification.orderPage.createMessage.summary,
-        content: orderPageNotification.orderPage.createMessage.updateSuccess,
+  items: Array<any> = [];
+  onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+    this.items.push(rowItem);
+  }
+  async CreateChallan(master: any) {
+    debugger
+    if(this.items.length<1){
+      this.msgs = [
+        {
+          severity: 'warn',
+          summary: orderPageNotification.orderPage.createMessage.summary,
+          content: orderPageNotification.orderPage.createMessage.selectDetail,
+        },
+      ];
+      return;
+    }
+    const formData = new FormData();
+    var orderDate = new Date(master.orderDate);
+    formData.append('InvoiceMasterDto.OrderNo', master.orderNumber.toString());
+    formData.append('InvoiceMasterDto.customerId', master.selectedCustomer.id.toString());
+    formData.append('InvoiceMasterDto.deliveryAddress', master.deliveryAddress);
+    formData.append('InvoiceMasterDto.deliveryInstruction', master.deliveryInstruction);
+    formData.append('InvoiceMasterDto.orderDate', orderDate.toISOString());
+    formData.append('InvoiceMasterDto.netAmount', master.netAmount.toString());
+    formData.append('InvoiceMasterDto.GeneralDiscount', master.genDiscount.toString());
+    formData.append('InvoiceMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
+    formData.append('InvoiceMasterDto.DiscountTypes', master.selectedDiscount.name != undefined ? master.selectedDiscount.name.toString() : '');
+    formData.append('InvoiceMasterDto.OtherDiscount', master.otherDiscount != undefined ? master.otherDiscount.toString() : 0);
+    formData.append('InvoiceMasterDto.estimatedDeliveryDate', new Date(master.estimatedDeliveryDate).toISOString());
+    formData.append('InvoiceMasterDto.remarks', master.remarks);
+
+    //Append list data
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i];
+      formData.append(`InvoiceDetailsDto[${i}].productId`, item.productId.toString());
+      formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
+      formData.append(`InvoiceDetailsDto[${i}].quantity`, item.quantity.toString());
+      formData.append(`InvoiceDetailsDto[${i}].unitId`, item.unitId.toString());
+      formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
+      formData.append(`InvoiceDetailsDto[${i}].deliveryQuantity`, item.remainingQuantity == undefined ? 0 : item.remainingQuantity);
+      formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
+    }
+    (await this.service.createOrder(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
+      next: (res: SalesInvoiceResponse) => {
+        this.data = res;
+        if (res.statusCode == HttpStatusCode.Ok) {
+          this.msgs = [
+            {
+              severity: 'success',
+              summary: orderPageNotification.orderPage.createMessage.summary,
+              content: orderPageNotification.orderPage.createMessage.updateSuccess,
+            },
+          ];
+        }
+        this.editForm.modalInstance.hide();
       },
-    ];
+      error: (error) => {
+        this.msgs = [
+          {
+            severity: 'error',
+            summary: orderPageNotification.orderPage.createMessage.summary,
+            content: error.error.error,
+          },
+        ];
+      }
+    });
   }
-  this.editForm.modalInstance.hide();
-},
-error: (error) => {
-  this.msgs = [
-    {
-      severity: 'error',
-      summary: orderPageNotification.orderPage.createMessage.summary,
-      content: error.error.error,
-    },
-  ];
-}
-});
-  }
-  cancelRequest(){
+  cancelRequest() {
     this.editForm.modalInstance.hide();
   }
 }

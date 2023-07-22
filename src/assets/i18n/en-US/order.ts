@@ -22,6 +22,8 @@ export const orderPageNotification = {
           'Order Updated Operation Successfully done.',
         addSuccess:
           'Order Submission Operation Successfully done.',
+        selectDetail:
+          'you need to select product to process the request.',
       },
     },
   };
