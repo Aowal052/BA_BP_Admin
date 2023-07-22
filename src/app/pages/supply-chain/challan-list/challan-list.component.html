@@ -84,6 +84,13 @@
                                     </d-cell>
                                   </d-column>
                                   <d-column field="gatePassNo" header="GatePass NO" [width]="'100px'">
+                                    <d-cell>
+                                      <ng-template let-cellItem="cellItem">
+                                        <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
+                                          {{ cellItem }}
+                                        </span>
+                                      </ng-template>
+                                    </d-cell>
                                   </d-column>
                                   <d-column field="Actions" header="Actions" [width]="'150px'">
                                     <d-cell>
@@ -140,7 +147,7 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label>Gate Pass No : {{master.gatePassId}}</d-form-label>
+                        <d-form-label>Gate Pass No : {{master.gatePassNo}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>

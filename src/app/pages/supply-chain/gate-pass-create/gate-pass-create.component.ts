@@ -10,7 +10,7 @@ import { ListDataService } from 'src/app/@core/mock/list-data.service';
 import { GatePassResponse } from 'src/app/@core/model/GatePassResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
-import { VehicleResponse } from 'src/app/@core/model/VehicleResponse';
+import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
 import { GatePassService } from 'src/app/@core/services/gatepass/gate-pass.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
@@ -23,14 +23,14 @@ import { FormConfig } from 'src/app/@shared/components/admin-form';
   templateUrl: './gate-pass-create.component.html',
   styleUrls: ['./gate-pass-create.component.scss']
 })
-export class GatePassCreateComponent implements OnInit{
+export class GatePassCreateComponent implements OnInit {
 
-  
-  
+
+
   filterAreaShow = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   multipleSelectConfig: any;
-  master:any =[];
+  master: any = [];
   selectOptions = [
     {
       id: 1,
@@ -59,11 +59,7 @@ export class GatePassCreateComponent implements OnInit{
       label: 'Manager',
     },
   ];
-  formData = {
-    selectValue: this.selectOptions[1],
-    multipleSelectValue: [],
-    radioValue: {},
-  };
+
   options = ['normal', 'borderless', 'bordered'];
 
   sizeOptions = ['sm', 'md', 'lg'];
@@ -75,10 +71,10 @@ export class GatePassCreateComponent implements OnInit{
     size: 'sm' | 'md' | 'lg';
     layout: 'auto' | 'fixed';
   } = {
-    borderType: '',
-    size: 'md',
-    layout: 'auto',
-  };
+      borderType: '',
+      size: 'md',
+      layout: 'auto',
+    };
   //---------------GatePass Date Start
   selectedDate1 = new Date();
   selectedDate2 = null;
@@ -94,7 +90,7 @@ export class GatePassCreateComponent implements OnInit{
       time: 'y-MM-dd HH:mm:ss'
     }
   };
-   //---------------GatePass Date End
+  //---------------GatePass Date End
   tableWidthConfig: TableWidthConfig[] = [
     {
       field: 'id',
@@ -210,31 +206,24 @@ export class GatePassCreateComponent implements OnInit{
     total: 0,
     PageIndex: 1,
     PageSize: 10,
-    fromDate:null,
-    toDate:null,
-    customerId:0,
-    challanNo:'',
-    orderNo:0
+    fromDate: null,
+    toDate: null,
+    customerId: 0,
+    challanNo: '',
+    orderNo: 0
   };
-  
+
   rangeStart = new Date();
   rangeEnd = new Date();
   editableTip = EditableTip.btn;
-  listData!:any[];
-  orderMaster!:any[];
-  productRowData = {
-    product: '',
-    quantity: 0,
-    unit: {},
-    unitPrice: 0,
-    totalPrice: 0,
+  listData!: any[];
+  orderMaster!: any[];
 
-  };
-  productInfo?:Product;
-  dropdownProductList:any[] = [];
+  VehicleInfo?: Vehicle;
+  dropdownProductList: any[] = [];
   productList: any[] = [];
   busy!: Subscription;
-  toastMessage:any;
+  toastMessage: any;
   @ViewChild('EditorTemplate', { static: true })
   EditorTemplate!: TemplateRef<any>;
   selectUnits = [
@@ -247,90 +236,117 @@ export class GatePassCreateComponent implements OnInit{
       label: 'Dzn',
     }
   ];
-   selectedVehicle = { id: 0, label: '', driverName: '' };
+  //selectedVehicle = { id: 0, label: '', driverName: '' };
+
+  formData = {
+    selectValue: this.selectOptions[1],
+    multipleSelectValue: [],
+    radioValue: {},
+  };
   masterData = {
-    id:0,
-    challanNo:0,
-    orderDate:(new Date).toDateString(),
-    orderNumber:0,
+    id: 0,
+    challanNo: 0,
+    orderDate: (new Date).toDateString(),
+    orderNumber: 0,
     estimatedDeliveryDate: new Date,
-    selectedVehicle:{ id: 0, label: ''},//{id:0,label:'',driverName:''},
+    selectedVehicle: {},
+    //selectedVehicle:{ id: 0, label: ''},//{id:0,label:'',driverName:''},
     selectedDiscount: { id: 0, name: '' },
     driverName: '',
     driverLicenseNo: '',
     driverPhone: '',
-    remarks:'',
-    selectedDate1:''
+    remarks: '',
+    selectedDate1: ''
   }
-  VehicleDropdownList:any[] = [];
+  VehicleRowData = {
+    VehicleNo: '',
+    driverName: '',
+    driverPhone: '',
+    driverLicenseNo: '',
+  };
+  VehicleDropdownList: any[] = [];
   vehicleList: any[] = [];
   selectedItem: string = '';
-  isSelect : boolean = false;
-  selectedId : string = '';
+  isSelect: boolean = false;
+  selectedId: string = '';
   msgs: Array<Object> = [];
-  data:any;
-  IsActive:boolean = false;
+  data: any;
+  IsActive: boolean = false;
   constructor(
-    private SaleInvservice:SalesInvoiceService,
-    private GatepassService:GatePassService,
-    private dialogService: DialogService, 
-    private service:OrderService,
+    private SaleInvservice: SalesInvoiceService,
+    private GatepassService: GatePassService,
+    private dialogService: DialogService,
+    private service: OrderService,
     private comService: CommonService,
-    ) {}
+  ) { }
 
   ngOnInit() {
     this.getList();
     this.getVehicleDropdown();
+    this.multipleSelectConfig = {
+      key: 'multipleSelect',
+      label: 'Options(Multiple selection with delete)',
+      isSearch: true,
+      multiple: 'true',
+      labelization: { enable: true, labelMaxWidth: '120px' },
+      options: this.selectOptions,
+    };
   }
+  changeVehicle(vehicle: any) {
+    this.VehicleInfo = this.VehicleDropdownList.find(x => x.id == vehicle.id);
+    this.VehicleRowData.driverName = this.VehicleInfo?.driverName ?? '';
+    this.VehicleRowData.driverLicenseNo = this.VehicleInfo?.driverLicenseNo ?? '';
+    this.VehicleRowData.driverPhone = this.VehicleInfo?.driverPhone ?? '';
 
+  }
   search() {
     this.getList();
   }
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
   };
-  
-   beforeEditEnd = async (rowItem: any, field: any) => {
+
+  beforeEditEnd = async (rowItem: any, field: any) => {
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
       return true;
     }
   };
-  
+
   async getList() {
     //const masterData = await this.comService.createFormDataObj(this.pager);
     this.busy = (await this.GatepassService.getChallanList(ApiEndPoints.GetChallanListGatePass, this.pager))
-               .subscribe((res:SalesInvoiceResponse) => {
-                debugger;
-      const data = JSON.parse(JSON.stringify(res.data));
-      this.basicDataSource = data;
-      this.pager.total = res.totalCount;
-    });
+      .subscribe((res: SalesInvoiceResponse) => {
+        debugger;
+        const data = JSON.parse(JSON.stringify(res.data));
+        this.basicDataSource = data;
+        this.pager.total = res.totalCount;
+      });
   }
 
   async getVehicleDropdown() {
     debugger
     this.busy = (await this.GatepassService.getVehicleDropdown(ApiEndPoints.GetVehicleDropdown))
-                 .subscribe((res:VehicleResponse) => {
-      this.VehicleDropdownList = res.data;
-      this.vehicleList = res.data.map(({ id, vehicleNo,driverName }) => ({ id: id, label: vehicleNo, driverName:driverName }));
-    });
+      .subscribe((res: VehicleResponse) => {
+        this.VehicleDropdownList = res.data;
+        this.vehicleList = res.data.map(({ id, vehicleNo }) => ({ id: id, label: vehicleNo }));
+      });
   }
 
 
-   //this.basicDataSource.find(x=>x.id==row.id);
+  //this.basicDataSource.find(x=>x.id==row.id);
 
   async viewRow(row: any, index: number) {
     this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id))
-                .subscribe((res:SalesInvoiceResponse) => {
-      const data = JSON.parse(JSON.stringify(res.data));
-      debugger
-      this.listData = data;
-    });
-    
+      .subscribe((res: SalesInvoiceResponse) => {
+        const data = JSON.parse(JSON.stringify(res.data));
+        debugger
+        this.listData = data;
+      });
 
-    this.master = this.basicDataSource.find(x=>x.id==row.id);
+
+    this.master = this.basicDataSource.find(x => x.id == row.id);
     this.editRowIndex = index;
     this.formData = row;
     this.editForm = this.dialogService.open({
@@ -341,7 +357,7 @@ export class GatePassCreateComponent implements OnInit{
       showAnimate: true,
       contentTemplate: this.EditorTemplate,
       backdropCloseable: true,
-      onClose: () => {},
+      onClose: () => { },
       buttons: [
       ],
     });
@@ -378,92 +394,91 @@ export class GatePassCreateComponent implements OnInit{
     this.editForm!.modalInstance.hide();
     this.editRowIndex = -1;
   }
-  selectStart(value:any) {
+  selectStart(value: any) {
     console.log('start', value);
   }
-  selectEnd(value:any) {
+  selectEnd(value: any) {
     console.log('end', value);
   }
-  selectRange(value:any) {
+  selectRange(value: any) {
     console.log(value);
   }
 
 
-  
 
-deleteList: Item[] = [];
-items: Array<any> = [];
-onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-  debugger
-  if(checked == true)
-  {
-    this.items.push(rowItem);
-  } 
-  else{
-    this.items.splice(rowItem,1);
+
+  deleteList: Item[] = [];
+  items: Array<any> = [];
+  onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+    debugger
+    if (checked == true) {
+      this.items.push(rowItem);
+    }
+    else {
+      this.items.splice(rowItem, 1);
+    }
+
+    //rowItem.$halfChecked = false;
+    if (this.items.length > 0) {
+      this.IsActive = true;
+    }
+    else {
+      this.IsActive = false;
+    }
   }
-  
-  //rowItem.$halfChecked = false;
-  if(this.items.length>0)
-  {
-    this.IsActive = true;
-  } 
-  else{
-    this.IsActive = false;
+  async placeGatePass(master: any) {
+    const masterData = await this.comService.createFormData(master);
+
+    const formData = new FormData();
+
+    debugger
+    const gatePassDate = master.selectedDate1; // Assuming you have the Date object
+
+    // Formatting the date as 'YYYY-MM-DD' (e.g., '2023-07-20')
+    const formattedDate = `${gatePassDate.getFullYear()}-${String(gatePassDate.getMonth() + 1).padStart(2, '0')}-${String(gatePassDate.getDate()).padStart(2, '0')}`;
+    formData.append('GatePassDate', formattedDate);
+    debugger
+    formData.append('VehicleId', master.selectedVehicle.id);
+
+
+    //Append list data
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i];
+      formData.append(`InvoiceNo`, item.invoiceNo);
+    }
+
+    (await this.GatepassService.createGatePass(ApiEndPoints.CreateGatePass, formData)).subscribe({
+      next: (res: GatePassResponse) => {
+        this.data = res;
+        if (res.statusCode == HttpStatusCode.Ok) {
+          this.msgs = [
+            {
+              severity: 'success',
+              summary: orderPageNotification.orderPage.createMessage.summary,
+              content: orderPageNotification.orderPage.createMessage.updateSuccess,
+            },
+          ];
+        }
+        this.getList();
+        //this.editForm.modalInstance.hide();
+      },
+      error: (error) => {
+        this.msgs = [
+          {
+            severity: 'error',
+            summary: orderPageNotification.orderPage.createMessage.summary,
+            content: error.error.error,
+          },
+        ];
+      }
+    });
   }
-}
-async placeGatePass(master:any){
-  const masterData = await this.comService.createFormData(master);
-  
-  const formData = new FormData();
  
-  debugger
-  const gatePassDate = master.selectedDate1; // Assuming you have the Date object
-
-  // Formatting the date as 'YYYY-MM-DD' (e.g., '2023-07-20')
-  const formattedDate = `${gatePassDate.getFullYear()}-${String(gatePassDate.getMonth() + 1).padStart(2, '0')}-${String(gatePassDate.getDate()).padStart(2, '0')}`;
-formData.append('GatePassDate',formattedDate);
-debugger
-formData.append('VehicleId', master.selectedVehicle.id);
-
-
-//Append list data
-for (let i = 0; i < this.items.length; i++) {
-const item = this.items[i];
-formData.append(`InvoiceNo`, item.invoiceNo);
-}
-
-(await this.GatepassService.createGatePass(ApiEndPoints.CreateGatePass, formData)).subscribe({
-next: (res: GatePassResponse) => {
-this.data = res;
-if (res.statusCode == HttpStatusCode.Ok) {
-  this.msgs = [
-    {
-      severity: 'success',
-      summary: orderPageNotification.orderPage.createMessage.summary,
-      content: orderPageNotification.orderPage.createMessage.updateSuccess,
-    },
-  ];
-}
-this.editForm.modalInstance.hide();
-},
-error: (error) => {
-this.msgs = [
-  {
-    severity: 'error',
-    summary: orderPageNotification.orderPage.createMessage.summary,
-    content: error.error.error,
-  },
-];
-}
-});
-}
-
-// onCheckAllChange() {
-//   this.deleteList = this.datatable.getCheckedRows();
-// }
-  cancelRequest(){
-    this.editForm.modalInstance.hide();
-  }
+  // onCheckAllChange() {
+  //   this.deleteList = this.datatable.getCheckedRows();
+  // }
+  // cancelRequest() {
+  //   this.editForm.modalInstance.hide();
+  // }
 
 }

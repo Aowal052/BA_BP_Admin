@@ -6,3 +6,12 @@ export class VehicleResponse{
     data:any[] = [];
 }
 
+
+export interface Vehicle {
+    id?:number;
+    vehicleNo?:string;
+    driverLicenseNo?:string;
+    driverPhone?:string;
+    driverName?:string;
+    
+  }

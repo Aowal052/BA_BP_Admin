@@ -54,6 +54,7 @@
                                                             name="VehicleId"
                                                             [isSearch]="true" [filterKey]="'label'"
                                                             placeholder="Select Vehicle"
+                                                            (ngModelChange)="changeVehicle($event)"
                                                             [(ngModel)]="masterData.selectedVehicle"></d-select>
                                                       </d-form-control>
                                                 </d-form-item>
@@ -64,7 +65,9 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Driver Name</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <input dTextInput name="driverName" [(ngModel)]="masterData.driverName" />
+                                                        <input dTextInput 
+                                                        name="driverName" 
+                                                        [(ngModel)]="VehicleRowData.driverName" />
                                                         
                                                     </d-form-control>
                                                 </d-form-item>
@@ -75,7 +78,9 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Driver Licence</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <input dTextInput name="driverName" [(ngModel)]="masterData.driverLicenseNo" />
+                                                        <input dTextInput 
+                                                        name="driverLicenseNo" 
+                                                        [(ngModel)]="VehicleRowData.driverLicenseNo" />
                                                     </d-form-control>
                                                 </d-form-item>
                                             </div>
@@ -85,7 +90,9 @@
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Driver Phone No</d-form-label>
                                                     <d-form-control class="form-control-width">
-                                                        <input dTextInput name="driverName" [(ngModel)]="masterData.driverPhone" />
+                                                        <input dTextInput 
+                                                        name="driverPhone" 
+                                                        [(ngModel)]="VehicleRowData.driverPhone" />
                                                     </d-form-control>
                                                 </d-form-item>
                                             </div>

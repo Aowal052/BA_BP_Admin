@@ -281,6 +281,7 @@ export class ChallanListComponent implements OnInit{
   };
   
   async getList() {
+    debugger;
     this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, this.pager))
                .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
