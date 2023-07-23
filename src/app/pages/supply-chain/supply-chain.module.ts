@@ -9,13 +9,15 @@ import { SharedModule } from 'src/app/@shared/shared.module';
 import { SupplyChainListComponent } from './supply-chain-list/supply-chain-list.component';
 import { ChallanListComponent } from './challan-list/challan-list.component';
 import { GatePassCreateComponent } from './gate-pass-create/gate-pass-create.component';
+import { DirectChallanComponent } from './direct-challan/direct-challan.component';
 
 
 @NgModule({
   declarations: [
     SupplyChainListComponent,
     ChallanListComponent,
-    GatePassCreateComponent
+    GatePassCreateComponent,
+    DirectChallanComponent
   ],
   imports: [
     CommonModule,

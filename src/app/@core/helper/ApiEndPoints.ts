@@ -19,6 +19,7 @@ export class ApiEndPoints{
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
     static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';
+    static readonly GetSuCustomerFoDropdown: string = 'Customer/GetSubCustomerForDropdown';
     static readonly DeleteProducts: string = 'v1/Product/Delete';
     static readonly UpdateProduct: string = 'v1/Product/Update';
     static readonly GetProductById: string = 'v1/Product/GetById'
@@ -42,6 +43,7 @@ export class ApiEndPoints{
     static readonly GetChallanListGatePass:string = 'v1/CRM/GetGatePassInfo';
     static readonly CreateGatePass:string = 'v1/CRM/CreateGatePass';
     static readonly GetDiscountList:string = 'Discount/Get';
+    static readonly GetBranchList:string = 'Branch/GetForDropdown';
 
     // Additional static messages can be added here
 
