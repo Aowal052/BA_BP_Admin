@@ -41,6 +41,7 @@ export class ApiEndPoints{
     static readonly GetVehicleDropdown:string = 'v1/CRM/GetVehicles';
     static readonly GetChallanListGatePass:string = 'v1/CRM/GetGatePassInfo';
     static readonly CreateGatePass:string = 'v1/CRM/CreateGatePass';
+    static readonly GetDiscountList:string = 'Discount/Get';
 
     // Additional static messages can be added here
 

@@ -6,6 +6,7 @@ import { CommonService } from '../CommonService';
 import { ProductResponse } from '../../model/ProductResponse';
 import { CustomerResponse } from '../../model/CustomerResponse';
 import { environment } from 'src/environments/environment';
+import { DiscountResponse } from '../../model/DiscontResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,19 @@ export class ProductService {
   async getCustomerDropdown(endpoint:string):Promise<Observable<CustomerResponse>>{
     const httpOptions = await this.service.getHttpOptions();
     return this.http.get<CustomerResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+
+  async getDiscountDropdown(endpoint:string):Promise<Observable<DiscountResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<DiscountResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {

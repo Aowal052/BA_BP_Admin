@@ -1,6 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Subscription } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
@@ -271,8 +270,7 @@ export class SupplyChainListComponent implements OnInit {
     private proService: ProductService,
     private dialogService: DialogService,
     private SaleInvservice: SalesInvoiceService,
-    private cdr: ChangeDetectorRef,
-    private router: Router,) { }
+    private cdr: ChangeDetectorRef,) { }
 
   ngOnInit() {
     this.getList();
