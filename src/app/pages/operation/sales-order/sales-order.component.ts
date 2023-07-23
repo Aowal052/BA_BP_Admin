@@ -5,6 +5,7 @@ import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } 
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { Discount, DiscountResponse } from 'src/app/@core/model/DiscontResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
@@ -231,6 +232,13 @@ export class SalesOrderComponent {
     totalPrice: 0,
 
   };
+
+  discountRowData = {
+    discount: '',
+    discountType: '',
+    discountAmnt: 0,
+  };
+
   dateConfig = {
     timePicker: true,
     dateConverter: null,
@@ -245,19 +253,32 @@ export class SalesOrderComponent {
   headerNewForm = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   msgs: Array<Object> = [];
-  discountTypes = ['Online Discount', 'Eid Discount', 'Special Discount'];
+  //discountTypes = ['Online Discount', 'Eid Discount', 'Special Discount'];
   formItems: DFormData = {};
   selectedDate2 = new Date;
   toastMessage:any;
   busy !: Subscription;
   data:any;
-  customerInfo!:Customer;
+
+  discountListData : any[] = [];
+  discountInfo?:Discount;
+  dropdownDiscountList:any[] = [];
+  discountList: any[] = [];
+
   listData : any[] = [];
   productInfo?:Product;
   productList: any[] = [];
+  customerInfo!:Customer;
   customerList: any[] = [];
   dropdownProductList:any[] = [];
   customerDropdownList:any[] = [];
+
+  pager = {
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  };
+
   editableTip = EditableTip.btn;
   constructor(
     private dialogService: DialogService,
@@ -268,6 +289,7 @@ export class SalesOrderComponent {
     private comService:CommonService){}
   async ngOnInit() {
     await this.getProductDropdown();
+    await this.getDiscountDropdown();
     await this.getCustomerDropdown();
     this.multipleSelectConfig = {
       key: 'multipleSelect',
@@ -412,9 +434,9 @@ export class SalesOrderComponent {
       this.masterData.netAmount =totalPrice - (this.customerInfo.defaultDiscount / 100)* totalPrice;
       this.masterData.totalPrice = totalPrice;
       this.masterData.genDiscount = this.customerInfo.defaultDiscount;
-      var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
-      this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
-      this.masterData.orderAmDiscount = discount;
+      //var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
+      //this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
+      //this.masterData.orderAmDiscount = discount;
     });
     debugger
 
@@ -422,7 +444,16 @@ export class SalesOrderComponent {
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res:CustomerResponse) => {
       this.customerDropdownList = res.data;
-      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));;
+      debugger
+      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+    });
+  }
+
+  async getDiscountDropdown() {
+    this.busy = (await this.proService.getDiscountDropdown(ApiEndPoints.GetDiscountList)).subscribe((res:DiscountResponse) => {
+      this.dropdownDiscountList = res.data;
+      debugger
+      this.discountList = res.data.map(({ id, discountName }) => ({ id: id, label: discountName }));
     });
   }
 
@@ -444,6 +475,14 @@ export class SalesOrderComponent {
     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
     this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
+  }
+
+  changeDiscount(discount:any){
+     this.discountInfo = this.dropdownDiscountList.find( x=>x.id == discount.id);
+     this.discountRowData.discountAmnt = 1;
+     debugger;
+     this.discountRowData.discountType = this.discountInfo?.discountType ?? '';
+     
   }
 
   genarateTotalPrice(productRowData:any){
@@ -477,13 +516,7 @@ export class SalesOrderComponent {
     }
     return of(message).pipe(delay(300));
   }
-  // checkName(value: string) {
-  //   let res = true;
-  //   if (this.existProjectNames.indexOf(value) !== -1) {
-  //     res = false;
-  //   }
-  //   return of(res).pipe(delay(500));
-  // }
+ 
   submitProjectForm({ valid }: any) {
     if (valid) {
       of(this.formItems)
@@ -523,6 +556,25 @@ export class SalesOrderComponent {
     this.listData.unshift(newData);
   }
 
+  async quickRowAddedDiscount(e: any) {
+    debugger;
+    e.discountName = e.discount.label;
+    e.discountType = e.discount.discountType;
+    e.discountAmnt = e.discount.discountAmnt;
+    e.discountId = e.discount.id;
+  
+    // Check if product.id already exists in this.listData
+    const discountExists = this.discountListData.some((item) => item.discountId === e.discountId);
+  
+    if (discountExists) {
+      this.showToast('error', 'Error', 'Your discount alredy is in the list.');
+      return;
+    }
+  
+    const newData = { ...e };
+    this.discountListData.unshift(newData);
+  }
+
   quickRowCancel() {
     this.headerNewForm = false;
   }
@@ -540,6 +592,42 @@ export class SalesOrderComponent {
   };
 
   deleteRow(index: number) {
+    debugger
+    const results = this.dialogService.open({
+      id: 'delete-dialog',
+      width: '346px',
+      maxHeight: '600px',
+      title: 'Delete',
+      showAnimate: false,
+      content: 'Are you sure you want to delete it?',
+      backdropCloseable: true,
+      onClose: () => {},
+      buttons: [
+        {
+          cssClass: 'primary',
+          text: 'Ok',
+          disabled: false,
+          handler: () => {
+            this.listData.splice(index, 1);
+            const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+            this.masterData.totalPrice = totalPrice;
+            this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
+            results.modalInstance.hide();
+          },
+        },
+        {
+          id: 'btn-cancel',
+          cssClass: 'common',
+          text: 'Cancel',
+          handler: () => {
+            results.modalInstance.hide();
+          },
+        },
+      ],
+    });
+  }
+
+  deleteRowDiscount(index: number) {
     debugger
     const results = this.dialogService.open({
       id: 'delete-dialog',
