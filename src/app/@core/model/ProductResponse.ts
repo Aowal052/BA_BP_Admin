@@ -11,6 +11,7 @@ export class Products{
     id?:number;
     productCode?:string;
     productName?:string;
+    shortName?:string;
     defaultPrice?:string;
     description?:string;
     showDescriptionInPurchase:boolean = false;
@@ -25,6 +26,7 @@ export interface Product {
     id?:number;
     productCode?:string;
     productName?:string;
+    shortName?:string;
     defaultPrice?:string;
     description?:string;
     showDescriptionInPurchase?:boolean;

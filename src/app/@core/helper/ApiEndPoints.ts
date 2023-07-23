@@ -21,6 +21,7 @@ export class ApiEndPoints{
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';
     static readonly DeleteProducts: string = 'v1/Product/Delete';
     static readonly UpdateProduct: string = 'v1/Product/Update';
+    static readonly UpdateProductPrice: string = 'v1/Product/UpdatePrice';
     static readonly GetProductById: string = 'v1/Product/GetById'
     static readonly AddCategory: string = 'ProductCategory/Create';
     static readonly AddOrder: string = 'SalesOrder/Create';

@@ -1,0 +1,67 @@
+<div class="da-content-wrapper">
+    <d-toast [value]="toastMessage"></d-toast>
+    <da-layout-row [daGutter]="[24, 24]">
+        <da-col-item [daSpan]="24" [daXs]="24">
+            <div class="da-content-card da-form-card">
+                <div class="da-content-title da-form-card-title">
+                    <h3>Product Price Configuration</h3>
+                </div>
+                <form dForm [layout]="layout">
+                    <da-layout-col [daGutter]="[24, 24]">
+                        <da-row-item>
+                            <d-form-item>
+                                <d-form-label [required]="true">Product Name</d-form-label>
+                                <d-form-control>
+                                    <d-select 
+                                    [isSearch]="true" 
+                                    [filterKey]="'label'"
+                                    [options]="productlist"
+                                    [placeholder]="'Select a Product'"
+                                    name="product name" 
+                                    size="sm" 
+                                    [searchPlaceholder]="'Selech By product short name'"
+                                    [searchFn]="onSelectObject"
+                                    [(ngModel)]="productPriceData.product"></d-select>
+                                </d-form-control>
+                            </d-form-item>
+                        </da-row-item>
+
+                        <da-row-item>
+                            <d-form-item>
+                                <d-form-label>Price per Piece</d-form-label>
+                                <d-form-control>
+                                    <input
+                                        dTextInput
+                                        name="piecePrice"
+                                        [(ngModel)]="productPriceData.piecePrice"
+                                    />
+                                </d-form-control>
+                            </d-form-item>
+                        </da-row-item>
+
+                        <da-row-item>
+                            <d-form-item>
+                                <d-form-label>Price per Dozen</d-form-label>
+                                <d-form-control>
+                                    <input
+                                        dTextInput
+                                        name="dozenPrice"
+                                        [(ngModel)]="productPriceData.dozenPrice"
+                                    />
+                                </d-form-control>
+                            </d-form-item>
+                        </da-row-item>
+
+                        <da-row-item>
+                            <d-form-operation>
+                                <d-button class="mr-element-spacing" (btnClick)="UpdatePrice(productPriceData)" circled="true" style="margin-right: 8px"
+                                    dFormSubmit>Update Price</d-button>
+                            </d-form-operation>
+                        </da-row-item>
+
+                    </da-layout-col>
+                </form>
+            </div>
+        </da-col-item>
+    </da-layout-row>
+</div>
