@@ -31,6 +31,17 @@ export class ProductService {
   };
   //`${ApiEndPoints.GetProducts}?pageNumber=${pageNumber}&pageSize=${pageSize}`
 
+  async updatePrice(endpoint:string,param:any):Promise<Observable<ProductResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.post<ProductResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+      catchError((error) => {
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
   async getProducts(endpoint:string,pager:any):Promise<Observable<ProductResponse>>{
     const httpOptions = await this.service.getHttpOptions();
     debugger

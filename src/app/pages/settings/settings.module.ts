@@ -10,13 +10,15 @@ import { DatepickerModule, InputNumberModule, PaginationModule, TagsInputModule,
 import { DynamicFormsModule } from 'src/app/@shared/components/dynamic-forms';
 import { SharedModule } from 'src/app/@shared/shared.module';
 import { FormRoutingModule } from '../form/form-routing.module';
+import { ProductPriceConfigComponent } from './product-price-config/product-price-config.component';
 
 
 @NgModule({
   declarations: [
     CommissionComponent,
     OffersComponent,
-    SettingsComponent
+    SettingsComponent,
+    ProductPriceConfigComponent
   ],
   imports: [
     CommonModule,
