@@ -332,9 +332,9 @@ export class SalesOrderComponent {
       formData.append('salesOrderMasterDto.orderDate', master.orderDate.toISOString());
       formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
       formData.append('salesOrderMasterDto.GeneralDiscount', master.genDiscount.toString());
-      formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
-      formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name.toString());
-      formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount.toString());
+      //formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
+      //formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name.toString());
+      //formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount.toString());
       formData.append('salesOrderMasterDto.estimatedDeliveryDate', master.estimatedDeliveryDate.toISOString());
       formData.append('salesOrderMasterDto.remarks', master.remarks);
 
@@ -434,9 +434,9 @@ export class SalesOrderComponent {
       this.masterData.netAmount =totalPrice - (this.customerInfo.defaultDiscount / 100)* totalPrice;
       this.masterData.totalPrice = totalPrice;
       this.masterData.genDiscount = this.customerInfo.defaultDiscount;
-      //var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
-      //this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
-      //this.masterData.orderAmDiscount = discount;
+      var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
+      this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
+      this.masterData.orderAmDiscount = discount;
     });
     debugger
 

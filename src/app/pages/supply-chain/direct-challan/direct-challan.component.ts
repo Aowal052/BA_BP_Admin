@@ -405,7 +405,9 @@ export class DirectChallanComponent implements OnInit{
                 content: orderPageNotification.orderPage.createMessage.addSuccess,
               },
             ];
-            this.router.navigate(['/pages', 'user', 'center']);
+
+           
+            //this.router.navigate(['/pages', 'user', 'center']);
           }
         },
         error: (error) => {

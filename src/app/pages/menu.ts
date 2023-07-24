@@ -151,6 +151,8 @@ export default function (values: any) {
         { title: values['supplychains']['directchallan'], link: '/pages/supplychain/direct-challan' },
         { title: values['supplychains']['challanlists'], link: '/pages/supplychain/challan-list' },
         { title: values['supplychains']['gatepasscreate'], link: '/pages/supplychain/gate-pass-create' },
+        { title: values['supplychains']['createinvoice'], link: '/pages/supplychain/create-invoice' },
+        { title: values['supplychains']['invoicelist'], link: '/pages/supplychain/invoice-list' },
         
       ],
       link: '/pages/supplychains',

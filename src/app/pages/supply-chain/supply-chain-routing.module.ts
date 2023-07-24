@@ -5,6 +5,8 @@ import { SupplyChainListComponent } from './supply-chain-list/supply-chain-list.
 import { ChallanListComponent } from './challan-list/challan-list.component';
 import { GatePassCreateComponent } from './gate-pass-create/gate-pass-create.component';
 import { DirectChallanComponent } from './direct-challan/direct-challan.component';
+import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
+import { InvoiceListComponent } from './invoice-list/invoice-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -14,6 +16,8 @@ const routes: Routes = [{
     { path: 'direct-challan', component: DirectChallanComponent },
     { path: 'challan-list', component: ChallanListComponent },
     { path: 'gate-pass-create', component: GatePassCreateComponent },
+    { path: 'create-invoice', component: CreateInvoiceComponent },
+    { path: 'invoice-list', component: InvoiceListComponent },
     
   ],
 }];
