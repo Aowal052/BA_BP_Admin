@@ -7,6 +7,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SubCustomerResponse } from '../../model/SubCustomerResponse';
 import { BranchResponse } from '../../model/BranchResponse';
+import { DeliveryChallanResponse } from '../../model/DeliveryChallanResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,18 @@ export class DeliveryChallanService {
       return this.http.get<BranchResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
         catchError((error) => {
           debugger
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
+
+    async createDirectChallan(endpoint:string,param:any):Promise<Observable<DeliveryChallanResponse>>{
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.post<DeliveryChallanResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+        catchError((error) => {
           if (error.status === HttpStatusCode.Unauthorized) {
             this.router.navigate(['login']);
           }

@@ -6,6 +6,7 @@ import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { DeliveryChallanResponse } from 'src/app/@core/model/DeliveryChallanResponse';
 import { Discount, DiscountResponse } from 'src/app/@core/model/DiscontResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
@@ -344,31 +345,55 @@ export class DirectChallanComponent implements OnInit{
     this.active = true;
   }
 
+  async getCustomerDropdown() {
+    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
+      this.customerDropdownList = res.data;
+      
+      debugger
+      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+    });
+  }
+  async getSubCustomerDropdown(id: any) {
+   // const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
+      this.subCustomerDropdownList = res.data;
+      debugger
+      this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+    });
+  }
+
+  async getBranchDropdown() {
+     this.busy = (await this.challanService.getBranchDropdown(ApiEndPoints.GetBranchList)).subscribe((res:BranchResponse) => {
+       this.branchDropdownList = res.data;
+       debugger
+       this.branchList = res.data.map(({ id, branchName }) => ({ id: id, label: branchName }));
+     });
+   }
   async placeOrder(master:any){
     const masterData = this.createFormData(master);
     const products = this.createFormData(this.listData);
     debugger
     // Append master data
     const formData = new FormData();
-      formData.append('InvoiceMasterDto.orderDate', master.challanDate.toISOString());
-      formData.append('InvoiceMasterDto.customerId', master.selectedCustomer.id.toString());
-      formData.append('InvoiceMasterDto.customerId', master.selectedSubCustomer.id.toString());
-      formData.append('InvoiceMasterDto.customerId', master.selectedBranch.id.toString());
-      formData.append('InvoiceMasterDto.deliveryAddress', master.subCustomerDeliveryAddress);
-      formData.append('InvoiceMasterDto.deliveryInstruction', master.deliveryInstruction);
-      formData.append('InvoiceMasterDto.remarks', master.remarks);
+      formData.append('ChallanMasterDto.ChallanDate', master.challanDate.toISOString());
+      formData.append('ChallanMasterDto.customerId', master.selectedCustomer.id.toString());
+      formData.append('ChallanMasterDto.SubCustomerId', master.selectedSubCustomer.id.toString());
+      formData.append('ChallanMasterDto.BranchId', master.selectedBranch.id.toString());
+      formData.append('ChallanMasterDto.deliveryAddress', master.customerDeliveryAddress);
+      formData.append('ChallanMasterDto.deliveryInstruction', master.deliveryInstruction);
+      formData.append('ChallanMasterDto.remarks', master.remarks);
 
       // Append list data
       for (let i = 0; i < this.listData.length; i++) {
         const item = this.listData[i];
-        formData.append(`salesOrderDetailsDto[${i}].productId`, item.productId.toString());
-        formData.append(`salesOrderDetailsDto[${i}].productDescription`, item.productDescription);
-        formData.append(`salesOrderDetailsDto[${i}].quantity`, item.quantity.toString());
-        formData.append(`salesOrderDetailsDto[${i}].unitId`, item.unitId.toString());
+        formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
+        formData.append(`ChallanDetailsDtos[${i}].productDescription`, item.productDescription);
+        formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
+        formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
       
       }
-      (await this.service.createOrder(ApiEndPoints.CreateSales, formData)).subscribe({
-        next: (res: OrderResponse) => {
+      (await this.challanService.createDirectChallan(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
+        next: (res: DeliveryChallanResponse) => {
           debugger
           this.data = res;
           if (this.data.statusCode == HttpStatusCode.Ok) {
@@ -440,30 +465,7 @@ export class DirectChallanComponent implements OnInit{
     return formData;
   }
   
-  async getCustomerDropdown() {
-    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
-      this.customerDropdownList = res.data;
-      
-      debugger
-      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
-    });
-  }
-  async getSubCustomerDropdown(id: any) {
-   // const customer = this.customerDropdownList.find(x=>x.id == data.id);
-    this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
-      this.subCustomerDropdownList = res.data;
-      debugger
-      this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
-    });
-  }
-
-  async getBranchDropdown() {
-     this.busy = (await this.challanService.getBranchDropdown(ApiEndPoints.GetBranchList)).subscribe((res:BranchResponse) => {
-       this.branchDropdownList = res.data;
-       debugger
-       this.branchList = res.data.map(({ id, branchName }) => ({ id: id, label: branchName }));
-     });
-   }
+  
 
   async genarateSubInfo(data:any){
     const subCoustomer = this.subCustomerDropdownList.find(x=>x.id == data.id);
