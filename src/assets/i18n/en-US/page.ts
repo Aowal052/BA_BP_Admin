@@ -13,6 +13,10 @@ export default {
         addCategory: 'Add Category',
         listCategory: 'Category',
       },
+      sub_catgory:{
+        title: 'Sub Category',
+        subCategory: 'Sub Category'
+      },
       product:{
         title: 'Product',
         addProduct: 'Add Product',
@@ -20,7 +24,11 @@ export default {
       },
       customer:{
         title: 'Customer',
-        customer: 'customer'
+        customer: 'Customer'
+      },
+      subCustomer:{
+        title: 'Sub Customer',
+        sub_customer: 'Sub Customer'
       }
     },
     operation: {
@@ -63,7 +71,8 @@ export default {
     settings: {
       title: 'Setting',
       commision: 'Commisions',
-      offer: 'Offers'
+      offer: 'Offers',
+      priceConfiguration:'Price Configuration'
     },
     workorders: {
       title: 'Work Orders',

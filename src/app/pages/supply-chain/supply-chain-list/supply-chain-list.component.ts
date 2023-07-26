@@ -389,6 +389,7 @@ export class SupplyChainListComponent implements OnInit {
       const orderDate = new Date(res.data[0].orderDate);
       this.masterData.orderDate = orderDate.toLocaleDateString(undefined, this.comService.dateFormate);
       // this.masterData.selectedDiscount = {id:Number(this.DiscountOptions.find(x=>x.name== res.data[0].discountTypes)?.id),name:res.data[0].discountTypes}
+
     });
     this.editRowIndex = index;
     this.formData = row;

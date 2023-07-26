@@ -17,6 +17,7 @@
                                     [filterKey]="'label'"
                                     [options]="productlist"
                                     [placeholder]="'Select a Product'"
+                                    (ngModelChange)="getPriceInfo($event)"
                                     name="product name" 
                                     size="sm" 
                                     [searchPlaceholder]="'Selech By product short name'"

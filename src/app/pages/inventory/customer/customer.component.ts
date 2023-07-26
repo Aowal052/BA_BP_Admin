@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
 import { BreadCrumbService, DialogService, EditableTip, FormLayout, HelperUtils, MenuConfig, TableWidthConfig } from 'ng-devui';
@@ -7,7 +7,7 @@ import { I18nService } from 'ng-devui/i18n';
 import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Category, CategoryResponse } from 'src/app/@core/model/CategoryResponse';
-import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
 import { CategoryService } from 'src/app/@core/services/category/CategoryService';
@@ -25,7 +25,7 @@ import { productPageNotification } from 'src/assets/i18n/en-US/product';
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.scss']
 })
-export class CustomerComponent {
+export class CustomerComponent implements OnInit{
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
@@ -42,7 +42,7 @@ export class CustomerComponent {
     pageSize: 10,
   };
 
-  listData : Product[] = [];
+  listData : Customer[] = [];
 
   headerNewForm = false;
   
@@ -471,7 +471,7 @@ export class CustomerComponent {
       key:field,
       value:rowItem[field]
     }
-    await this.updateproduct(data);
+    await this.updateCustomer(data);
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
@@ -496,11 +496,11 @@ export class CustomerComponent {
     }
   ];
 
-  async updateproduct(item:any){
+  async updateCustomer(item:any){
     debugger
     const formData = await this.arrayToFormData(item);
     (await this.service.updateCustomer(ApiEndPoints.UpdateCustomer, formData)).subscribe({
-      next: (res: ProductResponse) => {
+      next: (res: CustomerResponse) => {
         this.res = res;
         if (this.res.statusCode == HttpStatusCode.Ok) {
           this.toastMessage = [

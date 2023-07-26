@@ -47,7 +47,7 @@ export class ListCategoryComponent {
   ];
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
-    labelSize: 'sm',
+    labelSize: 'lg',
     items: [
       {
         label: 'category Name',

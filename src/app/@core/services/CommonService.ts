@@ -65,6 +65,17 @@ export class CommonService {
   
     return formData;
   }
+  async arrayToFormData(array:any) {
+    const formData = new FormData();
+    
+    for (let key in array) {
+      if (array.hasOwnProperty(key)) {
+        formData.append(key, array[key]);
+      }
+    }
+    
+    return formData;
+  }
   async createFormDataObj(arrayData: any): Promise<FormData> {
     const formData = new FormData();
   

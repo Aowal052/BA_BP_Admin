@@ -1,10 +1,15 @@
 export class CategoryResponse{
     statusCode?: number;
     Message?: string;
-    Data?: Category[];
+    data?: Category[];
+    totalCount!:number;
 }
 
 export class Category{
     name?:string;
     id?:number;
 }
+export interface Category {
+    name?:string;
+    id?:number;
+  }

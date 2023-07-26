@@ -6,6 +6,8 @@ import { ListCategoryComponent } from './category/list-category/list-category.co
 import { AddProductComponent } from './product/add-product/add-product.component';
 import { ListProductComponent } from './product/list-product/list-product.component';
 import { CustomerComponent } from './customer/customer.component';
+import { SubCategoryComponent } from './sub-category/sub-category.component';
+import { SubCustomerComponent } from './sub-customer/sub-customer.component';
 
 const routes: Routes = [
   {
@@ -14,9 +16,11 @@ const routes: Routes = [
     children: [
       { path: 'add-category', component: AddCategoryComponent },
       { path: 'list-category', component: ListCategoryComponent },
+      { path: 'sub-category', component: SubCategoryComponent },
       { path: 'add-product', component: AddProductComponent },
       { path: 'list-product', component: ListProductComponent },
       { path: 'customer', component: CustomerComponent },
+      { path: 'sub-customer', component: SubCustomerComponent },
     ],
   }
 ];
