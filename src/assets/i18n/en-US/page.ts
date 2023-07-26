@@ -83,7 +83,9 @@ export default {
       supplychainlist: 'Challan Create',
       directchallan: 'Direct Challan',
       challanlists: 'Challan List',
-      gatepasscreate: 'Gate Pass Create'
+      gatepasscreate: 'Gate Pass Create',
+      createinvoice: 'Invoice Create',
+      invoicelist: 'Invoice List'
       
     },
   },

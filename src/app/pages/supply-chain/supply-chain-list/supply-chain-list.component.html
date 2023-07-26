@@ -200,7 +200,7 @@
         
     <h3>Product Details Info</h3>
     
-    <d-data-table #dataTable [dataSource]="productRowData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+    <d-data-table #dataTable [dataSource]="productRowDataList" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
         <thead dTableHead [checkable]="true">
           <tr dTableRow>
             <th dHeadCell>Id</th>
@@ -209,7 +209,7 @@
             <th dHeadCell>Unit</th>
             <th dHeadCell>Prev Del Qnty</th>
             <th dHeadCell>Del Qnty</th>
-            <th dHeadCell>Total Price</th>
+            <!-- <th dHeadCell>Total Price</th> -->
             <!-- <th dHeadCell>Actions</th> -->
           </tr>
         </thead>
@@ -302,11 +302,11 @@
               <td
                 dTableCell
                 [rowItem]="rowItem"
-                [field]="'deliveredQuantity'"
+                [field]="'deliveryQuantity'"
                 [beforeEditStart]="beforeEditStart"
                 [beforeEditEnd]="beforeEditEnd"
               >
-                <span >{{ rowItem?.deliveredQuantity }}</span>
+                <span >{{ rowItem?.deliveryQuantity }}</span>
                 
               </td>
               <td
@@ -323,21 +323,10 @@
                     dTextInput
                     size="sm"
                     [maxlength]="rowItem.remainingQuantity"
-                    (change)="genarateTotalPrice(rowItem,rowIndex)"
                     [(ngModel)]="rowItem.remainingQuantity"
                   />
                 
-              </td>
-              <td
-                dTableCell
-                [rowItem]="rowItem"
-                [field]="'totalPrice'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-              >
-                  <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
-              </td>
-              
+              </td> 
             </tr>
           </ng-template>
         </tbody>

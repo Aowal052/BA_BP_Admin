@@ -11,7 +11,7 @@
     <da-col-item [daSpan]="24" [daXs]="24">
       <d-toast [value]="msgs"></d-toast>
       <div class="da-dynamic-form">
-        <form dForm [layout]="columnsLayout" autocomplete="off">
+        <form #Form="ngForm" dForm [layout]="columnsLayout" autocomplete="off">
 
           <div class="da-content-title da-form-card-title">
             Challan Master Information
@@ -289,7 +289,7 @@
 
           <d-form-operation>
             <d-button bsStyle="primary" class="mr-element-spacing" circled="true" style="margin-right: 4px !important"
-              (btnClick)="placeOrder(masterData)">Submit</d-button>
+              (btnClick)="placeOrder(masterData); Form.resetForm()" >Submit</d-button>
             <d-button bsStyle="common" circled="true">Cancel</d-button>
           </d-form-operation>
         </form>

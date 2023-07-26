@@ -204,17 +204,18 @@ export class SupplyChainListComponent implements OnInit {
   editableTip = EditableTip.btn;
   listData!: any[];
   orderMaster!: any[];
-  productRowData = [{
+  productRowDataList:any[] = [];
+  productRowData = {
     product: '',
     quantity: 0,
     unit: {},
     unitPrice: 0,
     remainingQuantity:0,
-    deliveredQuantity:0,
+    deliveryQuantity:0,
     totalPrice: 0,
     productId:0,
     unitId:0
-  }];
+  };
   productInfo?: Product;
   dropdownProductList: any[] = [];
   productList: any[] = [];
@@ -343,23 +344,38 @@ export class SupplyChainListComponent implements OnInit {
   }
   genarateTotalPrice(productRowData:any,index:number){
     debugger
-    this.productRowData[index].totalPrice = productRowData.remainingQuantity * productRowData.unitPrice;
+    this.productRowDataList[index].totalPrice = productRowData.remainingQuantity * productRowData.unitPrice;
     debugger
   }
   async viewRow(row: any, index: number) {
+    this.productRowDataList = [];
     this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetDetailByIdForChallan, row.orderCode)).subscribe(async (res: OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
+      debugger;
       this.listData = data;
       for(var i=0;i<=data.length-1;i++){
-        this.productRowData[i].deliveredQuantity = data[i].deliveryQuantity,
-        this.productRowData[i].product = data[i].productName,
-        this.productRowData[i].remainingQuantity = data[i].remainingQuantity,
-        this.productRowData[i].quantity = data[i].quantity,
-        this.productRowData[i].totalPrice = data[i].totalPrice,
-        this.productRowData[i].unit = data[i].unitName,
-        this.productRowData[i].unitPrice = data[i].unitPrice,
-        this.productRowData[i].productId = data[i].productId,
-        this.productRowData[i].unitId = data[i].unitId
+        this.productRowData = {
+          product: '',
+          quantity: 0,
+          unit: {},
+          unitPrice: 0,
+          remainingQuantity:0,
+          deliveryQuantity:0,
+          totalPrice: 0,
+          productId:0,
+          unitId:0
+        };
+        this.productRowData.deliveryQuantity = data[i].deliveryQuantity,
+        this.productRowData.product = data[i].productName,
+        this.productRowData.remainingQuantity = data[i].remainingQuantity,
+        this.productRowData.quantity = data[i].quantity,
+        //this.productRowData[i].totalPrice = data[i].totalPrice,
+        this.productRowData.unit = data[i].unitName,
+        //this.productRowData[i].unitPrice = data[i].unitPrice,
+        this.productRowData.productId = data[i].productId,
+        this.productRowData.unitId = data[i].unitId
+
+        this.productRowDataList.push(this.productRowData)
       }
     });
     this.busy = (await this.service.GetOrderMasterById(ApiEndPoints.GetOrderMasterById, row.id)).subscribe((res: OrderResponse) => {
@@ -466,29 +482,29 @@ export class SupplyChainListComponent implements OnInit {
     }
     const formData = new FormData();
     var orderDate = new Date(master.orderDate);
-    formData.append('InvoiceMasterDto.OrderNo', master.orderNumber.toString());
-    formData.append('InvoiceMasterDto.customerId', master.selectedCustomer.id.toString());
-    formData.append('InvoiceMasterDto.deliveryAddress', master.deliveryAddress);
-    formData.append('InvoiceMasterDto.deliveryInstruction', master.deliveryInstruction);
-    formData.append('InvoiceMasterDto.orderDate', orderDate.toISOString());
-    formData.append('InvoiceMasterDto.netAmount', master.netAmount.toString());
-    formData.append('InvoiceMasterDto.GeneralDiscount', master.genDiscount.toString());
-    formData.append('InvoiceMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
-    formData.append('InvoiceMasterDto.DiscountTypes', master.selectedDiscount.name != undefined ? master.selectedDiscount.name.toString() : '');
-    formData.append('InvoiceMasterDto.OtherDiscount', master.otherDiscount != undefined ? master.otherDiscount.toString() : 0);
-    formData.append('InvoiceMasterDto.estimatedDeliveryDate', new Date(master.estimatedDeliveryDate).toISOString());
-    formData.append('InvoiceMasterDto.remarks', master.remarks);
+    formData.append('ChallanMasterDto.OrderNo', master.orderNumber.toString());
+    formData.append('ChallanMasterDto.customerId', master.selectedCustomer.id.toString());
+    formData.append('ChallanMasterDto.deliveryAddress', master.deliveryAddress);
+    formData.append('ChallanMasterDto.deliveryInstruction', master.deliveryInstruction);
+    formData.append('ChallanMasterDto.orderDate', orderDate.toISOString());
+    formData.append('ChallanMasterDto.netAmount', master.netAmount.toString());
+    formData.append('ChallanMasterDto.GeneralDiscount', master.genDiscount.toString());
+    // formData.append('InvoiceMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
+    // formData.append('InvoiceMasterDto.DiscountTypes', master.selectedDiscount.name != undefined ? master.selectedDiscount.name.toString() : '');
+    // formData.append('InvoiceMasterDto.OtherDiscount', master.otherDiscount != undefined ? master.otherDiscount.toString() : 0);
+    formData.append('ChallanMasterDto.estimatedDeliveryDate', new Date(master.estimatedDeliveryDate).toISOString());
+    formData.append('ChallanMasterDto.remarks', master.remarks);
 
     //Append list data
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
-      formData.append(`InvoiceDetailsDto[${i}].productId`, item.productId.toString());
-      formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
-      formData.append(`InvoiceDetailsDto[${i}].quantity`, item.quantity.toString());
-      formData.append(`InvoiceDetailsDto[${i}].unitId`, item.unitId.toString());
-      formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
-      formData.append(`InvoiceDetailsDto[${i}].deliveryQuantity`, item.remainingQuantity == undefined ? 0 : item.remainingQuantity);
-      formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
+      formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
+      //formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
+      formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
+      formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
+     // formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
+      formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.remainingQuantity == undefined ? 0 : item.remainingQuantity);
+      //formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
     }
     (await this.service.createOrder(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
       next: (res: SalesInvoiceResponse) => {

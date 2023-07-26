@@ -572,9 +572,9 @@ formData.append('salesOrderMasterDto.deliveryInstruction', master.deliveryInstru
 formData.append('salesOrderMasterDto.orderDate',  orderDate.toISOString());
 formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
 formData.append('salesOrderMasterDto.GeneralDiscount', master.genDiscount.toString());
-formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
-formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name!=undefined?master.selectedDiscount.name.toString():'');
-formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount!=undefined?master.otherDiscount.toString():0);
+//formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
+//formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name!=undefined?master.selectedDiscount.name.toString():'');
+//formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount!=undefined?master.otherDiscount.toString():0);
 formData.append('salesOrderMasterDto.estimatedDeliveryDate', new Date(master.estimatedDeliveryDate).toISOString());
 formData.append('salesOrderMasterDto.remarks', master.remarks);
 
