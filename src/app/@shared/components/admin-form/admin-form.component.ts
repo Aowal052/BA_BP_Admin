@@ -34,13 +34,14 @@ export class AdminFormComponent implements OnInit {
   };
 
   loadMore(data: any) {
+    debugger
     console.log('load more');
     this.selectComponent.forceSearchNext();
   }
   
   @Input() formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
-    labelSize: 'sm',
+    labelSize: 'lg',
     items: [],
   };
 
@@ -62,6 +63,7 @@ export class AdminFormComponent implements OnInit {
     .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
     .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name })); // Map the options to the desired format
     this.formConfig.items.prop = this.currentOption;
+    console.log(this.formConfig.items);
     debugger
   }
 

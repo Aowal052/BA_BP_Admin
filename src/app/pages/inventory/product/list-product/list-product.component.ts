@@ -2,6 +2,7 @@ import { HttpStatusCode } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
+import { number } from 'echarts';
 import { BreadCrumbService, DialogService, MenuConfig, HelperUtils, EditableTip, TableWidthConfig, FormLayout, ToastService } from 'ng-devui';
 import { I18nService } from 'ng-devui/i18n';
 import { Subject, Subscription, map, takeUntil } from 'rxjs';
@@ -45,7 +46,7 @@ export class ListProductComponent implements OnInit{
   
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
-    labelSize: 'sm',
+    labelSize: 'lg',
     items: [
       {
         label: 'product Name',
@@ -70,6 +71,17 @@ export class ListProductComponent implements OnInit{
         label: 'product Code',
         prop: 'productCode',
         type: 'input',
+        rule: {
+          validators: [{ required: true }],
+        },
+      },
+      {
+        label: 'Short Name',
+        prop: 'shortName',
+        type: 'input',
+        rule: {
+          validators: [{ required: true }],
+        },
       },
       {
         label: 'description',
@@ -86,9 +98,18 @@ export class ListProductComponent implements OnInit{
         type: 'input',
         required: true,
         rule: {
-          validators: [{ required: true }],
+          validators: [{ required: true,type:number }],
         },
       },
+      {
+        label: 'Openning Quantity',
+        prop: 'OpeningQuantity',
+        type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true,type:number }],
+        },
+      }
     ],
   };
   tableWidthConfig: TableWidthConfig[] = [
@@ -304,6 +325,7 @@ export class ListProductComponent implements OnInit{
       formData.append('DefaultPrice', e.price||'');
       formData.append('CategoryId', e.category.id||'');
       formData.append('Description', e.description || '');
+      formData.append('ShortName', e.shortName || '');
       (await this.service.updateProduct(ApiEndPoints.AddProduct, formData)).subscribe({
         next: (res: ProductResponse) => {
           this.res = res;

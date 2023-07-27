@@ -29,13 +29,21 @@ export default function (values: any) {
               link: '/pages/inventory/list-category'
         },
         {
+          title: values.inventory.sub_catgory['subCategory'],
+          link: '/pages/inventory/sub-category'
+        },
+        {
               title: values.inventory.product['listProduct'],
               link: '/pages/inventory/list-product'
         },
         {
               title: values.inventory.customer['customer'],
               link: '/pages/inventory/customer'
-        }
+        },
+        {
+          title: values.inventory.subCustomer['sub_customer'],
+          link: '/pages/inventory/sub-customer'
+        },
       ]
     },
     {
@@ -132,6 +140,7 @@ export default function (values: any) {
       children: [
         { title: values['settings']['commision'], link: '/pages/settings/create-commission' },
         { title: values['settings']['offer'], link: '/pages/settings/create-offer' },
+        { title: values['settings']['priceConfiguration'],link: '/pages/settings/configure-product-price'}
       ],
       link: '/pages/settings',
       menuIcon: 'icon icon-mine',

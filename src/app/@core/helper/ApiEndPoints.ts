@@ -1,15 +1,28 @@
 export class ApiEndPoints{
     static readonly Login: string = 'v1/Accounts/Login';
     static readonly GetUser: string = 'v1/Accounts/Get';
+    //#region customer
     static readonly CreateCustomer: string = 'Customer/Create';
     static readonly UpdateCustomer: string = 'Customer/Update';
     static readonly DeleteCustomer: string = 'Customer/Delete';
     static readonly GetCustomers: string = 'Customer/Get';
     static readonly GetCustomerById: string = 'Customer/GetById';
+    //#endregion
+    
+    //#region Sub Customer
+    static readonly CreateSubCustomer: string = 'SubCustomer/Create';
+    static readonly UpdateSubCustomer: string = 'SubCustomer/Update';
+    static readonly DeleteSubCustomer: string = 'SubCustomer/Delete';
+    static readonly GetSubCustomers: string = 'SubCustomer/Get';
+    static readonly GetSubCustomerById: string = 'SubCustomer/GetById';
+    //#endregion
     static readonly GetCategory: string = 'ProductCategory/Get';
     static readonly GetSalesReport: string = 'SalesOrder/Get';
     static readonly GetCategoryDroppdown: string = 'ProductCategory/GetForDropdown';
     static readonly GetForPagination: string = 'ProductCategory/GetForPagination';
+    static readonly GetSubCategory: string = 'ProductSubCategory/GetSubCatery';
+    static readonly UpdateSubCategory: string = 'ProductSubCategory/Update';
+    static readonly DeleteSubCategory: string = 'ProductSubCategory/Delete';
     static readonly GetCategoryById: string = 'ProductCategory/GetById';
     static readonly UpdateCategory: string = 'ProductCategory/Update';
     static readonly AddProduct: string = 'v1/Product/Create';
@@ -25,6 +38,7 @@ export class ApiEndPoints{
     static readonly UpdateProductPrice: string = 'v1/Product/UpdatePrice';
     static readonly GetProductById: string = 'v1/Product/GetById'
     static readonly AddCategory: string = 'ProductCategory/Create';
+    static readonly AddSubCategory: string = 'ProductSubCategory/Create';
     static readonly AddOrder: string = 'SalesOrder/Create';
     static readonly GetOrders: string = 'SalesOrder/Get';
     static readonly GetOrderDetailById: string = 'SalesOrder/GetOrderDetailById';

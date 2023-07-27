@@ -27,6 +27,8 @@ export interface Product {
     productCode?:string;
     productName?:string;
     shortName?:string;
+    piecePrice:string;
+    dozenPrice:string;
     defaultPrice?:string;
     description?:string;
     showDescriptionInPurchase?:boolean;

@@ -20,6 +20,7 @@ export class ProductPriceConfigComponent {
   busy !: Subscription;
   layout = FormLayout.Horizontal;
   productlist: any[] = [];
+  products: any[] = [];
   productPriceData = {
     product: {id:0,label:''},
     piecePrice: 0,
@@ -37,9 +38,15 @@ export class ProductPriceConfigComponent {
 
   async GetProductList(){
     this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
-      debugger
+      this.products = res.data;
       this.productlist = res.data.map(({ id, productName,shortName }) => ({ id: id, label: productName,shortName:shortName??'test' }));
     });
+  }
+  async getPriceInfo(e:any){
+    const product = this.products.find(x=>x.id == e.id);
+    this.productPriceData.piecePrice = product.piecePrice??product.defaultPrice;
+    this.productPriceData.dozenPrice = product.dozenPrice;
+    await this.GetProductList();
   }
   onSelectObject = (term: string) => {
     debugger
@@ -55,7 +62,7 @@ export class ProductPriceConfigComponent {
     formData.append('PiecePrice',this.productPriceData.piecePrice.toString());
     formData.append('DozenPrice', this.productPriceData.dozenPrice.toString());
     (await this.proService.updatePrice(ApiEndPoints.UpdateProductPrice, formData)).subscribe({
-      next: (res: OrderResponse) => {
+      next: async (res: OrderResponse) => {
         if (res.statusCode == HttpStatusCode.Ok) {
           this.productPriceData = {
             product: {id:0,label:''},
@@ -70,6 +77,7 @@ export class ProductPriceConfigComponent {
               content: orderPageNotification.orderPage.createMessage.addSuccess,
             },
           ];
+          await this.GetProductList();
         }
       },
       error: (error) => {

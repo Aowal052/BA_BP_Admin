@@ -11,6 +11,8 @@ import { SharedModule } from 'src/app/@shared/shared.module';
 import { AdminFormModule } from "../../@shared/components/admin-form/admin-form.module";
 import { DatepickerModule, PaginationModule, TagsInputModule, ToastModule } from 'ng-devui';
 import { CustomerComponent } from './customer/customer.component';
+import { SubCategoryComponent } from './sub-category/sub-category.component';
+import { SubCustomerComponent } from './sub-customer/sub-customer.component';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { CustomerComponent } from './customer/customer.component';
         ListCategoryComponent,
         AddProductComponent,
         ListProductComponent,
-        CustomerComponent
+        CustomerComponent,
+        SubCategoryComponent,
+        SubCustomerComponent
     ],
     imports: [
         SharedModule,

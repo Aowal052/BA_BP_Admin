@@ -472,7 +472,7 @@ export class SalesOrderComponent {
   changeProduct(product:any){
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
     this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+    this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
     this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
