@@ -474,14 +474,8 @@ export class SupplyChainListComponent implements OnInit {
   onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
     rowItem.$checked = checked;
     rowItem.$halfChecked = false;
-    // this.item.setRowCheckStatus({
-    //   rowIndex: rowIndex,
-    //   nestedIndex: nestedIndex,
-    //   rowItem: rowItem,
-    //   checked: checked,
-    // });
+    
     checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
-    //this.items.push(rowItem);
   }
   onCheckAllChange(e:any) {
     e?this.items = this.productRowDataList:this.items=[];

@@ -351,12 +351,19 @@ export class CreateInvoiceComponent implements OnInit{
     console.log(value);
   }
 
-items: Array<any> = [];
-onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-  debugger
-  this.items.push(rowItem);
-}
- 
+  items: Array<any> = [];
+  onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+    debugger
+    rowItem.$checked = checked;
+    rowItem.$halfChecked = false;
+    
+    checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
+  }
+  async placeOrder(){
+    
+    this.router.navigate(['/pages', 'supplychain', 'invoice-create-data-list']); 
+      
+  }
   cancelRequest(){
     this.editForm.modalInstance.hide();
   }
