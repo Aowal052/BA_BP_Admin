@@ -199,6 +199,7 @@ export class AdvanceListComponent implements OnInit {
   }
 
   onFirstFilterChange(e: FilterConfig[], column: any) {
+    debugger
     const keys = e.map((i) => i.name);
     this.basicDataSource = this.originData.filter((i) => {
       return keys.includes(i[column.field]);
@@ -206,6 +207,7 @@ export class AdvanceListComponent implements OnInit {
   }
 
   onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+    debugger
     rowItem.$checked = checked;
     rowItem.$halfChecked = false;
     this.datatable.setRowCheckStatus({
@@ -218,6 +220,7 @@ export class AdvanceListComponent implements OnInit {
   }
 
   onCheckAllChange() {
+    debugger
     this.deleteList = this.datatable.getCheckedRows();
   }
 

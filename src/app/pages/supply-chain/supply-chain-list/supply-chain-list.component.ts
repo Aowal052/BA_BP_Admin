@@ -1,7 +1,8 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { DataTableComponent, DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Subscription } from 'rxjs';
+import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { StringHelper } from 'src/app/@core/helper/StringHelper';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
@@ -204,7 +205,7 @@ export class SupplyChainListComponent implements OnInit {
   editableTip = EditableTip.btn;
   listData!: any[];
   orderMaster!: any[];
-  productRowDataList:any[] = [];
+  productRowDataList!: any[];
   productRowData = {
     product: '',
     quantity: 0,
@@ -264,6 +265,9 @@ export class SupplyChainListComponent implements OnInit {
   selectedId: string = '';
   msgs: Array<Object> = [];
   data: any;
+  //@ViewChild(DataTableComponent, { static: true })
+  //item!: DataTableComponent;
+  //items: any[] = [];
   constructor(
     private listDataService: ListDataService,
     private service: OrderService,
@@ -333,6 +337,7 @@ export class SupplyChainListComponent implements OnInit {
     this.busy = (await this.SaleInvservice.getApprovedSalesOrder(ApiEndPoints.GetApprovedSalesOrder, this.pager)).subscribe((res: SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
+      debugger
       this.pager.total = res.totalCount;
     });
   }
@@ -349,6 +354,7 @@ export class SupplyChainListComponent implements OnInit {
   }
   async viewRow(row: any, index: number) {
     this.productRowDataList = [];
+    this.items=[];
     this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetDetailByIdForChallan, row.orderCode)).subscribe(async (res: OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       debugger;
@@ -466,7 +472,19 @@ export class SupplyChainListComponent implements OnInit {
 
   items: Array<any> = [];
   onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-    this.items.push(rowItem);
+    rowItem.$checked = checked;
+    rowItem.$halfChecked = false;
+    // this.item.setRowCheckStatus({
+    //   rowIndex: rowIndex,
+    //   nestedIndex: nestedIndex,
+    //   rowItem: rowItem,
+    //   checked: checked,
+    // });
+    checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
+    //this.items.push(rowItem);
+  }
+  onCheckAllChange(e:any) {
+    e?this.items = this.productRowDataList:this.items=[];
   }
   async CreateChallan(master: any) {
     debugger
@@ -497,17 +515,18 @@ export class SupplyChainListComponent implements OnInit {
 
     //Append list data
     for (let i = 0; i < this.items.length; i++) {
+      debugger
       const item = this.items[i];
       formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
       //formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
       formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
       formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
      // formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
-      formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.remainingQuantity == undefined ? 0 : item.remainingQuantity);
+      formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.remainingQuantity?? 0);
       //formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
     }
     (await this.service.createOrder(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
-      next: (res: SalesInvoiceResponse) => {
+      next: async (res: SalesInvoiceResponse) => {
         this.data = res;
         if (res.statusCode == HttpStatusCode.Ok) {
           this.msgs = [
@@ -518,6 +537,7 @@ export class SupplyChainListComponent implements OnInit {
             },
           ];
         }
+        await this.getList();
         this.editForm.modalInstance.hide();
       },
       error: (error) => {
@@ -530,8 +550,10 @@ export class SupplyChainListComponent implements OnInit {
         ];
       }
     });
+    this.items = [];
   }
   cancelRequest() {
     this.editForm.modalInstance.hide();
+    this.items = [];
   }
 }

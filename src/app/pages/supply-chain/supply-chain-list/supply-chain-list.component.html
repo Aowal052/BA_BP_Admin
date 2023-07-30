@@ -200,7 +200,11 @@
         
     <h3>Product Details Info</h3>
     
-    <d-data-table #dataTable [dataSource]="productRowDataList" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+    <d-data-table
+    [dataSource]="productRowDataList" 
+    [scrollable]="true" 
+    [tableWidthConfig]="tableWidthConfig"
+    (checkAllChange)="onCheckAllChange($event)">
         <thead dTableHead [checkable]="true">
           <tr dTableRow>
             <th dHeadCell>Id</th>

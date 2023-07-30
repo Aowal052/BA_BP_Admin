@@ -223,9 +223,6 @@
             <tr dTableRow>
               <th dHeadCell>Id</th>
               <th dHeadCell>Product Name</th>
-              <th dHeadCell>Order Qnty</th>
-              <th dHeadCell>Unit</th>
-              <th dHeadCell>Unit Rate</th>
               <th dHeadCell>Delivery Qnty</th>
               <!-- <th dHeadCell>Total Price</th> -->
               <!-- <th dHeadCell>Actions</th> -->
@@ -254,33 +251,6 @@
                   <span > {{ rowItem?.productName }}</span>
                 
                 </td>
-                <td
-                  dTableCell
-                  [rowItem]="rowItem"
-                  [field]="'quantity'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                >
-                  <span >{{ rowItem?.quantity }}</span>
-                </td>
-                <td
-                  dTableCell
-                  [rowItem]="rowItem"
-                  [field]="'unitName'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                >
-                    <span style="margin-left: 6px">{{ rowItem.unitName }}</span>
-                </td>
-                <td
-                  dTableCell
-                  [rowItem]="rowItem"
-                  [field]="'unitRate'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                >
-                    <span style="margin-left: 6px">{{ rowItem.unitPrice }}</span>
-                </td>
                 
                 <td
                   dTableCell
@@ -289,18 +259,9 @@
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
-                <span style="margin-left: 6px">{{ rowItem.deliveryQuantity }}</span>
+                <span style="margin-left: 6px">{{ rowItem.deliveryQuantity +" "+ rowItem.unitName }}</span>
                   
                 </td>
-                <!-- <td
-                  dTableCell
-                  [rowItem]="rowItem"
-                  [field]="'totalPrice'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                >
-                    <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
-                </td> -->
                 
               </tr>
             </ng-template>

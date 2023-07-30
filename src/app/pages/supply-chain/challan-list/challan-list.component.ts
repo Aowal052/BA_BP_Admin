@@ -85,25 +85,9 @@ export class ChallanListComponent implements OnInit{
       width: '300px',
     },
     {
-      field: 'Order Qnty',
-      width: '100px',
-    },
-    {
-      field: 'Unit',
-      width: '100px',
-    },
-    {
-      field: 'Unit Rate',
-      width: '100px',
-    },
-    {
-      field: 'Delivery Quny',
-      width: '150px',
-    },
-    {
-      field: 'Total Price',
-      width: '100px',
-    },
+      field: 'Delivery Quantity',
+      width: '200px',
+    }
   ];
 
   breadItem: Array<MenuConfig> = [
