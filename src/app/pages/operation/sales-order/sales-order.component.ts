@@ -136,11 +136,11 @@ export class SalesOrderComponent {
   ];
   selectUnits = [
     {
-      id: 1,
+      id: 2,
       label: 'Pcs',
     },
     {
-      id: 2,
+      id: 1,
       label: 'Dzn',
     }
   ];
@@ -434,11 +434,10 @@ export class SalesOrderComponent {
       this.masterData.netAmount =totalPrice - (this.customerInfo.defaultDiscount / 100)* totalPrice;
       this.masterData.totalPrice = totalPrice;
       this.masterData.genDiscount = this.customerInfo.defaultDiscount;
-      var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
-      this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
-      this.masterData.orderAmDiscount = discount;
+      //var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
+      //this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
+      //this.masterData.orderAmDiscount = discount;
     });
-    debugger
 
   }
   async getCustomerDropdown() {
@@ -493,12 +492,12 @@ export class SalesOrderComponent {
   modifyTotalPrice(event:any,productRow:any){
     if(event.id===2 && productRow.unit.id != 2)
     {
-      this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
-      this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
+      this.productRowData.unitPrice = Number(this.productInfo?.dozenPrice)??0;
+      this.productRowData.totalPrice = Number(this.productInfo?.dozenPrice)??0;
     }
     else if(event.id === 1){
-      this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-      this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
+      this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
+      this.productRowData.totalPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
     }
   }
 
