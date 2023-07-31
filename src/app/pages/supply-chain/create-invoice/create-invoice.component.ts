@@ -254,6 +254,8 @@ export class CreateInvoiceComponent implements OnInit{
   selectedId : string = '';
   msgs: Array<Object> = [];
   data:any;
+
+
   constructor(
     private listDataService: ListDataService, 
     private service:OrderService,
@@ -360,8 +362,12 @@ export class CreateInvoiceComponent implements OnInit{
     checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
   }
   async placeOrder(){
-    
+    debugger;
+  
+      localStorage.setItem('myData', JSON.stringify(this.items));
+    //
     this.router.navigate(['/pages', 'supplychain', 'invoice-create-data-list']); 
+   
       
   }
   cancelRequest(){
