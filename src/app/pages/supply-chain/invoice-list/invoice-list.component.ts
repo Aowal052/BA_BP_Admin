@@ -182,6 +182,7 @@ export class InvoiceListComponent implements OnInit{
   rangeEnd = new Date();
   editableTip = EditableTip.btn;
   listData!:any[];
+  discount !:any[];
   orderMaster!:any[];
   productRowData = {
     product: '',
@@ -286,8 +287,11 @@ export class InvoiceListComponent implements OnInit{
       console.log(value);
     }
     async getList() {
-      debugger;
-      this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, this.pager))
+      const formData = new FormData();
+    formData.append('pageIndex', this.pager.pageIndex.toString());
+    formData.append('pageSize', this.pager.pageSize.toString());
+
+      this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetInvoiceMaster, formData))
                  .subscribe((res:SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
         this.basicDataSource = data;
@@ -296,11 +300,19 @@ export class InvoiceListComponent implements OnInit{
     }
   
     async viewRow(row: any, index: number) {
-      this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id))
+      debugger
+      this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetInvoiceDetails, row.id))
                   .subscribe((res:SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
         debugger
         this.listData = data;
+      });
+      debugger
+      this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetDiscountByInvoiceId, this.basicDataSource[0].id))
+                  .subscribe((res:SalesInvoiceResponse) => {
+        const data = JSON.parse(JSON.stringify(res.data));
+        debugger
+        this.discount = data;
       });
       
   
@@ -361,9 +373,10 @@ export class InvoiceListComponent implements OnInit{
     selectRange(value:any) {
       console.log(value);
     }
-    calculateTotalPrice(rowItem: any): number {
-      return rowItem.reduce((total:number, item:any) => total + item.totalPrice, 0);
-    }
+    // calculateTotalPrice(rowItem: any): number {
+    //   debugger
+    //   return rowItem.reduce((total:number, item:any) => total + item.totalPrice, 0);
+    // }
   
     
   items: Array<any> = [];

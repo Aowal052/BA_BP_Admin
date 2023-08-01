@@ -322,9 +322,9 @@ export class InvoiceCreateDataListComponent {
     debugger
     // Append master data
     const formData = new FormData();
-      formData.append('InvoiceMasterDto.customerId', master.selectedCustomer.id.toString());
-      formData.append('InvoiceMasterDto.ChallanNo', master.challanNo);
-      formData.append('InvoiceMasterDto.NetAmount', this.netPriceinfo.toString());
+      formData.append('InvoiceMasterDto.customerId', this.invoiceMasterData.selectedCustomer.id.toString());
+      formData.append('InvoiceMasterDto.ChallanNo', this.invoiceMasterData.challanNo);
+      formData.append('InvoiceMasterDto.NetAmount', this.netPriceinfo[0].netTotal.toString());
 
       // Append list data
       for (let i = 0; i < this.listData.length; i++) {
@@ -356,7 +356,7 @@ export class InvoiceCreateDataListComponent {
                 content: orderPageNotification.orderPage.createMessage.addSuccess,
               },
             ];
-            this.router.navigate(['/pages', 'user', 'center']);
+            this.router.navigate(['/pages', 'supplychain', 'invoice-list']);
           }
         },
         error: (error) => {

@@ -80,7 +80,7 @@
                                       </ng-template>
                                     </d-cell>
                                   </d-column>
-                                  <d-column field="orderNo" header="Challan No" [width]="'100px'" >
+                                  <d-column field="challanNo" header="Challan No" [width]="'100px'" >
                                     <d-cell>
                                       <ng-template let-cellItem="cellItem">
                                         {{ cellItem }}
@@ -271,7 +271,7 @@
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
-                <span style="margin-left: 6px">{{ calculateTotalPrice(rowItem) }}</span>
+                <!-- <span style="margin-left: 6px">{{ calculateTotalPrice(rowItem) }}</span> -->
                   
                 </td>
               </tr>
