@@ -62,6 +62,10 @@ export class ApiEndPoints{
     static readonly GetDiscountList:string = 'Discount/Get';
     static readonly GetBranchList:string = 'Branch/GetForDropdown';
 
+    static readonly GetInvoiceMasterCreateById:string = 'v1/CRM/GetInvoiceMasterInfo';
+    static readonly GetInvoiceDetailCreateById:string = 'v1/CRM/GetInvoiceDetailsInfo';
+    static readonly CreateInvoice:string = 'v1/CRM/InvoiceCreate';
+
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation

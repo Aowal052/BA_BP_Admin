@@ -48,6 +48,7 @@
                         <div class="da-header-item">
                             <d-button (click)="reset()">Search</d-button>
                         </div>
+                       
                     </div>
                     <div class="list-content" dLoading [loading]="busy">
 
@@ -117,6 +118,7 @@
                                     </ng-template>
                                 </d-cell>
                             </d-column>
+                            
                         </d-data-table>
                     </div>
                     <div class="da-list-footer">
@@ -125,6 +127,9 @@
                             [canJumpPage]="true" [maxItems]="5" (pageIndexChange)="onPageChange($event)"
                             (pageSizeChange)="onSizeChange($event)">
                         </d-pagination>
+                    </div>
+                    <div class="da-list-footer">
+                        <d-button  bsStyle="primary" class="mr-element-spacing" (btnClick)="placeOrder()" circled="true">Submit</d-button>
                     </div>
                 </div>
             </da-col-item>

@@ -7,6 +7,7 @@ import { GatePassCreateComponent } from './gate-pass-create/gate-pass-create.com
 import { DirectChallanComponent } from './direct-challan/direct-challan.component';
 import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
 import { InvoiceListComponent } from './invoice-list/invoice-list.component';
+import { InvoiceCreateDataListComponent } from './invoice-create-data-list/invoice-create-data-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -18,6 +19,7 @@ const routes: Routes = [{
     { path: 'gate-pass-create', component: GatePassCreateComponent },
     { path: 'create-invoice', component: CreateInvoiceComponent },
     { path: 'invoice-list', component: InvoiceListComponent },
+    { path: 'invoice-create-data-list', component: InvoiceCreateDataListComponent },
     
   ],
 }];

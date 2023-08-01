@@ -254,6 +254,8 @@ export class CreateInvoiceComponent implements OnInit{
   selectedId : string = '';
   msgs: Array<Object> = [];
   data:any;
+
+
   constructor(
     private listDataService: ListDataService, 
     private service:OrderService,
@@ -341,15 +343,6 @@ export class CreateInvoiceComponent implements OnInit{
     this.getList();
   }
 
-  onSubmitted(e: any) {
-    this.editForm!.modalInstance.hide();
-    this.basicDataSource.splice(this.editRowIndex, 1, e);
-  }
-
-  onCanceled() {
-    this.editForm!.modalInstance.hide();
-    this.editRowIndex = -1;
-  }
   selectStart(value:any) {
     console.log('start', value);
   }
@@ -360,103 +353,23 @@ export class CreateInvoiceComponent implements OnInit{
     console.log(value);
   }
 
-  async quickRowAdded(e: any) {
+  items: Array<any> = [];
+  onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+    debugger
+    rowItem.$checked = checked;
+    rowItem.$halfChecked = false;
+    
+    checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
+  }
+  async placeOrder(){
     debugger;
-    e.unitName = e.unit.label;
-    e.productName = e.product.label;
-    e.unitId = e.unit.id;
-    e.productId = e.product.id;
   
-    // Check if product.id already exists in this.listData
-    const productExists = this.listData.some((item) => item.productId === e.productId);
-  
-    if (productExists) {
-      this.showToast('error', 'Error', 'Your product alredy is in the list.');
-      return;
-    }
-  
-    const newData = { ...e };
-    this.listData.unshift(newData);
+      localStorage.setItem('myData', JSON.stringify(this.items));
+    //
+    this.router.navigate(['/pages', 'supplychain', 'invoice-create-data-list']); 
+   
+      
   }
-  deleteRow(index: number) {
-    debugger
-    const results = this.dialogService.open({
-      id: 'delete-dialog',
-      width: '346px',
-      maxHeight: '600px',
-      title: 'Delete',
-      showAnimate: false,
-      content: 'Are you sure you want to delete it?',
-      backdropCloseable: true,
-      onClose: () => {},
-      buttons: [
-        {
-          cssClass: 'primary',
-          text: 'Ok',
-          disabled: false,
-          handler: () => {
-            this.listData.splice(index, 1);
-            const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-            this.masterData.totalPrice = totalPrice;
-            this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
-            results.modalInstance.hide();
-          },
-        },
-        {
-          id: 'btn-cancel',
-          cssClass: 'common',
-          text: 'Cancel',
-          handler: () => {
-            results.modalInstance.hide();
-          },
-        },
-      ],
-    });
-  }
-
-  deleteRowDiscount(index: number) {
-    debugger
-    const results = this.dialogService.open({
-      id: 'delete-dialog',
-      width: '346px',
-      maxHeight: '600px',
-      title: 'Delete',
-      showAnimate: false,
-      content: 'Are you sure you want to delete it?',
-      backdropCloseable: true,
-      onClose: () => {},
-      buttons: [
-        {
-          cssClass: 'primary',
-          text: 'Ok',
-          disabled: false,
-          handler: () => {
-            this.listData.splice(index, 1);
-            const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-            this.masterData.totalPrice = totalPrice;
-            this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
-            results.modalInstance.hide();
-          },
-        },
-        {
-          id: 'btn-cancel',
-          cssClass: 'common',
-          text: 'Cancel',
-          handler: () => {
-            results.modalInstance.hide();
-          },
-        },
-      ],
-    });
-  }
-  
-items: Array<any> = [];
-onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-  rowItem.$checked = checked;
-  rowItem.$halfChecked = false;
-  checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
-}
- 
   cancelRequest(){
     this.editForm.modalInstance.hide();
   }

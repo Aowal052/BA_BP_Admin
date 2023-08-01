@@ -1,0 +1,273 @@
+<div class="da-list-wrap">
+    <div class="da-content-banner">
+        <d-breadcrumb>
+            <d-breadcrumb-item *ngFor="let item of breadItem">
+                <!-- <a rel="noopener" (click)="navigate($event, item)">{{ item.name }}</a> -->
+                <a rel="noopener">{{ item.name }}</a>
+            </d-breadcrumb-item>
+        </d-breadcrumb>
+    </div>
+    <div class="da-content-wrapper" style="margin-left: 60px;">
+        <d-toast [value]="msgs"></d-toast>
+        <da-layout-row [daGutter]="[24, 24]">
+            <da-col-item [daSpan]="24" [daXs]="24">
+                <h3>Master Info</h3>
+                <div class="grid">
+                    <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+                        <da-row-item>
+                            <da-layout-row [daGutter]="[0, 0]">
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                        <d-form-item>
+                                            <d-form-label>Challan No : {{invoiceMasterData.challanNo}}</d-form-label>
+                                        </d-form-item>
+                                    </div>
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <!-- <div class="u-1-2">
+                                        <d-form-item>
+                                            <d-form-label>Invoice Date : </d-form-label>
+                                        </d-form-item>
+                                    </div> -->
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                        <d-form-item>
+                                            <d-form-label>Customer Name :
+                                                {{invoiceMasterData.selectedCustomer.label}}</d-form-label>
+                                        </d-form-item>
+                                    </div>
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                        <!-- <d-form-item>
+                                            <d-form-label>Gate Pass No : </d-form-label>
+                                        </d-form-item> -->
+                                    </div>
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                        <d-form-item>
+                                            <d-form-label>Customer Address :
+                                                {{invoiceMasterData.address}}</d-form-label>
+                                        </d-form-item>
+                                    </div>
+                                </da-col-item>
+                               
+                            </da-layout-row>
+                        </da-row-item>
+
+                        <da-row-item>
+                            <da-layout-row [daGutter]="[0, 0]">
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                    </div>
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                       
+                                    </div>
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                        
+                                    </div>
+                                </da-col-item>
+                                <da-col-item [daXs]="12" [daMs]="24">
+                                    <div class="u-1-2">
+                                        
+                                    </div>
+                                </da-col-item>
+                            </da-layout-row>
+                        </da-row-item>
+
+                    </da-layout-col>
+                </div>
+
+                <h3>Product Details Info</h3>
+
+                <d-data-table #dataTable [dataSource]="listData" [scrollable]="true"
+                    [tableWidthConfig]="tableWidthConfig">
+                    <thead dTableHead>
+                        <tr dTableRow>
+                            <th dHeadCell>Id</th>
+                            <th dHeadCell>Product Name</th>
+                            <th dHeadCell>Delivery Qnty</th>
+                            <th dHeadCell>Price</th>
+                            <!-- <th dHeadCell>Total Price</th> -->
+                            <!-- <th dHeadCell>Actions</th> -->
+                        </tr>
+                    </thead>
+                    <tbody dTableBody>
+                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            <tr dTableRow>
+
+                                <td dTableCell [field]="'id'" [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span>{{ rowIndex + 1 }}</span>
+
+                                </td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'productName'"
+                                    [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+                                    <span> {{ rowItem?.productName }}</span>
+
+                                </td>
+
+                                <td dTableCell [rowItem]="rowItem" [field]="'deliveryQuantity'"
+                                    [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.deliveryQuantity +" "+ rowItem.unitName
+                                        }}</span>
+
+                                </td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'deliveryQuantity'"
+                                    [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.deliveryPrice  }}</span>
+
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </tbody>
+
+                </d-data-table>
+
+                <d-data-table #dataTable [dataSource]="netPriceinfo" [scrollable]="true"
+                    [tableWidthConfig]="tableWidthConfig">
+                    
+                    <tbody dTableBody>
+                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            <tr dTableRow>
+                                <td></td>
+                                <td></td>
+                                <td> Net Total</td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'netTotal'"
+                                    [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.netTotal  }}</span>
+
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </tbody>
+
+                </d-data-table>
+            </da-col-item>
+        </da-layout-row>
+    </div>
+</div>
+
+<div class="da-content-wrapper">
+    <da-layout-row [daGutter]="[24, 24]">
+        <da-col-item [daSpan]="24" [daXs]="24">
+            <d-toast [value]="msgs"></d-toast>
+            <div class="da-dynamic-form">
+                <form dForm [layout]="columnsLayout" autocomplete="off">
+                    <div class="da-content-title da-form-card-title">
+                        <d-card-title>Invoice Discount</d-card-title>
+                    </div>
+                    <div class="grid">
+                        <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+                            <da-row-item>
+                                <da-layout-row [daGutter]="[0, 0]">
+                                    <da-col-item [daXs]="6" [daMs]="24">
+                                        <div class="u-1-3">
+                                            <d-form-item>
+                                                <d-form-label [required]="true">Discount Name</d-form-label>
+                                                <d-form-control class="form-control-width">
+                                                    <d-select [options]="discountList" name="Discount Name"
+                                                        [isSearch]="true" [filterKey]="'label'"
+                                                        [placeholder]="'Select Discount Name'"
+                                                        (ngModelChange)="changeDiscount($event)"
+                                                        [(ngModel)]="discountRowData.discount"></d-select>
+                                                </d-form-control>
+                                            </d-form-item>
+                                        </div>
+                                    </da-col-item>
+                                    <da-col-item [daXs]="6" [daMs]="24">
+                                        <div class="u-1-3">
+                                            <d-form-item>
+                                                <d-form-label [required]="true">Amount</d-form-label>
+                                                <d-form-control class="form-control-width">
+                                                    <input dTextInput name="discountAmnt"
+                                                        [(ngModel)]="discountRowData.discountAmnt" />
+                                                </d-form-control>
+                                            </d-form-item>
+                                        </div>
+                                    </da-col-item>
+                                    <da-col-item [daXs]="4" [daMs]="24">
+                                        <div class="u-1-3" style="margin: 12% 0;">
+                                            <d-form-operation>
+                                                <d-button bsStyle="primary" class="mr-element-spacing"
+                                                    (click)="quickRowAddedDiscount(discountRowData)"
+                                                    circled="true">Add</d-button>
+                                            </d-form-operation>
+                                        </div>
+                                    </da-col-item>
+                                </da-layout-row>
+                            </da-row-item>
+                        </da-layout-col>
+                    </div>
+                    <!-- selected product list -->
+                    <d-toast [value]="toastMessage"></d-toast>
+                    <da-layout-row [daGutter]="[0, 24]">
+                        <da-col-item [daSpan]="22" [daXs]="24">
+                            <div class="da-advance-form" dLoading [loading]="busy">
+                                <div class="da-advace-form-content">
+                                    <d-data-table #dataTable [dataSource]="discountListData" [scrollable]="true"
+                                        [tableWidthConfig]="tableWidthConfig">
+                                        <thead dTableHead>
+                                            <tr dTableRow>
+                                                <th dHeadCell>Id</th>
+                                                <th dHeadCell>Discount Name</th>
+                                                <th dHeadCell>Amount</th>
+                                                <th dHeadCell>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody dTableBody>
+                                            <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                                                <tr dTableRow>
+                                                    <td dTableCell [rowItem]="rowItem" [field]="'id'"
+                                                        [beforeEditStart]="beforeEditStart"
+                                                        [beforeEditEnd]="beforeEditEnd">
+                                                        <span>{{ rowIndex + 1 }}</span>
+
+                                                    </td>
+                                                    <td dTableCell [rowItem]="rowItem" [field]="'discountName'"
+                                                        [beforeEditStart]="beforeEditStart"
+                                                        [beforeEditEnd]="beforeEditEnd">
+                                                        <span>{{ rowItem?.discountName }}</span>
+
+                                                    </td>
+                                                    <td dTableCell [rowItem]="rowItem" [field]="'discountAmnt'"
+                                                        [beforeEditStart]="beforeEditStart"
+                                                        [beforeEditEnd]="beforeEditEnd">
+                                                        <span>{{ rowItem?.discountType =='Persent' ?
+                                                            rowItem.discountAmnt + ' %' : rowItem.discountAmnt + ' BDT'
+                                                            }}</span>
+                                                        <!-- <span >{{rowItem?.discountAmnt}}</span> -->
+
+                                                    </td>
+                                                    <td>
+                                                        <d-button icon="icon-delete" bsStyle="text-dark" title="delete"
+                                                            (click)="deleteRowDiscount(rowIndex)"></d-button>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </tbody>
+                                    </d-data-table>
+                                </div>
+                            </div>
+                        </da-col-item>
+                    </da-layout-row>
+                    <!-- end selected product list -->
+                    <d-form-operation>
+                        <d-button bsStyle="primary" class="mr-element-spacing" circled="true"
+                            style="margin-right: 4px !important" (btnClick)="placeOrder(masterData)">Submit</d-button>
+                        <d-button bsStyle="common" circled="true">Cancel</d-button>
+                    </d-form-operation>
+                </form>
+            </div>
+        </da-col-item>
+    </da-layout-row>
+</div>
