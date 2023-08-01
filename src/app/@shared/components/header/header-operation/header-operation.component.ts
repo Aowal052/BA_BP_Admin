@@ -21,8 +21,8 @@ export class HeaderOperationComponent implements OnInit {
   constructor(private route: Router, private authService: AuthService, private translate: TranslateService, private i18n: I18nService) {}
 
   ngOnInit(): void {
-    if (sessionStorage.getItem('userinfo')) {
-      this.user = JSON.parse(sessionStorage.getItem('userinfo')!);
+    if (localStorage.getItem('userinfo')) {
+      this.user = JSON.parse(localStorage.getItem('userinfo')!);
       this.haveLoggedIn = true;
     }
     this.language = this.translate.currentLang;
@@ -34,7 +34,7 @@ export class HeaderOperationComponent implements OnInit {
 
   onLanguageClick(language: string) {
     this.language = 'en-us';
-    sessionStorage.setItem('lang', this.language);
+    localStorage.setItem('lang', this.language);
     this.i18n.toggleLang(this.language);
     this.translate.use(this.language);
   }

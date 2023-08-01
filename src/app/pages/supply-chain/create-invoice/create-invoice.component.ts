@@ -452,7 +452,9 @@ export class CreateInvoiceComponent implements OnInit{
   
 items: Array<any> = [];
 onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
-  this.items.push(rowItem);
+  rowItem.$checked = checked;
+  rowItem.$halfChecked = false;
+  checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
 }
  
   cancelRequest(){

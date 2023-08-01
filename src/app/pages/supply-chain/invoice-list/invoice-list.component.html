@@ -1,1 +1,287 @@
-<p>invoice-list works!</p>
+<div class="da-list-wrap">
+    <div class="da-content-banner">
+      <d-breadcrumb>
+          <d-breadcrumb-item *ngFor="let item of breadItem">
+            <a rel="noopener">{{ item.name }}</a>
+          </d-breadcrumb-item>
+        </d-breadcrumb>
+  </div>
+      <div class="da-content-wrapper" >
+          <d-toast [value]="msgs"></d-toast>
+          <da-layout-row [daGutter]="[24, 24]">
+              <da-col-item [daSpan]="24" [daXs]="24" >
+                  <div class="da-list-container" >
+                      <div class="da-list-header" >
+                          <div class="da-header-left" >
+                            <div class="da-header-item">
+                                <div class="da-header-item-label">From Date :</div>
+                                <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
+                                  <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
+                                    [(ngModel)]="selectedDate1" autocomplete="off" dDatepicker #datePicker1="datepicker"
+                                    (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
+                                  <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                    <i class="icon icon-close"></i>
+                                  </div>
+                                  <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                                    <i class="icons icon-calendar"></i>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="da-header-item">
+                                <div class="da-header-item-label">To Date :</div>
+                                <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
+                                  <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
+                                    [(ngModel)]="selectedDate1" autocomplete="off" dDatepicker #datePicker1="datepicker"
+                                    (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
+                                  <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                    <i class="icon icon-close"></i>
+                                  </div>
+                                  <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                                    <i class="icon icon-calendar"></i>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="da-header-item">
+                                <div class="da-header-item-label">Status :</div>
+                                <d-select [placeholder]="'change table layout'" [options]="StatusOptions" [(ngModel)]="searchModel.status"></d-select>
+                              </div>
+                              <div class="da-header-item">
+                                <input dTextInput [placeholder]="'Order Id'" [(ngModel)]="searchModel.orderId" />
+                              </div>
+                              
+                              <div class="da-header-item">
+                                <d-button (click)="reset()">Search</d-button>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- <div class="da-header-item">
+                              <div class="da-header-item-label">Sales Order Id</div>
+                              <input dTextInput autocomplete="off" name="orderId" />
+                          </div>
+                          <div class="da-header-item">
+                              <d-button (click)="reset()">Search</d-button>
+                          </div> -->
+                      </div>
+                      <div class="list-content" dLoading [loading]="busy" >
+                        
+                          <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
+                              [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true" >
+                                <d-column field="invoiceNo" header="Invoice No" [width]="'100px'" >
+                                    <d-cell>
+                                    <ng-template let-cellItem="cellItem">
+                                        {{ cellItem }}
+                                    </ng-template>
+                                    </d-cell>
+                                </d-column>
+                                  <d-column field="invoiceDate" header="Invoice Date" [width]="'100px'" >
+                                    <d-cell>
+                                      <ng-template let-cellItem="cellItem">
+                                        {{ cellItem }}
+                                      </ng-template>
+                                    </d-cell>
+                                  </d-column>
+                                  <d-column field="orderNo" header="Challan No" [width]="'100px'" >
+                                    <d-cell>
+                                      <ng-template let-cellItem="cellItem">
+                                        {{ cellItem }}
+                                      </ng-template>
+                                    </d-cell>
+                                  </d-column>
+                                  <d-column field="customerName" header="Customer Name" [width]="'100px'">
+                                    <d-cell>
+                                      <ng-template let-cellItem="cellItem">
+                                        <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
+                                          {{ cellItem }}
+                                        </span>
+                                      </ng-template>
+                                    </d-cell>
+                                  </d-column>
+                                  <d-column field="Actions" header="Actions" [width]="'150px'">
+                                    <d-cell>
+                                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                                            <div class="btn-group over-flow-ellipsis">
+                                              <d-button icon="icon-preview" bsStyle="text-dark" title="edit"
+                                                         (click)="viewRow(rowItem, rowIndex)"></d-button>
+                                            </div>
+                                        </ng-template>
+                                    </d-cell>
+                                  </d-column>
+                          </d-data-table>
+                      </div>
+                      <div class="da-list-footer">
+                          <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.pageSize"
+                              [(pageIndex)]="pager.pageIndex" [canViewTotal]="true" [canChangePageSize]="true"
+                              [canJumpPage]="true" [maxItems]="5" (pageIndexChange)="onPageChange($event)"
+                              (pageSizeChange)="onSizeChange($event)">
+                          </d-pagination>
+                      </div>
+              </da-col-item>
+          </da-layout-row>
+      </div>
+  
+  <ng-template #EditorTemplate>
+      <h3>Master Info</h3>
+          <div class="grid">
+            <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+              <da-row-item>
+                <da-layout-row [daGutter]="[0, 0]">
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Invoice No : {{master.invoiceNo}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                </da-col-item>
+                <da-col-item [daXs]="12" [daMs]="24">
+                  <div class="u-1-2">
+                    <d-form-item>
+                      <d-form-label>Invoice Date : {{master.invoiceDate}}</d-form-label>
+                    </d-form-item>
+                  </div>
+              </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Customer Name : {{ master.customerName}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Gate Pass No : {{master.gatePassNo}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label>Customer Address : {{ master.customerAddress}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                </da-layout-row>
+              </da-row-item>
+        
+              <da-row-item>
+                <da-layout-row [daGutter]="[0, 0]">
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                          <d-form-label > Location : Main Location</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label >Despatch Thru : </d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="12" [daMs]="24">
+                    <div class="u-1-2">
+                      <d-form-item>
+                        <d-form-label >Destination : {{master.deliveryAddress}}</d-form-label>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                </da-layout-row>
+              </da-row-item>
+        
+            </da-layout-col>
+          </div>
+          
+      <h3>Product Details Info</h3>
+      
+      <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+          <thead dTableHead >
+            <tr dTableRow>
+              <th dHeadCell>Id</th>
+              <th dHeadCell>Product Name</th>
+              <th dHeadCell>Delivery Qnty</th>
+              <th dHeadCell>Total Price</th>
+              <!-- <th dHeadCell>Actions</th> -->
+            </tr>
+          </thead>
+          <tbody dTableBody >
+            <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+              <tr dTableRow >
+                
+                <td
+                  dTableCell
+                  [field]="'id'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                  <span >{{ rowIndex + 1 }}</span>
+                 
+                </td>
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'productName'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                  <span > {{ rowItem?.productName }}</span>
+                
+                </td>
+                
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'deliveryQuantity'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                <span style="margin-left: 6px">{{ rowItem.deliveryQuantity +" "+ rowItem.unitName }}</span>
+                  
+                </td>
+                
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'totalPrice'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
+                  
+                </td>
+                
+              </tr>
+              
+            </ng-template>
+          </tbody>
+          
+        </d-data-table>
+        <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+            <tbody dTableBody >
+                <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+            <tr>
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'totalPrice'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                <span style="margin-left: 6px">{{ calculateTotalPrice(rowItem) }}</span>
+                  
+                </td>
+              </tr>
+                </ng-template>
+            </tbody>
+        </d-data-table>
+          <div>
+              <d-form-operation>
+                  <!-- <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="">Submit</d-button> -->
+                  <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
+                </d-form-operation>
+          </div>
+  </ng-template>

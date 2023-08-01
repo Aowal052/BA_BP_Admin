@@ -19,7 +19,7 @@ export class CustomerService {
   apiurl = 'https://172.16.61.221:8010/api/';
 
   getToken() {
-    return sessionStorage.getItem("key");
+    return localStorage.getItem("key");
   }
 
   

@@ -18,7 +18,7 @@ export class CommonService {
   }
 
   async getHttpOptions() {
-    const token = sessionStorage.getItem("id_token");
+    const token = localStorage.getItem("id_token");
     const headers = new HttpHeaders({
       Authorization: 'Bearer ' + token
     });

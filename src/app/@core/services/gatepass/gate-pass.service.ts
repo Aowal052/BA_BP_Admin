@@ -18,7 +18,7 @@ export class GatePassService {
     private service:CommonService) { }
 
     getToken() {
-      return sessionStorage.getItem("key");
+      return localStorage.getItem("key");
     }
     httpOptions = {
       headers: new HttpHeaders({

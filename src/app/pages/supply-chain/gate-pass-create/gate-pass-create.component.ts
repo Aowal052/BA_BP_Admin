@@ -411,20 +411,9 @@ export class GatePassCreateComponent implements OnInit {
   items: Array<any> = [];
   onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
     debugger
-    if (checked == true) {
-      this.items.push(rowItem);
-    }
-    else {
-      this.items.splice(rowItem, 1);
-    }
-
-    //rowItem.$halfChecked = false;
-    if (this.items.length > 0) {
-      this.IsActive = true;
-    }
-    else {
-      this.IsActive = false;
-    }
+    rowItem.$checked = checked;
+    rowItem.$halfChecked = false;
+    checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
   }
   async placeGatePass(master: any) {
     const masterData = await this.comService.createFormData(master);

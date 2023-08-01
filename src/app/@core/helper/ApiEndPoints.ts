@@ -54,6 +54,8 @@ export class ApiEndPoints{
     static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
     static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
     static readonly GetApprovedSalesOrder:string = 'v1/CRM/GetApprovedSalesOrder';
+    static readonly GetInvoiceMaster:string = 'v1/CRM/GetInvoiceMaster';
+    static readonly GetInvoiceDetails:string = 'v1/CRM/GetInvoiceDetails';
     static readonly GetVehicleDropdown:string = 'v1/CRM/GetVehicles';
     static readonly GetChallanListGatePass:string = 'v1/CRM/GetGatePassInfo';
     static readonly CreateGatePass:string = 'v1/CRM/CreateGatePass';

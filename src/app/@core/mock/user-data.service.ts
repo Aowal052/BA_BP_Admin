@@ -25,7 +25,7 @@ export class UserDataService extends UserData {
   }
 
   getToken() {
-    return sessionStorage.getItem("key");
+    return localStorage.getItem("key");
   }
 
   

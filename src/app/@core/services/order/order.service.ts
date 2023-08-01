@@ -17,7 +17,7 @@ export class OrderService {
     private service:CommonService) { }
 
   getToken() {
-    return sessionStorage.getItem("key");
+    return localStorage.getItem("key");
   }
 
   

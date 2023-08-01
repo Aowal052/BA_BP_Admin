@@ -43,7 +43,7 @@ export class AuthService {
   apiurl = 'https://localhost:7143/api/';
 
   getToken() {
-    return sessionStorage.getItem("key");
+    return localStorage.getItem("key");
   }
 
   
@@ -65,19 +65,19 @@ export class AuthService {
   }
 
   logout() {
-    sessionStorage.removeItem('id_token');
-    sessionStorage.removeItem('expires_at');
-    sessionStorage.removeItem('userinfo');
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('expires_at');
+    localStorage.removeItem('userinfo');
   }
 
   setSession(userInfo: any) {
-    sessionStorage.setItem('id_token', userInfo.token);
-    sessionStorage.setItem('userinfo', JSON.stringify(userInfo.user));
-    sessionStorage.setItem('expires_at', '120');
+    localStorage.setItem('id_token', userInfo.token);
+    localStorage.setItem('userinfo', JSON.stringify(userInfo.user));
+    localStorage.setItem('expires_at', '120');
   }
 
   isUserLoggedIn() {
-    if (sessionStorage.getItem('userinfo')) {
+    if (localStorage.getItem('userinfo')) {
       return true;
     } else {
       return false;

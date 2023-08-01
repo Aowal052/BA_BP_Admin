@@ -16,7 +16,7 @@ export class SalesInvoiceService {
     private router:Router,
     private service:CommonService) { }
     getToken() {
-      return sessionStorage.getItem("key");
+      return localStorage.getItem("key");
     }
   
     

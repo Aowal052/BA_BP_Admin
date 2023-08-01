@@ -19,7 +19,7 @@ export class DeliveryChallanService {
     private service:CommonService) { }
 
     getToken() {
-      return sessionStorage.getItem("key");
+      return localStorage.getItem("key");
     }
   
     
