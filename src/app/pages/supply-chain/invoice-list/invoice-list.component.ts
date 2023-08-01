@@ -255,6 +255,9 @@ export class InvoiceListComponent implements OnInit{
       time: 'y-MM-dd HH:mm:ss'
     }
   };
+  netPriceinfo = [{
+    netTotal:0
+  }];
   appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   constructor(
     private listDataService: ListDataService, 
@@ -306,6 +309,8 @@ export class InvoiceListComponent implements OnInit{
         const data = JSON.parse(JSON.stringify(res.data));
         debugger
         this.listData = data;
+        this.netPriceinfo[0].netTotal =this.listData.reduce((total,item)=>total+item.totalPrice,0)
+        this.netPriceinfo[0].netTotal  = this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * this.basicDataSource[0].generalDiscount)/100;
       });
       debugger
       this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetDiscountByInvoiceId, this.basicDataSource[0].id))
@@ -313,9 +318,11 @@ export class InvoiceListComponent implements OnInit{
         const data = JSON.parse(JSON.stringify(res.data));
         debugger
         this.discount = data;
-      });
       
-  
+        this.discount.forEach(discount => {
+          this.netPriceinfo[0].netTotal  = discount.discountType =="Persent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountValue)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountValue));
+        });
+      });
       this.master = this.basicDataSource.find(x=>x.id==row.id);
       this.editRowIndex = index;
       this.formData = row;

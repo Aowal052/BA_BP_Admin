@@ -19,7 +19,7 @@
                             <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
                                 <da-row-item>
                                     <da-layout-row [daGutter]="[0, 0]">
-                                        <da-col-item [daXs]="6" [daMs]="24">
+                                        <!-- <da-col-item [daXs]="6" [daMs]="24">
                                             <div class="u-1-3">
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Gate Pass Date</d-form-label>
@@ -44,7 +44,7 @@
                                                     </d-form-control>
                                                 </d-form-item>
                                             </div>
-                                        </da-col-item>
+                                        </da-col-item> -->
                                         <da-col-item [daXs]="6" [daMs]="24">
                                             <div class="u-1-3">
                                                 <d-form-item>
@@ -102,7 +102,7 @@
                             </da-layout-col>
                         </div>
 
-                        <d-form-operation *ngIf="IsActive" >
+                        <d-form-operation *ngIf="isActive" >
                             <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="placeGatePass(masterData)">Submit</d-button>
                             <!-- <d-button  bsStyle="primary" class="mr-element-spacing" circled="true"
                                 style="margin-right: 4px !important" [disabled]="!items.length">Submit</d-button> -->

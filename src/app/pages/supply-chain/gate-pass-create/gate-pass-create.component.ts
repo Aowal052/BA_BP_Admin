@@ -271,7 +271,7 @@ export class GatePassCreateComponent implements OnInit {
   selectedId: string = '';
   msgs: Array<Object> = [];
   data: any;
-  IsActive: boolean = false;
+  isActive: boolean = false;
   constructor(
     private SaleInvservice: SalesInvoiceService,
     private GatepassService: GatePassService,
@@ -414,6 +414,7 @@ export class GatePassCreateComponent implements OnInit {
     rowItem.$checked = checked;
     rowItem.$halfChecked = false;
     checked?this.items.push(rowItem):this.items.splice(rowIndex,1)
+    this.items.length>0?this.isActive = true:this.isActive=false;
   }
   async placeGatePass(master: any) {
     const masterData = await this.comService.createFormData(master);
@@ -421,10 +422,11 @@ export class GatePassCreateComponent implements OnInit {
     const formData = new FormData();
 
     debugger
-    const gatePassDate = master.selectedDate1; // Assuming you have the Date object
+    const gatePassDate = new Date(); // Assuming you have the Date object
 
     // Formatting the date as 'YYYY-MM-DD' (e.g., '2023-07-20')
     const formattedDate = `${gatePassDate.getFullYear()}-${String(gatePassDate.getMonth() + 1).padStart(2, '0')}-${String(gatePassDate.getDate()).padStart(2, '0')}`;
+    //const formattedDate = new Date()
     formData.append('GatePassDate', formattedDate);
     debugger
     formData.append('VehicleId', master.selectedVehicle.id);

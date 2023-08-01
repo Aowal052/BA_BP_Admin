@@ -136,6 +136,13 @@
                     
                     <tbody dTableBody>
                         <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            
+                            <tr dTableRow>
+                                <td></td>
+                                <td></td>
+                                <td> Generale Discount</td>
+                                <td> {{invoiceMasterData.defaultDiscount}} %</td>
+                            </tr>
                             <tr dTableRow>
                                 <td></td>
                                 <td></td>
@@ -143,7 +150,7 @@
                                 <td dTableCell [rowItem]="rowItem" [field]="'netTotal'"
                                     [beforeEditStart]="beforeEditStart"
                                     [beforeEditEnd]="beforeEditEnd">
-                                    <span style="margin-left: 6px">{{ rowItem.netTotal  }}</span>
+                                    <span style="margin-left: 6px">{{ rowItem.netTotal }}</span>
 
                                 </td>
 

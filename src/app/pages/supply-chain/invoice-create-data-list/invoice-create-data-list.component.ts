@@ -228,6 +228,7 @@ export class InvoiceCreateDataListComponent {
     netAmount:0,
     challanNo:'',
     address:'',
+    defaultDiscount:0,
     remarks:''
   }
   productRowData = {
@@ -513,7 +514,7 @@ export class InvoiceCreateDataListComponent {
           handler: () => {
             const depricatedData = this.discountListData[index];
             this.discountListData.splice(index, 1);
-            const totalPrice =this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
+            //const totalPrice =this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
             
             this.netPriceinfo[0].netTotal =this.listData.reduce((total,item)=>total+item.deliveryPrice,0)
             this.discountListData = this.discountListData.reverse();
@@ -574,6 +575,7 @@ export class InvoiceCreateDataListComponent {
        this.invoiceMasterData.selectedCustomer = { id: res.data[0].customerId, label: res.data[0].customerName }
        this.invoiceMasterData.challanNo  = res.data[0].challanNo;
        this.invoiceMasterData.address  = res.data[0].address;
+       this.invoiceMasterData.defaultDiscount  = res.data[0].defaultDiscount;
     });
 
     this.busy = (await this.InvoiceService.getInvoiceDetailCreateById(ApiEndPoints.GetInvoiceDetailCreateById, formdata))
@@ -582,6 +584,8 @@ export class InvoiceCreateDataListComponent {
       debugger;
       this.listData = data;
       this.netPriceinfo[0].netTotal = this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
+
+       this.netPriceinfo[0].netTotal  = this.netPriceinfo[0].netTotal- (this.netPriceinfo[0].netTotal * this.invoiceMaster[0].defaultDiscount) / 100
     });
   }
 }

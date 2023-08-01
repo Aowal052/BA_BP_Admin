@@ -259,29 +259,60 @@
             </ng-template>
           </tbody>
           
-        </d-data-table>
-        <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
-            <tbody dTableBody >
-                <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
-            <tr>
-                <td
-                  dTableCell
-                  [rowItem]="rowItem"
-                  [field]="'totalPrice'"
-                  [beforeEditStart]="beforeEditStart"
-                  [beforeEditEnd]="beforeEditEnd"
-                >
-                <!-- <span style="margin-left: 6px">{{ calculateTotalPrice(rowItem) }}</span> -->
-                  
-                </td>
-              </tr>
-                </ng-template>
-            </tbody>
-        </d-data-table>
-          <div>
+      </d-data-table>
+      <d-data-table #dataTable [dataSource]="discount" [scrollable]="true"
+                    [tableWidthConfig]="tableWidthConfig">
+                    
+                    <tbody dTableBody>
+                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            <tr dTableRow>
+                                <td></td>
+                                <td></td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'discountName'"
+                                    [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.discountName  }}</span>
+
+                                </td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'discountValue'"
+                                    [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.discountType=='Persent'?rowItem.discountValue+" %": rowItem.discountValue + " BDT"  }}</span>
+
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </tbody>
+
+                </d-data-table>
+                <d-data-table #dataTable [dataSource]="netPriceinfo" [scrollable]="true"
+                    [tableWidthConfig]="tableWidthConfig">
+                    
+                    <tbody dTableBody>
+                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            <tr dTableRow>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span style="margin-left: 6px">Net Amount</span>
+                                </td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'netTotal'"
+                                    [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.netTotal  }}</span>
+
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </tbody>
+
+                </d-data-table>
+          <!-- <div>
               <d-form-operation>
-                  <!-- <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="">Submit</d-button> -->
+                  
                   <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
                 </d-form-operation>
-          </div>
+          </div> -->
   </ng-template>
