@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { number } from 'echarts';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
@@ -317,34 +318,32 @@ export class InvoiceCreateDataListComponent {
 
 
   async placeOrder(master:any){
-    const masterData = this.createFormData(master);
-    const products = this.createFormData(this.listData);
+
     debugger
     // Append master data
     const formData = new FormData();
-      formData.append('salesOrderMasterDto.customerId', master.selectedCustomer.id.toString());
-      formData.append('salesOrderMasterDto.deliveryAddress', master.deliveryAddress);
-      formData.append('salesOrderMasterDto.deliveryInstruction', master.deliveryInstruction);
-      formData.append('salesOrderMasterDto.orderDate', master.orderDate.toISOString());
-      formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
-      formData.append('salesOrderMasterDto.GeneralDiscount', master.genDiscount.toString());
-      //formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
-      //formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name.toString());
-      //formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount.toString());
-      formData.append('salesOrderMasterDto.estimatedDeliveryDate', master.estimatedDeliveryDate.toISOString());
-      formData.append('salesOrderMasterDto.remarks', master.remarks);
+      formData.append('InvoiceMasterDto.customerId', master.selectedCustomer.id.toString());
+      formData.append('InvoiceMasterDto.ChallanNo', master.challanNo);
+      formData.append('InvoiceMasterDto.NetAmount', this.netPriceinfo.toString());
 
       // Append list data
       for (let i = 0; i < this.listData.length; i++) {
         const item = this.listData[i];
-        formData.append(`salesOrderDetailsDto[${i}].productId`, item.productId.toString());
-        formData.append(`salesOrderDetailsDto[${i}].productDescription`, item.productDescription);
-        formData.append(`salesOrderDetailsDto[${i}].quantity`, item.quantity.toString());
-        formData.append(`salesOrderDetailsDto[${i}].unitId`, item.unitId.toString());
-        formData.append(`salesOrderDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
-        formData.append(`salesOrderDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
+        formData.append(`InvoiceDetailsDtos[${i}].productId`, item.productId.toString());
+        formData.append(`InvoiceDetailsDtos[${i}].quantity`, item.deliveryQuantity.toString());
+        formData.append(`InvoiceDetailsDtos[${i}].unitId`, item.unitId.toString());
+        formData.append(`InvoiceDetailsDtos[${i}].totalPrice`, item.deliveryPrice.toString());
       }
-      (await this.service.createOrder(ApiEndPoints.CreateSales, formData)).subscribe({
+
+      // Append Discount Data data
+      for (let i = 0; i < this.discountListData.length; i++) {
+        const item = this.discountListData[i];
+        formData.append(`SalesOrderDiscountDtos[${i}].discountId`, item.discountId.toString());
+        formData.append(`SalesOrderDiscountDtos[${i}].discountAmount`, item.discountAmnt.toString());
+       
+      }
+
+      (await this.InvoiceService.createInvoice(ApiEndPoints.CreateInvoice, formData)).subscribe({
         next: (res: OrderResponse) => {
           debugger
           this.data = res;
@@ -488,27 +487,12 @@ export class InvoiceCreateDataListComponent {
       this.showToast('error', 'Error', 'Your discount alredy is in the list.');
       return;
     }
-    this.netPriceinfo[0].netTotal = e.discountType == 'percent'?  (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * e.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  e.discountAmnt);
+    debugger
+    this.netPriceinfo[0].netTotal = e.discountType == 'Persent'?  (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * e.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  e.discountAmnt);
   
     const newData = { ...e };
     this.discountListData.unshift(newData);
   }
-
-  quickRowCancel() {
-    this.headerNewForm = false;
-  }
-  beforeEditStart = (rowItem: any, field: any) => {
-    return true;
-  };
-
-   beforeEditEnd = async (rowItem: any, field: any) => {
-    //await this.updateproduct(rowItem);
-    if (rowItem && rowItem[field].length < 3) {
-      return false;
-    } else {
-      return true;
-    }
-  };
 
   deleteRowDiscount(index: number) {
     debugger
@@ -527,10 +511,16 @@ export class InvoiceCreateDataListComponent {
           text: 'Ok',
           disabled: false,
           handler: () => {
+            const depricatedData = this.discountListData[index];
             this.discountListData.splice(index, 1);
-             const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-             //this.netPriceinfo[0].netTotal = this.discountListData. == 'Percent'?  (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * e.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  e.discountAmnt);
-            // this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
+            const totalPrice =this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
+            
+            this.netPriceinfo[0].netTotal =this.listData.reduce((total,item)=>total+item.deliveryPrice,0)
+            this.discountListData = this.discountListData.reverse();
+            this.discountListData.forEach(discount => {
+              this.netPriceinfo[0].netTotal  = discount.discountType =="Persent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountAmnt));
+            });
+            
             results.modalInstance.hide();
           },
         },
@@ -545,6 +535,24 @@ export class InvoiceCreateDataListComponent {
       ],
     });
   }
+
+  quickRowCancel() {
+    this.headerNewForm = false;
+  }
+  beforeEditStart = (rowItem: any, field: any) => {
+    return true;
+  };
+
+   beforeEditEnd = async (rowItem: any, field: any) => {
+    //await this.updateproduct(rowItem);
+    if (rowItem && rowItem[field].length < 3) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  
   retrievedItem: any;
   invoiceIds: Array<any> = [];
   async viewRow() {
@@ -573,19 +581,7 @@ export class InvoiceCreateDataListComponent {
       const data = JSON.parse(JSON.stringify(res.data));
       debugger;
       this.listData = data;
-      this.netPriceinfo[0].netTotal = this.listData.reduce((total,item)=>total+item.deliveryPrice,0)
-      for(var i=0;i<=data.length-1;i++){
-
-        this.productRowData.productId = data[i].productId,
-        this.productRowData.product = data[i].productName,
-        this.productRowData.totalPrice = data[i].deliveryPrice,
-        this.productRowData.delQuantity = data[i].deliveryQuantity,
-        this.productRowData.unit = data[i].unitName,
-        this.productRowData.unitId = data[i].unitId
-
-        this.productRowDataList.push(this.productRowData)
-        
-      }
+      this.netPriceinfo[0].netTotal = this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
     });
   }
 }

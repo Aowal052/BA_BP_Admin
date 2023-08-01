@@ -62,6 +62,7 @@ export class ApiEndPoints{
 
     static readonly GetInvoiceMasterCreateById:string = 'v1/CRM/GetInvoiceMasterInfo';
     static readonly GetInvoiceDetailCreateById:string = 'v1/CRM/GetInvoiceDetailsInfo';
+    static readonly CreateInvoice:string = 'v1/CRM/InvoiceCreate';
 
     // Additional static messages can be added here
 

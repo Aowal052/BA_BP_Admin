@@ -37,4 +37,16 @@ export class InvoiceService {
       })
     );
   }
+
+  async createInvoice(endpoint:string,param:any):Promise<Observable<InvoiceResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.post<InvoiceResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+      catchError((error) => {
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
 }
