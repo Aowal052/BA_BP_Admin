@@ -6,9 +6,10 @@ import { BreadCrumbService, DialogService, EditableTip, FormLayout, HelperUtils,
 import { I18nService } from 'ng-devui/i18n';
 import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
+import { CommissionResponse } from 'src/app/@core/model/CommissionResponse';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
+import { CommissionService } from 'src/app/@core/services/commission/commission.service';
 import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
 import { UserService } from 'src/app/@core/services/user/user.service';
@@ -25,7 +26,18 @@ export class CommissionComponent {
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
-  categoryDropdown: { id?: number, name?: string }[] = [];
+  percentDropdown = [
+    {
+      id: 1,
+      name: 'Percent',
+    },
+    {
+      id: 2,
+      name: 'Neumaric',
+    }
+  ];
+  //percentDropdown: { id?: number, name?: string }[] = [];
+  //categoryDropdown: { id?: number, name?: string }[] = [];
 
   public category:Users[]=[];
   public res:any;
@@ -47,197 +59,47 @@ export class CommissionComponent {
     labelSize: 'sm',
     items: [
       {
-        label: 'Customer Name',
-        prop: 'customerName',
+        label: 'Discount  Name',
+        prop: 'DiscountName',
         type: 'input',
         required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
+      
       {
-        label: 'address',
-        prop: 'address',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'KeyAccountManager',
-        prop: 'KeyAccountManager',
+        label: 'Discount Type',
+        prop: 'DiscountType',
         type: 'select',
-        options:  this.categoryDropdown,
+        options:  this.percentDropdown,
         required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
-      {
-        label: 'Billing Address',
-        prop: 'billingAddress',
-        type: 'input',
-      },
-      {
-        label: 'Delivery Address',
-        prop: 'delieryAddress',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'Bin Number',
-        prop: 'bin',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'Tin Number',
-        prop: 'tin',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'NID Number',
-        prop: 'nid',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'ContactPerson',
-        prop: 'contactPerson',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'CpDesignation',
-        prop: 'CpDesignation',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'CpDepartment',
-        prop: 'CpDepartment',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'CpMobile',
-        prop: 'CpMobile',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'CpEmail',
-        prop: 'CpEmail',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'OpeningAmount',
-        prop: 'OpeningAmount',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'CustomerType',
-        prop: 'CustomerType',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'CreditLimit',
-        prop: 'CreditLimit',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
+      
     ],
   };
   tableWidthConfig: TableWidthConfig[] = [
     {
-      field: 'CustomerName',
+      field: 'id',
       width: '100px',
     },
     {
-      field: 'Address',
+      field: 'discountName',
       width: '100px',
     },
     {
-      field: 'ContactPerson',
-      width: '100px',
-    },
-    {
-      field: 'CpMobile',
-      width: '100px',
-    },
-    {
-      field: 'CreditLimit',
-      width: '100px',
-    },
-    {
-      field: 'OpeningAmount',
-      width: '100px',
-    },
-    {
-      field: 'Actions',
+      field: 'discountType',
       width: '100px',
     },
   ];
   
   defaultRowData = {
     id: '',
-    CustomerName: '',
-    Address: '',
-    BillingAddress: '',
-    DeliveryAddress: '',
-    BinNo: 0,
-    TinNo: '',
-    NidNo: '',
-    ContactPerson: '',
-    CpDesignation: '',
-    CpDepartment: '',
-    CpMobile: 0,
-    CpEmail: '',
-    OpeningAmount: '',
-    CustomerType: '',
-    KeyAccountManager: '',
-    CreditLimit: 0,
+    DiscountName: '',
+    DiscountType: '',
   };
   language: string;
   selectedItem: string = '';
@@ -249,6 +111,7 @@ export class CommissionComponent {
     private breadCrumbService: BreadCrumbService,
     private dialogService: DialogService,
     private service: CustomerService,
+    private commissionService: CommissionService,
     private route: ActivatedRoute,
     private translate: TranslateService,
     private router: Router,
@@ -287,7 +150,7 @@ export class CommissionComponent {
     });
     
     this.getList();
-    await this.getCategory()
+   
   }
 
   onEditEnd(rowItem: any, field: any) {
@@ -355,11 +218,12 @@ export class CommissionComponent {
             }
           })
   }
+
   async getList() {
-    this.busy = (await this.service.getCustomers(ApiEndPoints.GetCustomers, this.pager)).subscribe((res:CustomerResponse) => {
+    debugger;
+    this.busy = (await this.commissionService.getCommission(ApiEndPoints.GetDiscountList)).subscribe((res:CommissionResponse) => {
       res.$expandConfig = { expand: false };
       this.listData = res.data;
-      this.pager.total = res.totalCount;
       debugger
     });
   }
@@ -374,17 +238,6 @@ export class CommissionComponent {
   // Define the elseBlock property
   get elseBlock(): boolean {
     return !this.isSelect;
-  }
-
-  async getCategory(){
-    (await this.usrservice.getUsers(ApiEndPoints.GetUser)).subscribe((response:UserResponse) => {
-      debugger
-      this.res = response;
-      if(this.res.statusCode == HttpStatusCode.Ok){
-        this.category = this.res.data;
-        this.categoryDropdown = this.category.map(item => ({ id: item.id, name: item.firstName + item.lastName }));
-      }
-    });
   }
 
   onPageChange(e: number) {
@@ -404,28 +257,14 @@ export class CommissionComponent {
 
   updateFormConfigOptions() {
     debugger
-    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'KeyAccountManager').options = this.categoryDropdown;
+    //this.formConfig.items.find((item: { prop: string; }) => item.prop === 'KeyAccountManager').options = this.categoryDropdown;
   }
   async quickRowAdded(e: any) {
     const formData = new FormData();
     debugger
-      formData.append('CustomerName', e.customerName||'');
-      formData.append('Address', e.address||'');
-      formData.append('BillingAddress', e.billingAddress||'');
-      formData.append('DeliveryAddress', e.delieryAddress||'');
-      formData.append('KeyAccountManagerId', e.KeyAccountManager.id||0);
-      formData.append('BinNo', e.bin || '');
-      formData.append('TinNo', e.tin || '');
-      formData.append('NidNo', e.nid || '');
-      formData.append('ContactPerson', e.contactPerson || '');
-      formData.append('CpDesignation', e.CpDesignation || '');
-      formData.append('CpDepartment', e.CpDepartment || '');
-      formData.append('CpMobile', e.CpMobile || '');
-      formData.append('CpEmail', e.CpEmail || '');
-      formData.append('OpeningAmount', e.OpeningAmount || '');
-      formData.append('CustomerType', e.CustomerType || '');
-      formData.append('CreditLimit', e.CreditLimit || '');
-      (await this.service.createCustomer(ApiEndPoints.CreateCustomer, formData)).subscribe({
+      formData.append('DiscountName', e.DiscountName||'');
+      formData.append('DiscountType', e.DiscountType.name||'');
+      (await this.commissionService.createCommission(ApiEndPoints.GetDiscountCreate, formData)).subscribe({
         next: (res: CustomerResponse) => {
           this.res = res;
           if (this.res.statusCode == HttpStatusCode.Ok) {
@@ -467,7 +306,6 @@ export class CommissionComponent {
       key:field,
       value:rowItem[field]
     }
-    await this.updateproduct(data);
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
@@ -488,38 +326,9 @@ export class CommissionComponent {
     {
       linkType: 'routerLink',
       link: 'create-commission',
-      name: 'Commission'
+      name: 'Discount'
     }
   ];
-
-  async updateproduct(item:any){
-    debugger
-    const formData = await this.arrayToFormData(item);
-    (await this.service.updateCustomer(ApiEndPoints.UpdateCustomer, formData)).subscribe({
-      next: (res: CustomerResponse) => {
-        this.res = res;
-        if (this.res.statusCode == HttpStatusCode.Ok) {
-          this.toastMessage = [
-            {
-              severity: 'success',
-              summary: productPageNotification.productPage.noticeMessage.summary,
-              content: productPageNotification.productPage.noticeMessage.updateSuccess,
-            },
-          ];
-        }
-      },
-      error: (error) => {
-        debugger
-        this.toastMessage = [
-          {
-            severity: 'error',
-            summary: productPageNotification.productPage.noticeMessage.summary,
-            content: productPageNotification.productPage.noticeMessage.undateFailed,
-          },
-        ];
-      }
-    });
-  }
 
   async arrayToFormData(array:any) {
     const formData = new FormData();
@@ -532,6 +341,7 @@ export class CommissionComponent {
     
     return formData;
   }
+
   navigate(event: MouseEvent, item:any) {
     debugger
     this.canNavigate(item).then((can) => {

@@ -21,12 +21,8 @@
               <thead dTableHead>
                 <tr dTableRow>
                   <th dHeadCell>Id</th>
-                  <th dHeadCell>Customer Name</th>
-                  <th dHeadCell>Address</th>
-                  <th dHeadCell>Contact Person</th>
-                  <th dHeadCell>CpMobile</th>
-                  <th dHeadCell>Credit Limit</th>
-                  <th dHeadCell>Credit Balance</th>
+                  <th dHeadCell>Discount  Name</th>
+                  <th dHeadCell>Discount Type</th>
                 </tr>
               </thead>
               <tbody dTableBody>
@@ -74,24 +70,20 @@
                     </td>
                     <td
                       dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['titleEdit']"
                       [rowItem]="rowItem"
-                      [field]="'customerName'"
+                      [field]="'discountName'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
                       <span *ngIf="!rowItem['titleEdit']"
                         >
-                        <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
-                        {{ rowItem?.customerName }}</span
+                        {{ rowItem?.discountName }}</span
                       >
                       <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
                         <input
                           class="devui-form-control"
-                          name="customerName"
-                          [(ngModel)]="rowItem.customerName"
+                          name="discountName"
+                          [(ngModel)]="rowItem.discountName"
                           [attr.maxlength]="300"
                           [attr.minlength]="100"
                         />
@@ -99,142 +91,24 @@
                     </td>
                     <td
                       dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['AddressEdit']"
                       [rowItem]="rowItem"
-                      [field]="'address'"
+                      [field]="'discountType'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
-                      <span *ngIf="!rowItem['AddressEdit']">{{
-                        rowItem?.address
-                      }}</span>
-                      <div
-                        *ngIf="rowItem['AddressEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.address"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['iterationEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'contactPerson'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['iterationEdit']">{{
-                        rowItem?.contactPerson
-                      }}</span>
-                      <div
-                        *ngIf="rowItem['iterationEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.contactPerson"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['assigneeEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'cpMobile'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['assigneeEdit']">
-                        <!-- <d-avatar
-                          [name]="rowItem.description"
-                          [width]="24"
-                          [height]="24"
-                        ></d-avatar> -->
-                        <span style="margin-left: 6px">{{
-                          rowItem.cpMobile
-                        }}</span>
-                      </span>
-                      <div
-                        *ngIf="rowItem['assigneeEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.cpMobile"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['creditBalanceEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'creditBalance'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                      <span *ngIf="!rowItem['creditBalanceEdit']">
-                        <!-- <d-avatar
-                          [name]="rowItem.description"
-                          [width]="24"
-                          [height]="24"
-                        ></d-avatar> -->
-                        <span style="margin-left: 6px">{{
-                          rowItem.creditBalance
-                        }}</span>
-                      </span>
-                      <div
-                        *ngIf="rowItem['creditBalanceEdit']"
-                        class="edit-padding-fix"
-                      >
-                        <input
-                          dTextInput
-                          size="sm"
-                          [(ngModel)]="rowItem.creditBalance"
-                        />
-                      </div>
-                    </td>
-                    <td
-                      dTableCell
-                      [editable]="true"
-                      [editableTip]="editableTip"
-                      [(editing)]="rowItem['creditLimitEdit']"
-                      [rowItem]="rowItem"
-                      [field]="'creditLimit'"
-                      [beforeEditStart]="beforeEditStart"
-                      [beforeEditEnd]="beforeEditEnd"
-                    >
-                    <span *ngIf="!rowItem['creditLimitEdit']">
-                      <!-- <d-avatar
-                        [name]="rowItem.description"
-                        [width]="24"
-                        [height]="24"
-                      ></d-avatar> -->
+                    <span *ngIf="!rowItem['discountTypeEdit']">
                       <span style="margin-left: 6px">{{
-                        rowItem.creditLimit
+                        rowItem.discountType
                       }}</span>
                     </span>
                     <div
-                      *ngIf="rowItem['creditLimitEdit']"
+                      *ngIf="rowItem['discountTypeEdit']"
                       class="edit-padding-fix"
                     >
                       <input
                         dTextInput
                         size="sm"
-                        [(ngModel)]="rowItem.creditLimit"
+                        [(ngModel)]="rowItem.discountType"
                       />
                     </div>
                     </td>
