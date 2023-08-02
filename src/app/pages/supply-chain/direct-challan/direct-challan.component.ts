@@ -376,21 +376,21 @@ export class DirectChallanComponent implements OnInit{
     // Append master data
     const formData = new FormData();
       formData.append('ChallanMasterDto.ChallanDate', master.challanDate.toISOString());
-      formData.append('ChallanMasterDto.customerId', master.selectedCustomer.id.toString());
+      formData.append('ChallanMasterDto.CustomerId', master.selectedCustomer.id.toString());
       formData.append('ChallanMasterDto.SubCustomerId', master.selectedSubCustomer.id.toString());
       formData.append('ChallanMasterDto.BranchId', master.selectedBranch.id.toString());
-      formData.append('ChallanMasterDto.deliveryAddress', master.customerDeliveryAddress);
-      formData.append('ChallanMasterDto.deliveryInstruction', master.deliveryInstruction);
-      formData.append('ChallanMasterDto.remarks', master.remarks);
+      formData.append('ChallanMasterDto.deliveryAddress', master.customerDeliveryAddress??'');
+      formData.append('ChallanMasterDto.deliveryInstruction', master.deliveryInstruction??'');
+      formData.append('ChallanMasterDto.remarks', master.remarks??'');
 
       // Append list data
       for (let i = 0; i < this.listData.length; i++) {
         const item = this.listData[i];
         formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
-        formData.append(`ChallanDetailsDtos[${i}].productDescription`, item.productDescription);
         formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
+        formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.quantity.toString())
         formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
-      
+        formData.append(`ChallanDetailsDtos[${i}].unitPrice`, item.unitPrice.toString());
       }
       (await this.challanService.createDirectChallan(ApiEndPoints.AddDeliveryChallan, formData)).subscribe({
         next: (res: DeliveryChallanResponse) => {
