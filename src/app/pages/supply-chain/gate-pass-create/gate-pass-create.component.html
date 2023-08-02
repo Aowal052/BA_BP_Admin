@@ -19,32 +19,39 @@
                             <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
                                 <da-row-item>
                                     <da-layout-row [daGutter]="[0, 0]">
-                                        <!-- <da-col-item [daXs]="6" [daMs]="24">
+                                        <da-col-item [daXs]="6" [daMs]="24">
                                             <div class="u-1-3">
                                                 <d-form-item>
                                                     <d-form-label [required]="true">Gate Pass Date</d-form-label>
-                                                    <d-form-control class="form-control-width">
-                                                        <div class="devui-input-group devui-dropdown-origin"
-                                                            dActiveFormControl>
-                                                            <input class="devui-input devui-form-control"
-                                                                placeholder="y/MM/dd" (click)="datePicker1.toggle()"
-                                                                name="dp" 
-                                                                [(ngModel)]="masterData.selectedDate1" autocomplete="off"
-                                                                dDatepicker #datePicker1="datepicker" />
-                                                            <div *ngIf="selectedDate1"
-                                                                class="devui-input-group-addon close-icon-wrapper"
-                                                                (click)="datePicker1.clearAll()">
-                                                                <i class="icon icon-close"></i>
-                                                            </div>
-                                                            <div class="devui-input-group-addon"
-                                                                (click)="datePicker1.toggle()">
-                                                                <i class="icon icon-calendar"></i>
-                                                            </div>
+                                                    <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
+                                                        <input
+                                                          class="devui-input devui-form-control"
+                                                          placeholder="y/MM/dd"
+                                                          name="gatePassDate"
+                                                          [(ngModel)]="startDate"
+                                                          (click)="datePicker1.toggle()"
+                                                          autocomplete="off"
+                                                          dDatepicker
+                                                          appendToBody
+                                                          #datePicker1="datepicker"
+                                                          (selectedDateChange)="getValue($event)"
+                                                          [customViewTemplate]="myCustomview"
+                                                        />
+                                                        <div *ngIf="startDate" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                                          <i class="icon icon-close"></i>
                                                         </div>
-                                                    </d-form-control>
+                                                        <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                                                          <i class="icon icon-calendar"></i>
+                                                        </div>
+                                                      </div>
+                                                      <ng-template #myCustomview let-chooseDate="chooseDate" let-datePicker>
+                                                        <div class="box">
+                                                          <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
+                                                        </div>
+                                                      </ng-template>
                                                 </d-form-item>
                                             </div>
-                                        </da-col-item> -->
+                                        </da-col-item>
                                         <da-col-item [daXs]="6" [daMs]="24">
                                             <div class="u-1-3">
                                                 <d-form-item>

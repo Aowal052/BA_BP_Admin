@@ -1,6 +1,4 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { EditableTip, TableWidthConfig } from 'ng-devui';
 
 @Component({
@@ -68,17 +66,17 @@ export class InvoiceComponent {
   }
   @ViewChild('htmlElementToConvert') htmlElementToConvert!: ElementRef;
   generateInvoice() {
-    const doc = new jsPDF();
+    // const doc = new jsPDF();
     const element = this.htmlElementToConvert.nativeElement;
   
-    html2canvas(element).then((canvas) => {
-      const imageData = canvas.toDataURL('image/png');
-      const imageWidth = 210; // Width of the PDF document (in mm)
-      const imageHeight = (canvas.height * imageWidth) / canvas.width;
+    // html2canvas(element).then((canvas) => {
+    //   const imageData = canvas.toDataURL('image/png');
+    //   const imageWidth = 210; // Width of the PDF document (in mm)
+    //   const imageHeight = (canvas.height * imageWidth) / canvas.width;
   
-      doc.addImage(imageData, 'PNG', 0, 0, imageWidth, imageHeight);
-      doc.save('converted.pdf');
-    });
+    //   // doc.addImage(imageData, 'PNG', 0, 0, imageWidth, imageHeight);
+    //   // doc.save('converted.pdf');
+    // });
   }
 
   // generateInvoice() {

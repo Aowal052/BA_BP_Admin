@@ -288,7 +288,9 @@
                                               <d-form-control class="form-control-width">
                                                   <input class="devui-input devui-form-control" placeholder="y/MM/dd"
                                                       readonly (click)="datePicker1.toggle()" name="orderDate"
-                                                      [(ngModel)]="masterData.orderDate" autocomplete="off" dDatepicker
+                                                      [(ngModel)]="masterData.orderDate" 
+                                                      autocomplete="off" 
+                                                      dDatepicker
                                                       #datePicker1="datepicker"
                                                       (orderDate)="getValue($event)"
                                                       [cssClass]="'custom-css-class'" />
@@ -307,7 +309,8 @@
                                                   readonly (click)="datePicker2.toggle()"
                                                   name="estimatedDeliveryDate"
                                                   [(ngModel)]="masterData.estimatedDeliveryDate" 
-                                                  autocomplete="off" dDatepicker
+                                                  autocomplete="off" 
+                                                  dDatepicker
                                                   #datePicker2="datepicker"
                                                   (estimatedDeliveryDate)="getValue($event)"
                                                   [cssClass]="'custom-css-class'" />
