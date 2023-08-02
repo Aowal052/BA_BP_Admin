@@ -261,7 +261,7 @@
           <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['delQntyEdit']"
             [rowItem]="rowItem" [field]="'remainingQuantity'" [beforeEditStart]="beforeEditStart"
             [beforeEditEnd]="beforeEditEnd">
-            <input dTextInput size="sm" [maxlength]="rowItem.remainingQuantity"
+            <input dTextInput size="sm" 
               [(ngModel)]="rowItem.remainingQuantity" />
 
           </td>

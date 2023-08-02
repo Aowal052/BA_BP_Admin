@@ -145,11 +145,11 @@ export class DirectChallanComponent implements OnInit{
   ];
   selectUnits = [
     {
-      id: 1,
+      id: 2,
       label: 'Pcs',
     },
     {
-      id: 2,
+      id: 1,
       label: 'Dzn',
     }
   ];
@@ -357,7 +357,7 @@ export class DirectChallanComponent implements OnInit{
    // const customer = this.customerDropdownList.find(x=>x.id == data.id);
     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
       this.subCustomerDropdownList = res.data;
-      debugger
+     // debugger
       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
     });
   }
@@ -377,7 +377,10 @@ export class DirectChallanComponent implements OnInit{
     const formData = new FormData();
       formData.append('ChallanMasterDto.ChallanDate', master.challanDate.toISOString());
       formData.append('ChallanMasterDto.CustomerId', master.selectedCustomer.id.toString());
-      formData.append('ChallanMasterDto.SubCustomerId', master.selectedSubCustomer.id.toString());
+      if(master.selectedSubCustomer.id!=undefined)
+      {
+        formData.append('ChallanMasterDto.SubCustomerId', master.selectedSubCustomer.id.toString());
+      }
       formData.append('ChallanMasterDto.BranchId', master.selectedBranch.id.toString());
       formData.append('ChallanMasterDto.deliveryAddress', master.customerDeliveryAddress??'');
       formData.append('ChallanMasterDto.deliveryInstruction', master.deliveryInstruction??'');
@@ -407,7 +410,7 @@ export class DirectChallanComponent implements OnInit{
             ];
 
            
-            //this.router.navigate(['/pages', 'user', 'center']);
+            this.router.navigate(['/pages', 'supplychain', 'challan-list']);
           }
         },
         error: (error) => {
@@ -493,10 +496,11 @@ export class DirectChallanComponent implements OnInit{
   }
 
   changeProduct(product:any){
+    debugger;
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
     this.productRowData.quantity = 1;
     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-    this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
+    this.productRowData.unit = this.selectUnits.find(x=>x.id == 2)??{};
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 
@@ -508,12 +512,13 @@ export class DirectChallanComponent implements OnInit{
   }
 
   modifyTotalPrice(event:any,productRow:any){
-    if(event.id===2 && productRow.unit.id != 2)
+    debugger;
+    if(event.id===1 && productRow.unit.id != 1)
     {
       this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
       this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
     }
-    else if(event.id === 1){
+    else if(event.id === 2){
       this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
       this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
     }

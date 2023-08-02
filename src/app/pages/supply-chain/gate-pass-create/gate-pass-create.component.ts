@@ -434,6 +434,7 @@ export class GatePassCreateComponent implements OnInit {
 
     //Append list data
     for (let i = 0; i < this.items.length; i++) {
+      debugger;
       const item = this.items[i];
       formData.append(`InvoiceNo`, item.invoiceNo);
     }
