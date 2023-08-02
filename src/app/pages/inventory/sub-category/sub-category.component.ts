@@ -111,6 +111,7 @@ export class SubCategoryComponent {
   i18nValues: any;
 
 
+  public subCategory:any[]=[];
   public category:Category[]=[];
   public res:any;
   private destroy$ = new Subject<void>();
@@ -153,7 +154,6 @@ export class SubCategoryComponent {
     await this.getSubCategory();
     await this.getCategory()
   }
-  public subCategory:any[]=[];
   async getSubCategory(){
     (await this.catservice.getCategory(ApiEndPoints.GetSubCategory,this.pager)).subscribe((response:CategoryResponse) => {
       debugger
@@ -180,7 +180,7 @@ export class SubCategoryComponent {
       formData.append('CategoryId', e.category.id||'');
       formData.append('SubCategoryName', e.subCategoryName||'');
       (await this.service.addCategory(ApiEndPoints.AddSubCategory, formData)).subscribe({
-        next: (res: CategoryResponse) => {
+        next: async (res: CategoryResponse) => {
           this.res = res;
           if (this.res.statusCode == HttpStatusCode.Ok) {
             this.headerNewForm = false;
@@ -191,6 +191,7 @@ export class SubCategoryComponent {
                 content: productPageNotification.productPage.createMessage.addSuccess,
               },
             ];
+            await this.getSubCategory();
           }
         },
         error: (error) => {
