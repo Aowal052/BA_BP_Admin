@@ -9,7 +9,6 @@ import { ListDataService } from 'src/app/@core/mock/list-data.service';
 import { GatePassResponse } from 'src/app/@core/model/GatePassResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
-import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
 import { GatePassService } from 'src/app/@core/services/gatepass/gate-pass.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';

@@ -489,7 +489,7 @@ export class InvoiceCreateDataListComponent {
       return;
     }
     debugger
-    this.netPriceinfo[0].netTotal = e.discountType == 'Persent'?  (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * e.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  e.discountAmnt);
+    this.netPriceinfo[0].netTotal = e.discountType == 'Percent'?  (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * e.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  e.discountAmnt);
   
     const newData = { ...e };
     this.discountListData.unshift(newData);
@@ -519,7 +519,7 @@ export class InvoiceCreateDataListComponent {
             this.netPriceinfo[0].netTotal =this.listData.reduce((total,item)=>total+item.deliveryPrice,0)
             this.discountListData = this.discountListData.reverse();
             this.discountListData.forEach(discount => {
-              this.netPriceinfo[0].netTotal  = discount.discountType =="Persent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountAmnt));
+              this.netPriceinfo[0].netTotal  = discount.discountType =="Percent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountAmnt)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountAmnt));
             });
             
             results.modalInstance.hide();

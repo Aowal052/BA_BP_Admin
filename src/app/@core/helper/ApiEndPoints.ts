@@ -16,6 +16,7 @@ export class ApiEndPoints{
     static readonly GetSubCustomers: string = 'SubCustomer/Get';
     static readonly GetSubCustomerById: string = 'SubCustomer/GetById';
     //#endregion
+
     static readonly GetCategory: string = 'ProductCategory/Get';
     static readonly GetSalesReport: string = 'SalesOrder/Get';
     static readonly GetCategoryDroppdown: string = 'ProductCategory/GetForDropdown';
@@ -46,10 +47,7 @@ export class ApiEndPoints{
     static readonly DeleteMasterDetailById: string = 'SalesOrder/DeleteMasterDetailById';
     static readonly GetOrderMasterById: string = 'SalesOrder/GetOrderMasterById';
     static readonly DeleteCategory: string = 'ProductCategory/Delete';
-
     static readonly GetSalesInvoiceById: string = 'SalesInvoice/GetById';
-
-
     static readonly AddDeliveryChallan:string = 'v1/CRM/ChallanCreate';
     static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
     static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
@@ -58,14 +56,37 @@ export class ApiEndPoints{
     static readonly GetInvoiceDetails:string = 'v1/CRM/GetInvoiceDetails';
     static readonly GetVehicleDropdown:string = 'v1/CRM/GetVehicles';
     static readonly GetDiscountByInvoiceId:string = 'v1/CRM/GetDiscountByInvoiceId';
+    
+    //#region Branch
+    static readonly GetBranchList:string = 'Branch/GetForDropdown';
+    static readonly CreateBranch:string = 'Branch/Create';
+    static readonly GetbranchUpdate:string = 'Branch/Update';
+    static readonly GetBranch:string = 'Branch/Get';
+    static readonly GetBranchDelete:string = 'Branch/Delete';
+    //#endregion
+
+    //#region GetGatePassInfo
     static readonly GetChallanListGatePass:string = 'v1/CRM/GetGatePassInfo';
     static readonly CreateGatePass:string = 'v1/CRM/CreateGatePass';
-    static readonly GetDiscountList:string = 'Discount/Get';
-    static readonly GetBranchList:string = 'Branch/GetForDropdown';
+    //#endregion
 
+    //#region GetGatePassInfo
     static readonly GetInvoiceMasterCreateById:string = 'v1/CRM/GetInvoiceMasterInfo';
     static readonly GetInvoiceDetailCreateById:string = 'v1/CRM/GetInvoiceDetailsInfo';
     static readonly CreateInvoice:string = 'v1/CRM/InvoiceCreate';
+    //#endregion
+
+    //#region Discount
+    static readonly GetDiscountList:string = 'Discount/Get';
+    static readonly GetDiscountCreate:string = 'Discount/Create';
+    static readonly GetDiscountDelete:string = 'Discount/Delete';
+    //#endregion
+
+    //#region Vehicle
+    static readonly CreateVehicle: string = 'Vehicle/Create';
+    static readonly GetVehicle: string = 'Vehicle/Get';
+    static readonly DeleteVehicle: string = 'Vehicle/Delete';
+    //#endregion
 
     // Additional static messages can be added here
 

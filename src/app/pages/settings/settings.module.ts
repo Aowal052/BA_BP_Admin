@@ -12,6 +12,7 @@ import { SharedModule } from 'src/app/@shared/shared.module';
 import { FormRoutingModule } from '../form/form-routing.module';
 import { ProductPriceConfigComponent } from './product-price-config/product-price-config.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
+import { BranchComponent } from './branch/branch.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { VehicleComponent } from './vehicle/vehicle.component';
     OffersComponent,
     SettingsComponent,
     ProductPriceConfigComponent,
-    VehicleComponent
+    VehicleComponent,
+    BranchComponent
   ],
   imports: [
     CommonModule,

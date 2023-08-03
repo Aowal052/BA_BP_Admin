@@ -2,14 +2,15 @@ import { HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
-import { BreadCrumbService, DialogService, EditableTip, FormLayout, HelperUtils, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { EditableTip, FormLayout, TableWidthConfig, BreadCrumbService, DialogService, MenuConfig, HelperUtils } from 'ng-devui';
 import { I18nService } from 'ng-devui/i18n';
-import { Subject, Subscription, map, takeUntil } from 'rxjs';
+import { Subscription, Subject, takeUntil, map } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { CommissionResponse } from 'src/app/@core/model/CommissionResponse';
-import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { BranchResponse } from 'src/app/@core/model/BranchResponse';
+import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { Users } from 'src/app/@core/model/UserResponse';
 import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
+import { BranchService } from 'src/app/@core/services/branch/branch.service';
 import { CommissionService } from 'src/app/@core/services/commission/commission.service';
 import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
@@ -20,15 +21,26 @@ import { ThemeType } from 'src/app/@shared/models/theme';
 import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
-  selector: 'app-vehicle',
-  templateUrl: './vehicle.component.html',
-  styleUrls: ['./vehicle.component.scss']
+  selector: 'app-branch',
+  templateUrl: './branch.component.html',
+  styleUrls: ['./branch.component.scss']
 })
-export class VehicleComponent {
-
+export class BranchComponent {
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
+  percentDropdown = [
+    {
+      id: 1,
+      name: 'Percent',
+    },
+    {
+      id: 2,
+      name: 'Neumaric',
+    }
+  ];
+  //percentDropdown: { id?: number, name?: string }[] = [];
+  //categoryDropdown: { id?: number, name?: string }[] = [];
 
   public category: Users[] = [];
   public res: any;
@@ -50,8 +62,8 @@ export class VehicleComponent {
     labelSize: 'sm',
     items: [
       {
-        label: 'Vehicle No',
-        prop: 'vehicleNo',
+        label: 'Branch',
+        prop: 'branchName',
         type: 'input',
         required: true,
         rule: {
@@ -59,8 +71,8 @@ export class VehicleComponent {
         },
       },
       {
-        label: 'Driver Name',
-        prop: 'driverName',
+        label: 'Address',
+        prop: 'branchAddress',
         type: 'input',
         required: true,
         rule: {
@@ -68,27 +80,15 @@ export class VehicleComponent {
         },
       },
       {
-        label: 'Driver Licence',
-        prop: 'driverLicence',
-        type: 'input',
-      },
-      {
-        label: 'Driver Phone',
-        prop: 'driverPhone',
-        type: 'input',
+        label: 'Manager',
+        prop: 'userId',
+        type: 'select',
+        options:  this.percentDropdown,
         required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
-      {
-        label: 'Remarks',
-        prop: 'remarks',
-        type: 'input',
-      },
-
-      
-
     ],
   };
   tableWidthConfig: TableWidthConfig[] = [
@@ -97,34 +97,23 @@ export class VehicleComponent {
       width: '100px',
     },
     {
-      field: 'vehicleNo',
+      field: 'branchName',
       width: '100px',
     },
     {
-      field: 'driverName',
+      field: 'branchAddress',
       width: '100px',
     },
     {
-      field: 'driverLicenseNo',
+      field: 'branchManager',
       width: '100px',
     },
-    {
-      field: 'driverPhone',
-      width: '100px',
-    },
-    {
-      field: 'remarks',
-      width: '100px',
-    },
+    
   ];
 
   defaultRowData = {
     id: '',
-    vehicleNo: '',
-    driverName: '',
-    driverLicenseNo: '',
-    driverPhone: '',
-    remarks: '',
+    branchName: '',
   };
   language: string;
   selectedItem: string = '';
@@ -136,6 +125,7 @@ export class VehicleComponent {
     private breadCrumbService: BreadCrumbService,
     private dialogService: DialogService,
     private vehicleService: VehicleService,
+    private branchService: BranchService,
     private service: CustomerService,
     private commissionService: CommissionService,
     private route: ActivatedRoute,
@@ -217,7 +207,7 @@ export class VehicleComponent {
       ],
     });
   }
-  
+
   valueChange(event: any) {
     debugger
     this.selectedId = event.target.value;
@@ -225,7 +215,7 @@ export class VehicleComponent {
     this.selectedItem = event.target.options[event.target.selectedIndex].text;
     //this.selected = event.target.value;
   }
-  
+
   // Define the elseBlock property
   get elseBlock(): boolean {
     return !this.isSelect;
@@ -279,7 +269,7 @@ export class VehicleComponent {
   }
 
   async getList() {
-    this.busy = (await this.vehicleService.getVehicleList(ApiEndPoints.GetVehicle, this.pager)).subscribe((res:VehicleResponse) => {
+    this.busy = (await this.branchService.getBranchList(ApiEndPoints.GetBranch, this.pager)).subscribe((res: BranchResponse) => {
       res.$expandConfig = { expand: false };
       this.listData = res.data;
       debugger
@@ -289,13 +279,11 @@ export class VehicleComponent {
   async quickRowAdded(e: any) {
     const formData = new FormData();
     debugger
-    formData.append('VehicleNo', e.vehicleNo || '');
-    formData.append('DriverName', e.driverName || '');
-    formData.append('DriverLicenseNo', e.driverLicenseNo || '');
-    formData.append('DriverPhone', e.driverPhone || '');
-    formData.append('Remarks', e.remarks || '');
-    (await this.vehicleService.createVehicle(ApiEndPoints.CreateVehicle, formData)).subscribe({
-      next: (res: CustomerResponse) => {
+    formData.append('BranchName', e.vehicleNo || '');
+    formData.append('BranchAddresss', e.vehicleNo || '');
+    formData.append('UserId', e.vehicleNo || '');
+    (await this.branchService.createBranch(ApiEndPoints.CreateBranch, formData)).subscribe({
+      next: (res: BranchResponse) => {
         this.res = res;
         if (this.res.statusCode == HttpStatusCode.Ok) {
           this.headerNewForm = false;
@@ -355,8 +343,8 @@ export class VehicleComponent {
     },
     {
       linkType: 'routerLink',
-      link: 'vehicle',
-      name: 'Vehicle'
+      link: 'add-branch',
+      name: 'Branch'
     }
   ];
 

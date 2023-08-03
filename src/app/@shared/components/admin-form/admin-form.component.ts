@@ -18,6 +18,7 @@ export class AdminFormComponent implements OnInit {
 
   searchFn = (term:any) => {
     if (this.searchString === term) {
+      debugger
       return of(
         this.options
           .map((option, index) => ({ id: index, option: option }))

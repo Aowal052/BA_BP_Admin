@@ -65,6 +65,7 @@ export default {
     },
     user: {
       title: 'User',
+      addusers: 'Add User',
       center: 'User Center',
       settings: 'User Settings',
     },
@@ -72,7 +73,9 @@ export default {
       title: 'Setting',
       commision: 'Commisions',
       offer: 'Offers',
-      priceConfiguration:'Price Configuration'
+      priceConfiguration:'Price Configuration',
+      vehicles:'Vehicle',
+      branches:'Branch'
     },
     workorders: {
       title: 'Work Orders',
