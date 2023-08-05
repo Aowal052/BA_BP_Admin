@@ -60,7 +60,7 @@ export class ApiEndPoints{
     //#region Branch
     static readonly GetBranchList:string = 'Branch/GetForDropdown';
     static readonly CreateBranch:string = 'Branch/Create';
-    static readonly GetbranchUpdate:string = 'Branch/Update';
+    static readonly UpdateBranch:string = 'Branch/Update';
     static readonly GetBranch:string = 'Branch/Get';
     static readonly GetBranchDelete:string = 'Branch/Delete';
     //#endregion

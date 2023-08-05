@@ -269,9 +269,10 @@ export class ListProductComponent implements OnInit{
           })
   }
   async getList() {
-    this.busy = (await this.service.getProducts(ApiEndPoints.GetVehicle, this.pager)).subscribe((res:ProductResponse) => {
+    this.busy = (await this.service.getProducts(ApiEndPoints.GetProducts, this.pager)).subscribe((res:ProductResponse) => {
       res.$expandConfig = { expand: false };
       this.listData = res.data;
+      debugger
       this.pager.total = res.totalCount;
     });
   }
@@ -362,7 +363,7 @@ export class ListProductComponent implements OnInit{
   };
 
    beforeEditEnd = async (rowItem: any, field: any) => {
-    
+    debugger
     var data = {
       id:rowItem.id,
       key:field,
@@ -395,6 +396,7 @@ export class ListProductComponent implements OnInit{
   ];
 
   async updateproduct(item:any){
+    debugger
     const formData = await this.arrayToFormData(item);
     (await this.service.updateProduct(ApiEndPoints.UpdateProduct, formData)).subscribe({
       next: (res: ProductResponse) => {

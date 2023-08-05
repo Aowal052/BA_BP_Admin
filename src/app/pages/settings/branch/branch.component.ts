@@ -2,20 +2,23 @@ import { HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
+import { number } from 'echarts';
 import { EditableTip, FormLayout, TableWidthConfig, BreadCrumbService, DialogService, MenuConfig, HelperUtils } from 'ng-devui';
 import { I18nService } from 'ng-devui/i18n';
 import { Subscription, Subject, takeUntil, map } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { BranchResponse } from 'src/app/@core/model/BranchResponse';
-import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { Users } from 'src/app/@core/model/UserResponse';
-import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
+import { User } from 'src/app/@core/model/AuthResponse';
+import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
+import { Category, CategoryResponse } from 'src/app/@core/model/CategoryResponse';
+import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
+import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
+import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
 import { BranchService } from 'src/app/@core/services/branch/branch.service';
-import { CommissionService } from 'src/app/@core/services/commission/commission.service';
+import { CategoryService } from 'src/app/@core/services/category/CategoryService';
 import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
+import { ProductService } from 'src/app/@core/services/product/product.service';
 import { UserService } from 'src/app/@core/services/user/user.service';
-import { VehicleService } from 'src/app/@core/services/vehicle/vehicle.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { ThemeType } from 'src/app/@shared/models/theme';
 import { productPageNotification } from 'src/assets/i18n/en-US/product';
@@ -29,40 +32,29 @@ export class BranchComponent {
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
-  percentDropdown = [
-    {
-      id: 1,
-      name: 'Percent',
-    },
-    {
-      id: 2,
-      name: 'Neumaric',
-    }
-  ];
-  //percentDropdown: { id?: number, name?: string }[] = [];
-  //categoryDropdown: { id?: number, name?: string }[] = [];
+  userDropdown: { id?: number, name?: string }[] = [];
 
-  public category: Users[] = [];
-  public res: any;
+  public usersList:Users[]=[];
+  public res:any;
 
   i18nValues: any;
-  toastMessage: any;
+  toastMessage:any;
   pager = {
     total: 0,
     pageIndex: 1,
     pageSize: 10,
   };
 
-  listData: Vehicle[] = [];
+  listData : Branch[] = [];
 
   headerNewForm = false;
-
+  
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
-    labelSize: 'sm',
+    labelSize: 'lg',
     items: [
       {
-        label: 'Branch',
+        label: 'Branch Name',
         prop: 'branchName',
         type: 'input',
         required: true,
@@ -74,16 +66,15 @@ export class BranchComponent {
         label: 'Address',
         prop: 'branchAddress',
         type: 'input',
-        required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
       {
         label: 'Manager',
-        prop: 'userId',
+        prop: 'branchManager',
         type: 'select',
-        options:  this.percentDropdown,
+        options:  this.userDropdown,
         required: true,
         rule: {
           validators: [{ required: true }],
@@ -94,64 +85,66 @@ export class BranchComponent {
   tableWidthConfig: TableWidthConfig[] = [
     {
       field: 'id',
-      width: '100px',
+      width: '70px',
     },
     {
       field: 'branchName',
-      width: '100px',
+      width: '200px',
     },
     {
       field: 'branchAddress',
-      width: '100px',
+      width: '200px',
     },
     {
       field: 'branchManager',
-      width: '100px',
+      width: '200px',
     },
     
   ];
-
+  
   defaultRowData = {
     id: '',
     branchName: '',
+    branchAddress: '',
+    category: '',
   };
   language: string;
   selectedItem: string = '';
-  isSelect: boolean = false;
-  selectedId: string = '';
+  isSelect : boolean = false;
+  selectedId : string = '';
   private destroy$ = new Subject<void>();
+  //priorities = ['Low', 'Medium', 'High'];
 
   constructor(
     private breadCrumbService: BreadCrumbService,
     private dialogService: DialogService,
-    private vehicleService: VehicleService,
+    private service: ProductService,
     private branchService: BranchService,
-    private service: CustomerService,
-    private commissionService: CommissionService,
+    private usrservice: UserService,
     private route: ActivatedRoute,
     private translate: TranslateService,
     private router: Router,
     private i18n: I18nService,
     private personalizeService: PersonalizeService,
-    @Inject(UserService) private usrservice: UserService) {
-    this.language = this.translate.currentLang;
-  }
+    @Inject(CategoryService) private catservice: CategoryService) {
+      this.language = this.translate.currentLang;
+     }
   async ngOnInit(): Promise<void> {
     this.translate
       .get('productPage')
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.i18nValues = res;
-
+        
         this.i18nValues = this.translate.instant('productPage');
       });
 
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event: TranslationChangeEvent) => {
-      this.i18nValues = this.translate.instant('productPage');
-    });
-    this.personalizeService.setRefTheme(ThemeType.Default);
+      this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event: TranslationChangeEvent) => {
+        this.i18nValues = this.translate.instant('productPage');
+      });
+      this.personalizeService.setRefTheme(ThemeType.Default);
 
-    // oauth
+       // oauth
     this.route.queryParams.pipe(map((param) => param.code)).subscribe((code) => {
       if (code && code.length > 0) {
         setTimeout(() => {
@@ -164,9 +157,9 @@ export class BranchComponent {
         });
       }
     });
-
+    
     this.getList();
-
+    await this.getUserList()
   }
 
   onEditEnd(rowItem: any, field: any) {
@@ -185,14 +178,14 @@ export class BranchComponent {
       showAnimate: false,
       content: 'Are you sure you want to delete it?',
       backdropCloseable: true,
-      onClose: () => { },
+      onClose: () => {},
       buttons: [
         {
           cssClass: 'primary',
           text: 'Ok',
           disabled: false,
           handler: async () => {
-            await this.deleteCustomer(index);
+            await this.deleteProduct(index);
             results.modalInstance.hide();
           },
         },
@@ -207,19 +200,67 @@ export class BranchComponent {
       ],
     });
   }
+  async deleteProduct(id:number){
+    debugger
+    (await this.service.deleteProduct(ApiEndPoints.DeleteProducts, id))
+          .subscribe({
+            next: (res:ProductResponse) => {
+              if (this.res.statusCode == HttpStatusCode.Ok) {
+                this.getList();
+                this.toastMessage = [
+                  {
+                    severity: 'success',
+                    summary: productPageNotification.productPage.deleteMessage.summary,
+                    content: productPageNotification.productPage.deleteMessage.deleteSuccess,
+                  },
+                ];
+              }
+            },
+            error: (err) => {
+              this.toastMessage = [
+                {
+                  severity: 'error',
+                  summary: productPageNotification.productPage.deleteMessage.summary,
+                  content: productPageNotification.productPage.deleteMessage.deleteFailed,
+                },
+              ];
+            }
+          })
+  }
 
-  valueChange(event: any) {
+  async getList() {
+    this.busy = (await this.branchService.getBranchList(ApiEndPoints.GetBranch, this.pager)).subscribe((res: BranchResponse) => {
+      res.$expandConfig = { expand: false };
+      debugger
+      this.listData = res.data;
+      this.pager.total = res.totalCount;
+      debugger
+    });
+  }
+
+
+
+  valueChange(event:any){
     debugger
     this.selectedId = event.target.value;
     this.isSelect = true;
     this.selectedItem = event.target.options[event.target.selectedIndex].text;
-    //this.selected = event.target.value;
   }
-
   // Define the elseBlock property
   get elseBlock(): boolean {
     return !this.isSelect;
   }
+  async getUserList(){
+    (await this.usrservice.getUsers(ApiEndPoints.GetUser)).subscribe((response:UserResponse) => {
+      debugger
+      this.res = response;
+      if(this.res.statusCode == HttpStatusCode.Ok){
+        this.usersList = this.res.data;
+        this.userDropdown = this.usersList.map(item => ({ id: item.id, name: item.firstName + item.lastName }));
+      }
+    });
+  }
+ 
 
   onPageChange(e: number) {
     this.pager.pageIndex = e;
@@ -238,76 +279,41 @@ export class BranchComponent {
 
   updateFormConfigOptions() {
     debugger
-  }
-
-  async deleteCustomer(id: number) {
-    debugger
-    (await this.service.deleteCustomer(ApiEndPoints.DeleteCustomer, id))
-      .subscribe({
-        next: (res: CustomerResponse) => {
-          if (this.res.statusCode == HttpStatusCode.Ok) {
-            this.getList();
-            this.toastMessage = [
-              {
-                severity: 'success',
-                summary: productPageNotification.productPage.deleteMessage.summary,
-                content: productPageNotification.productPage.deleteMessage.deleteSuccess,
-              },
-            ];
-          }
-        },
-        error: (err) => {
-          this.toastMessage = [
-            {
-              severity: 'error',
-              summary: productPageNotification.productPage.deleteMessage.summary,
-              content: productPageNotification.productPage.deleteMessage.deleteFailed,
-            },
-          ];
-        }
-      })
-  }
-
-  async getList() {
-    this.busy = (await this.branchService.getBranchList(ApiEndPoints.GetBranch, this.pager)).subscribe((res: BranchResponse) => {
-      res.$expandConfig = { expand: false };
-      this.listData = res.data;
-      debugger
-      this.pager.total = res.totalCount;
-    });
+    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'branchManager').options = this.userDropdown;
   }
   async quickRowAdded(e: any) {
     const formData = new FormData();
     debugger
-    formData.append('BranchName', e.vehicleNo || '');
-    formData.append('BranchAddresss', e.vehicleNo || '');
-    formData.append('UserId', e.vehicleNo || '');
-    (await this.branchService.createBranch(ApiEndPoints.CreateBranch, formData)).subscribe({
-      next: (res: BranchResponse) => {
-        this.res = res;
-        if (this.res.statusCode == HttpStatusCode.Ok) {
-          this.headerNewForm = false;
-          this.getList();
+      formData.append('BranchName', e.branchName||'');
+      formData.append('BranchAddress', e.branchAddress||'');
+      formData.append('UserId', e.branchManager.id||0);
+      
+      (await this.branchService.createBranch(ApiEndPoints.CreateBranch, formData)).subscribe({
+        next: (res: BranchResponse) => {
+          this.res = res;
+          if (this.res.statusCode == HttpStatusCode.Ok) {
+            this.headerNewForm = false;
+            this.getList();
+            this.toastMessage = [
+              {
+                severity: 'success',
+                summary: productPageNotification.productPage.createMessage.summary,
+                content: productPageNotification.productPage.createMessage.addSuccess,
+              },
+            ];
+          }
+        },
+        error: () => {
+          debugger
           this.toastMessage = [
             {
-              severity: 'success',
+              severity: 'error',
               summary: productPageNotification.productPage.createMessage.summary,
-              content: productPageNotification.productPage.createMessage.addSuccess,
+              content: productPageNotification.productPage.createMessage.addFailed,
             },
           ];
         }
-      },
-      error: (error) => {
-        debugger
-        this.toastMessage = [
-          {
-            severity: 'error',
-            summary: productPageNotification.productPage.createMessage.summary,
-            content: productPageNotification.productPage.createMessage.addFailed,
-          },
-        ];
-      }
-    });
+      });
   }
 
   quickRowCancel() {
@@ -317,19 +323,22 @@ export class BranchComponent {
     return true;
   };
 
-  beforeEditEnd = async (rowItem: any, field: any) => {
+   beforeEditEnd = async (rowItem: any, field: any) => {
     debugger
     var data = {
-      id: rowItem.id,
-      key: field,
-      value: rowItem[field]
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
     }
+    await this.updateBranch(data);
+    debugger;
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
       return true;
     }
   };
+  
   breadItem: Array<MenuConfig> = [
     {
       linkType: 'hrefLink',
@@ -339,34 +348,62 @@ export class BranchComponent {
     {
       linkType: 'routerLink',
       link: './home',
-      name: 'Settings'
+      name: 'Setting'
     },
     {
       linkType: 'routerLink',
-      link: 'add-branch',
+      link: 'branch',
       name: 'Branch'
     }
   ];
 
-  async arrayToFormData(array: any) {
-    const formData = new FormData();
+  async updateBranch(item:any){
+    debugger
+    const formData = await this.arrayToFormData(item);
+    (await this.branchService.updateBranch(ApiEndPoints.UpdateBranch, formData)).subscribe({
+      next: (res: BranchResponse) => {
+        this.res = res;
+        if (this.res.statusCode == HttpStatusCode.Ok) {
+          this.toastMessage = [
+            {
+              severity: 'success',
+              summary: productPageNotification.productPage.noticeMessage.summary,
+              content: productPageNotification.productPage.noticeMessage.updateSuccess,
+            },
+          ];
+        }
+      },
+      error: () => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.noticeMessage.summary,
+            content: productPageNotification.productPage.noticeMessage.undateFailed,
+          },
+        ];
+      }
+    });
+  }
 
+  async arrayToFormData(array:any) {
+    const formData = new FormData();
+    
     for (let key in array) {
       if (array.hasOwnProperty(key)) {
         formData.append(key, array[key]);
       }
     }
-
+    
     return formData;
   }
-
-  navigate(event: MouseEvent, item: any) {
+  navigate(event: MouseEvent, item:any) {
     debugger
     this.canNavigate(item).then((can) => {
       if (!can) {
         return;
       }
-      if (item.linkType === 'routerLink') {
+      if(item.linkType === 'routerLink') {
         //this.breadCrumbService.navigateTo(event, item);
         HelperUtils.jumpOuterUrl(item.link, '_self');
       } else {
@@ -375,7 +412,7 @@ export class BranchComponent {
     });
   }
 
-  canNavigate(item: any) {
+  canNavigate(item:any) {
     return new Promise((resolve) => {
       const results = this.dialogService.open({
         id: 'dialog-service',

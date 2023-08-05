@@ -1,94 +1,177 @@
 <div class="da-content-banner">
     <d-breadcrumb>
         <d-breadcrumb-item *ngFor="let item of breadItem">
-            <!-- <a rel="noopener" (click)="navigate($event, item)">{{ item.name }}</a> -->
-            <a rel="noopener">{{ item.name }}</a>
+          <!-- <a rel="noopener" (click)="navigate($event, item)">{{ item.name }}</a> -->
+          <a rel="noopener">{{ item.name }}</a>
         </d-breadcrumb-item>
-    </d-breadcrumb>
+      </d-breadcrumb>
 </div>
 
 <div class="da-content-wrapper">
     <d-toast [value]="toastMessage"></d-toast>
     <da-layout-row [daGutter]="[24, 24]">
-        <da-col-item [daSpan]="24" [daXs]="24">
-            <div class="da-advance-form" dLoading [loading]="busy">
-                <div class="da-advace-form-content">
-                    <d-data-table #dataTable [dataSource]="listData" [scrollable]="true"
-                        [tableWidthConfig]="tableWidthConfig">
-                        <thead dTableHead>
-                            <tr dTableRow>
-                                <th dHeadCell>Id</th>
-                                <th dHeadCell>Branch Name</th>
-                                <th dHeadCell>Address</th>
-                                <th dHeadCell>Manager</th>
-                            </tr>
-                        </thead>
-                        <tbody dTableBody>
-                            <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
-                                <tr dTableRow *ngIf="rowIndex === 0">
-                                    <td dTableCell [attr.colspan]="tableWidthConfig.length">
-                                        <div *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">
-                                            <span class="tips-icon icon-add"></span>
-                                            <span style="margin-left: 10px">Create new data</span>
-                                        </div>
-                                        <div *ngIf="headerNewForm" class="edit-padding-fix">
-                                            <da-admin-form [formConfig]="formConfig" [formData]="defaultRowData"
-                                                class="editable-row" (submitted)="quickRowAdded($event)"
-                                                (canceled)="quickRowCancel()"></da-admin-form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr dTableRow>
-                                    <td dTableCell [(editing)]="rowItem['idEdit']" [rowItem]="rowItem" [field]="'id'"
-                                        [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                                        <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
-                                        <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
-                                            <input class="devui-form-control" name="id" [(ngModel)]="rowItem.id"
-                                                [attr.maxlength]="50" [attr.minlength]="3" />
-                                        </div>
-                                    </td>
-                                    <td dTableCell [rowItem]="rowItem" [field]="'branchName'"
-                                        [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                                        <span *ngIf="!rowItem['branchNameEdit']">
-                                            {{ rowItem?.branchName }}</span>
-                                        <div *ngIf="rowItem['branchNameEdit']" class="edit-padding-fix">
-                                            <input class="devui-form-control" name="branchName"
-                                                [(ngModel)]="rowItem.branchName" [attr.maxlength]="300"
-                                                [attr.minlength]="100" />
-                                        </div>
-                                    </td>
-                                    <td dTableCell [rowItem]="rowItem" [field]="'branchAddress'"
-                                        [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                                        <span *ngIf="!rowItem['branchAddressEdit']">
-                                            {{ rowItem?.branchAddress }}</span>
-                                        <div *ngIf="rowItem['branchAddressEdit']" class="edit-padding-fix">
-                                            <input class="devui-form-control" name="branchAddress"
-                                                [(ngModel)]="rowItem.branchAddress" [attr.maxlength]="300"
-                                                [attr.minlength]="100" />
-                                        </div>
-                                    </td>
-                                    <td dTableCell [rowItem]="rowItem" [field]="'branchManager'"
-                                        [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                                        <span *ngIf="!rowItem['branchManagerEdit']">
-                                            <span style="margin-left: 6px">{{
-                                                rowItem.branchManager
-                                                }}</span>
-                                        </span>
-                                        <div *ngIf="rowItem['branchManagerEdit']" class="edit-padding-fix">
-                                            <input dTextInput size="sm" [(ngModel)]="rowItem.branchManager" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </tbody>
-                    </d-data-table>
-                </div>
-                <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.pageSize"
-                    [(pageIndex)]="pager.pageIndex" [canViewTotal]="true" [canChangePageSize]="true"
-                    [canJumpPage]="true" [maxItems]="5" (pageIndexChange)="onPageChange($event)"
-                    (pageSizeChange)="onSizeChange($event)">
-                </d-pagination>
-            </div>
-        </da-col-item>
+      <da-col-item [daSpan]="24" [daXs]="24">
+        <div class="da-advance-form" dLoading [loading]="busy">
+          <div class="da-advace-form-content">
+            <d-data-table
+             #dataTable 
+             [dataSource]="listData" 
+             [scrollable]="true" 
+             [tableWidthConfig]="tableWidthConfig">
+              <thead dTableHead>
+                <tr dTableRow>
+                  <th dHeadCell>Id</th>
+                  <th dHeadCell>Branch Name</th>
+                  <th dHeadCell>Address</th>
+                  <th dHeadCell>Manager</th>
+                  
+                </tr>
+              </thead>
+              <tbody dTableBody>
+                <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                  <tr dTableRow *ngIf="rowIndex === 0">
+                    <td dTableCell [attr.colspan]="tableWidthConfig.length">
+                      <div
+                        *ngIf="!headerNewForm"
+                        (click)="newRow()"
+                        class="cursor-pointer"
+                      >
+                        <span class="tips-icon icon-add"></span>
+                        <span style="margin-left: 10px">Create new data</span>
+                      </div>
+                      <div *ngIf="headerNewForm" class="edit-padding-fix">
+                        <da-admin-form
+                          [formConfig]="formConfig"
+                          [formData]="defaultRowData"
+                          class="editable-row"
+                          (submitted)="quickRowAdded($event)"
+                          (canceled)="quickRowCancel()"
+                        ></da-admin-form>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr dTableRow>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['idEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'id'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
+                      <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
+                        <input
+                          class="devui-form-control"
+                          name="id"
+                          [(ngModel)]="rowItem.id"
+                          [attr.maxlength]="50"
+                          [attr.minlength]="3"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="false"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['titleName']"
+                      [rowItem]="rowItem"
+                      [field]="'branchName'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['titleName']"
+                        >
+                        <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
+                        {{ rowItem?.branchName }}</span
+                      >
+                      <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
+                        <input
+                          class="devui-form-control"
+                          name="branchName"
+                          [(ngModel)]="rowItem.branchName"
+                          [attr.maxlength]="200"
+                          [attr.minlength]="50"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="false"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['iterationEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'branchAddress'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['iterationEdit']">{{
+                        rowItem?.branchAddress
+                      }}</span>
+                      <div
+                        *ngIf="rowItem['iterationEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.branchAddress"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['priorityEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'UserId'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                        <span *ngIf="!rowItem['priorityEdit']">
+                            <span *ngIf="isSelect && selectedId == rowItem.UserId; else elseBlock">
+                                {{selectedItem}}
+                            </span>
+                            <ng-template #elseBlock>
+                                {{rowItem.branchManager}}
+                              </ng-template>
+                            <span *ngIf="!isSelect">
+                                
+                            </span>
+                        </span>
+                      <div 
+                      *ngIf="rowItem['priorityEdit']"
+                        class="edit-padding-fix"
+                      >
+                      <select class="devui-form-control" [(ngModel)]="rowItem.UserId" name="UserId" (change)="valueChange($event)">
+                        <option [ngValue]="rowItem.UserId" disabled>{{rowItem.branchManager}}</option>
+                        <option *ngFor="let obj of usersList" [ngValue]="obj.id" [selected]="obj.id == rowItem.UserId"> {{obj.firstName +' ' + obj.lastName}} </option>
+                      </select>
+                        
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </tbody>
+            </d-data-table>
+          </div>
+          <d-pagination
+            [size]="'sm'"
+            [total]="pager.total"
+            [(pageSize)]="pager.pageSize"
+            [(pageIndex)]="pager.pageIndex"
+            [canViewTotal]="true"
+            [canChangePageSize]="true"
+            [canJumpPage]="true"
+            [maxItems]="5"
+            (pageIndexChange)="onPageChange($event)"
+            (pageSizeChange)="onSizeChange($event)"
+          >
+          </d-pagination>
+        </div>
+      </da-col-item>
     </da-layout-row>
-</div>
+  </div>
