@@ -63,7 +63,7 @@ export class WorkOrderListComponent {
 
   sizeOptions = ['sm', 'md', 'lg'];
 
-  StatusOptions = ['Approved', 'Rejected'];
+  StatusOptions = ['Approved', 'Rejected','Pending'];
 
   searchForm: {
     borderType: '' | 'borderless' | 'bordered';
@@ -211,7 +211,7 @@ export class WorkOrderListComponent {
     pageSize: 10,
     fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
     toDate: new Date(),
-    orderId:0,
+    orderId:'',
     status:'',
   }
 
@@ -294,7 +294,7 @@ export class WorkOrderListComponent {
     this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetSalesOrder, fromData)).subscribe((res:OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
-      this.pager.total = res.totalCount;
+      this.searchModel.total = res.totalCount;
     });
   }
   beforeEditStart = (rowItem: any, field: any) => {
@@ -341,12 +341,12 @@ export class WorkOrderListComponent {
   }
   async getList() {
     var fromData = new FormData();
-    fromData.append("PageIndex",this.pager.pageIndex.toString());
-    fromData.append("PageSize",this.pager.pageSize.toString());
+    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageSize",this.searchModel.pageSize.toString());
     this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetSalesOrder, fromData)).subscribe((res:OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
-      this.pager.total = res.totalCount;
+      this.searchModel.total = res.totalCount;
       debugger
     });
   }
@@ -485,12 +485,12 @@ export class WorkOrderListComponent {
   }
 
   onPageChange(e: number) {
-    this.pager.pageIndex = e;
+    this.searchModel.pageIndex = e;
     this.getList();
   }
 
   onSizeChange(e: number) {
-    this.pager.pageSize = e;
+    this.searchModel.pageSize = e;
     this.getList();
   }
 
@@ -500,7 +500,7 @@ export class WorkOrderListComponent {
       size: 'md',
       layout: 'Select Status',
     };
-    this.pager.pageIndex = 1;
+    this.searchModel.pageIndex = 1;
     this.getList();
   }
 

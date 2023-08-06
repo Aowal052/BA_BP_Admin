@@ -206,8 +206,8 @@ export class GatePassCreateComponent implements OnInit {
     total: 0,
     PageIndex: 1,
     PageSize: 10,
-    fromDate: null,
-    toDate: null,
+    fromDate: new Date(),
+    toDate: new Date(),
     customerId: 0,
     challanNo: '',
     orderNo: 0
@@ -321,10 +321,14 @@ export class GatePassCreateComponent implements OnInit {
   };
 
   async getList() {
-    //const masterData = await this.comService.createFormDataObj(this.pager);
-    this.busy = (await this.GatepassService.getChallanList(ApiEndPoints.GetChallanListGatePass, this.pager))
+    var fromData = new FormData();
+    fromData.append("PageIndex",this.pager.PageIndex.toString());
+    fromData.append("PageSize",this.pager.PageSize.toString());
+    fromData.append("FromDate", this.pager.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("Todate",this.pager.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    debugger
+    this.busy = (await this.GatepassService.getChallanList(ApiEndPoints.GetChallanListGatePass, fromData))
       .subscribe((res: SalesInvoiceResponse) => {
-        debugger;
         const data = JSON.parse(JSON.stringify(res.data));
         this.basicDataSource = data;
         this.pager.total = res.totalCount;

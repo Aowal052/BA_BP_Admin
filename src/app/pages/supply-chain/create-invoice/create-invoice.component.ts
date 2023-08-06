@@ -288,7 +288,7 @@ export class CreateInvoiceComponent implements OnInit{
     private router: Router,) {}
 
   ngOnInit() {
-    this.getList();
+    //this.getList();
     this.getCustomerDropdown();
   }
 
@@ -332,6 +332,17 @@ export class CreateInvoiceComponent implements OnInit{
   }
   async getList() {
     debugger;
+    if(this.searchModel.selectedCustomer.id==0)
+      {
+        this.msgs = [
+          {
+            severity: 'warn',
+            summary: "Empty Field",
+            content: "Select Mendatory Field Fist",
+          },
+        ];
+        return;
+      }
     var fromData = new FormData();
     fromData.append("PageIndex",this.searchModel.pageIndex.toString());
     fromData.append("PageSize",this.searchModel.pageSize.toString());
