@@ -282,7 +282,7 @@ export class ChallanListComponent implements OnInit{
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
   async getSubCustomerDropdown(id: any) {
-    debugger
+    this.searchModel.selectedSubCustomer = {id:0,label:''}
      this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
        this.subCustomerDropdownList = res.data;
        this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
