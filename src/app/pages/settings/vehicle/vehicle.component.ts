@@ -8,77 +8,87 @@ import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { CommissionResponse } from 'src/app/@core/model/CommissionResponse';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
+import { Users } from 'src/app/@core/model/UserResponse';
+import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
 import { CommissionService } from 'src/app/@core/services/commission/commission.service';
 import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
 import { UserService } from 'src/app/@core/services/user/user.service';
+import { VehicleService } from 'src/app/@core/services/vehicle/vehicle.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { ThemeType } from 'src/app/@shared/models/theme';
 import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
-  selector: 'app-commission',
-  templateUrl: './commission.component.html',
-  styleUrls: ['./commission.component.scss']
+  selector: 'app-vehicle',
+  templateUrl: './vehicle.component.html',
+  styleUrls: ['./vehicle.component.scss']
 })
-export class CommissionComponent {
+export class VehicleComponent {
+
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
-  percentDropdown = [
-    {
-      id: 1,
-      name: 'Percent',
-    },
-    {
-      id: 2,
-      name: 'Neumaric',
-    }
-  ];
-  //percentDropdown: { id?: number, name?: string }[] = [];
-  //categoryDropdown: { id?: number, name?: string }[] = [];
 
-  public category:Users[]=[];
-  public res:any;
+  public category: Users[] = [];
+  public res: any;
 
   i18nValues: any;
-  toastMessage:any;
+  toastMessage: any;
   pager = {
     total: 0,
     pageIndex: 1,
     pageSize: 10,
   };
 
-  listData : Customer[] = [];
+  listData: Vehicle[] = [];
 
   headerNewForm = false;
-  
+
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     labelSize: 'sm',
     items: [
       {
-        label: 'Discount  Name',
-        prop: 'DiscountName',
+        label: 'Vehicle No',
+        prop: 'vehicleNo',
         type: 'input',
         required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
-      
       {
-        label: 'Discount Type',
-        prop: 'DiscountType',
-        type: 'select',
-        options:  this.percentDropdown,
+        label: 'Driver Name',
+        prop: 'driverName',
+        type: 'input',
         required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
+      {
+        label: 'Driver Licence',
+        prop: 'driverLicenseNo',
+        type: 'input',
+      },
+      {
+        label: 'Driver Phone',
+        prop: 'driverPhone',
+        type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
+      },
+      {
+        label: 'Remarks',
+        prop: 'remarks',
+        type: 'input',
+      },
+
       
+
     ],
   };
   tableWidthConfig: TableWidthConfig[] = [
@@ -87,29 +97,45 @@ export class CommissionComponent {
       width: '100px',
     },
     {
-      field: 'discountName',
+      field: 'vehicleNo',
       width: '100px',
     },
     {
-      field: 'discountType',
+      field: 'driverName',
+      width: '100px',
+    },
+    {
+      field: 'driverLicenseNo',
+      width: '100px',
+    },
+    {
+      field: 'driverPhone',
+      width: '100px',
+    },
+    {
+      field: 'remarks',
       width: '100px',
     },
   ];
-  
+
   defaultRowData = {
     id: '',
-    DiscountName: '',
-    DiscountType: '',
+    vehicleNo: '',
+    driverName: '',
+    driverLicenseNo: '',
+    driverPhone: '',
+    remarks: '',
   };
   language: string;
   selectedItem: string = '';
-  isSelect : boolean = false;
-  selectedId : string = '';
+  isSelect: boolean = false;
+  selectedId: string = '';
   private destroy$ = new Subject<void>();
 
   constructor(
     private breadCrumbService: BreadCrumbService,
     private dialogService: DialogService,
+    private vehicleService: VehicleService,
     private service: CustomerService,
     private commissionService: CommissionService,
     private route: ActivatedRoute,
@@ -118,24 +144,24 @@ export class CommissionComponent {
     private i18n: I18nService,
     private personalizeService: PersonalizeService,
     @Inject(UserService) private usrservice: UserService) {
-      this.language = this.translate.currentLang;
-     }
+    this.language = this.translate.currentLang;
+  }
   async ngOnInit(): Promise<void> {
     this.translate
       .get('productPage')
       .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.i18nValues = res;
-        
+
         this.i18nValues = this.translate.instant('productPage');
       });
 
-      this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event: TranslationChangeEvent) => {
-        this.i18nValues = this.translate.instant('productPage');
-      });
-      this.personalizeService.setRefTheme(ThemeType.Default);
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event: TranslationChangeEvent) => {
+      this.i18nValues = this.translate.instant('productPage');
+    });
+    this.personalizeService.setRefTheme(ThemeType.Default);
 
-       // oauth
+    // oauth
     this.route.queryParams.pipe(map((param) => param.code)).subscribe((code) => {
       if (code && code.length > 0) {
         setTimeout(() => {
@@ -148,9 +174,9 @@ export class CommissionComponent {
         });
       }
     });
-    
+
     this.getList();
-   
+
   }
 
   onEditEnd(rowItem: any, field: any) {
@@ -169,7 +195,7 @@ export class CommissionComponent {
       showAnimate: false,
       content: 'Are you sure you want to delete it?',
       backdropCloseable: true,
-      onClose: () => {},
+      onClose: () => { },
       buttons: [
         {
           cssClass: 'primary',
@@ -191,50 +217,15 @@ export class CommissionComponent {
       ],
     });
   }
-  async deleteCustomer(id:number){
-    debugger
-    (await this.service.deleteCustomer(ApiEndPoints.DeleteCustomer, id))
-          .subscribe({
-            next: (res:CustomerResponse) => {
-              if (this.res.statusCode == HttpStatusCode.Ok) {
-                this.getList();
-                this.toastMessage = [
-                  {
-                    severity: 'success',
-                    summary: productPageNotification.productPage.deleteMessage.summary,
-                    content: productPageNotification.productPage.deleteMessage.deleteSuccess,
-                  },
-                ];
-              }
-            },
-            error: (err) => {
-              this.toastMessage = [
-                {
-                  severity: 'error',
-                  summary: productPageNotification.productPage.deleteMessage.summary,
-                  content: productPageNotification.productPage.deleteMessage.deleteFailed,
-                },
-              ];
-            }
-          })
-  }
-
-  async getList() {
-    debugger;
-    this.busy = (await this.commissionService.getCommission(ApiEndPoints.GetDiscountList)).subscribe((res:CommissionResponse) => {
-      res.$expandConfig = { expand: false };
-      this.listData = res.data;
-      debugger
-    });
-  }
-
-  valueChange(event:any){
+  
+  valueChange(event: any) {
     debugger
     this.selectedId = event.target.value;
     this.isSelect = true;
     this.selectedItem = event.target.options[event.target.selectedIndex].text;
     //this.selected = event.target.value;
   }
+  
   // Define the elseBlock property
   get elseBlock(): boolean {
     return !this.isSelect;
@@ -257,39 +248,78 @@ export class CommissionComponent {
 
   updateFormConfigOptions() {
     debugger
-    //this.formConfig.items.find((item: { prop: string; }) => item.prop === 'KeyAccountManager').options = this.categoryDropdown;
   }
-  async quickRowAdded(e: any) {
-    const formData = new FormData();
+
+  async deleteCustomer(id: number) {
     debugger
-      formData.append('DiscountName', e.DiscountName||'');
-      formData.append('DiscountType', e.DiscountType.name||'');
-      (await this.commissionService.createCommission(ApiEndPoints.GetDiscountCreate, formData)).subscribe({
+    (await this.service.deleteCustomer(ApiEndPoints.DeleteCustomer, id))
+      .subscribe({
         next: (res: CustomerResponse) => {
-          this.res = res;
           if (this.res.statusCode == HttpStatusCode.Ok) {
-            this.headerNewForm = false;
             this.getList();
             this.toastMessage = [
               {
                 severity: 'success',
-                summary: productPageNotification.productPage.createMessage.summary,
-                content: productPageNotification.productPage.createMessage.addSuccess,
+                summary: productPageNotification.productPage.deleteMessage.summary,
+                content: productPageNotification.productPage.deleteMessage.deleteSuccess,
               },
             ];
           }
         },
-        error: (error) => {
-          debugger
+        error: (err) => {
           this.toastMessage = [
             {
               severity: 'error',
-              summary: productPageNotification.productPage.createMessage.summary,
-              content: productPageNotification.productPage.createMessage.addFailed,
+              summary: productPageNotification.productPage.deleteMessage.summary,
+              content: productPageNotification.productPage.deleteMessage.deleteFailed,
             },
           ];
         }
-      });
+      })
+  }
+
+  async getList() {
+    this.busy = (await this.vehicleService.getVehicleList(ApiEndPoints.GetVehicle, this.pager)).subscribe((res:VehicleResponse) => {
+      res.$expandConfig = { expand: false };
+      this.listData = res.data;
+      debugger
+      this.pager.total = res.totalCount;
+    });
+  }
+  async quickRowAdded(e: any) {
+    const formData = new FormData();
+    debugger
+    formData.append('VehicleNo', e.vehicleNo || '');
+    formData.append('DriverName', e.driverName || '');
+    formData.append('DriverLicenseNo', e.driverLicenseNo || '');
+    formData.append('DriverPhone', e.driverPhone || '');
+    formData.append('Remarks', e.remarks || '');
+    (await this.vehicleService.createVehicle(ApiEndPoints.CreateVehicle, formData)).subscribe({
+      next: (res: CustomerResponse) => {
+        this.res = res;
+        if (this.res.statusCode == HttpStatusCode.Ok) {
+          this.headerNewForm = false;
+          this.getList();
+          this.toastMessage = [
+            {
+              severity: 'success',
+              summary: productPageNotification.productPage.createMessage.summary,
+              content: productPageNotification.productPage.createMessage.addSuccess,
+            },
+          ];
+        }
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.createMessage.summary,
+            content: productPageNotification.productPage.createMessage.addFailed,
+          },
+        ];
+      }
+    });
   }
 
   quickRowCancel() {
@@ -299,12 +329,12 @@ export class CommissionComponent {
     return true;
   };
 
-   beforeEditEnd = async (rowItem: any, field: any) => {
+  beforeEditEnd = async (rowItem: any, field: any) => {
     debugger
     var data = {
-      id:rowItem.id,
-      key:field,
-      value:rowItem[field]
+      id: rowItem.id,
+      key: field,
+      value: rowItem[field]
     }
     if (rowItem && rowItem[field].length < 3) {
       return false;
@@ -325,30 +355,30 @@ export class CommissionComponent {
     },
     {
       linkType: 'routerLink',
-      link: 'create-commission',
-      name: 'Discount'
+      link: 'vehicle',
+      name: 'Vehicle'
     }
   ];
 
-  async arrayToFormData(array:any) {
+  async arrayToFormData(array: any) {
     const formData = new FormData();
-    
+
     for (let key in array) {
       if (array.hasOwnProperty(key)) {
         formData.append(key, array[key]);
       }
     }
-    
+
     return formData;
   }
 
-  navigate(event: MouseEvent, item:any) {
+  navigate(event: MouseEvent, item: any) {
     debugger
     this.canNavigate(item).then((can) => {
       if (!can) {
         return;
       }
-      if(item.linkType === 'routerLink') {
+      if (item.linkType === 'routerLink') {
         //this.breadCrumbService.navigateTo(event, item);
         HelperUtils.jumpOuterUrl(item.link, '_self');
       } else {
@@ -357,7 +387,7 @@ export class CommissionComponent {
     });
   }
 
-  canNavigate(item:any) {
+  canNavigate(item: any) {
     return new Promise((resolve) => {
       const results = this.dialogService.open({
         id: 'dialog-service',

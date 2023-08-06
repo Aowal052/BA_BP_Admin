@@ -1,35 +1,40 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Component, Inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
 import { number } from 'echarts';
-import { BreadCrumbService, DialogService, MenuConfig, HelperUtils, EditableTip, TableWidthConfig, FormLayout, ToastService } from 'ng-devui';
+import { EditableTip, FormLayout, TableWidthConfig, BreadCrumbService, DialogService, MenuConfig, HelperUtils } from 'ng-devui';
 import { I18nService } from 'ng-devui/i18n';
-import { Subject, Subscription, map, takeUntil } from 'rxjs';
-import { Item } from 'src/app/@core/data/listData';
+import { Subscription, Subject, takeUntil, map } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { ListDataService } from 'src/app/@core/mock/list-data.service';
+import { User } from 'src/app/@core/model/AuthResponse';
+import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
 import { Category, CategoryResponse } from 'src/app/@core/model/CategoryResponse';
+import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
+import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
+import { BranchService } from 'src/app/@core/services/branch/branch.service';
 import { CategoryService } from 'src/app/@core/services/category/CategoryService';
+import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
+import { UserService } from 'src/app/@core/services/user/user.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { ThemeType } from 'src/app/@shared/models/theme';
 import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
-  selector: 'app-list-product',
-  templateUrl: './list-product.component.html',
-  styleUrls: ['./list-product.component.scss']
+  selector: 'app-branch',
+  templateUrl: './branch.component.html',
+  styleUrls: ['./branch.component.scss']
 })
-export class ListProductComponent implements OnInit{
+export class BranchComponent {
   editableTip = EditableTip.btn;
   nameEditing !: boolean;
   busy !: Subscription;
-  categoryDropdown: { id?: number, name?: string }[] = [];
+  userDropdown: { id?: number, name?: string }[] = [];
 
-  public category:Category[]=[];
+  public usersList:Users[]=[];
   public res:any;
 
   i18nValues: any;
@@ -40,7 +45,7 @@ export class ListProductComponent implements OnInit{
     pageSize: 10,
   };
 
-  listData : Product[] = [];
+  listData : Branch[] = [];
 
   headerNewForm = false;
   
@@ -49,8 +54,8 @@ export class ListProductComponent implements OnInit{
     labelSize: 'lg',
     items: [
       {
-        label: 'product Name',
-        prop: 'productName',
+        label: 'Branch Name',
+        prop: 'branchName',
         type: 'input',
         required: true,
         rule: {
@@ -58,98 +63,50 @@ export class ListProductComponent implements OnInit{
         },
       },
       {
-        label: 'category',
-        prop: 'category',
+        label: 'Address',
+        prop: 'branchAddress',
+        type: 'input',
+        rule: {
+          validators: [{ required: true }],
+        },
+      },
+      {
+        label: 'Manager',
+        prop: 'branchManager',
         type: 'select',
-        options:  this.categoryDropdown,
+        options:  this.userDropdown,
         required: true,
         rule: {
           validators: [{ required: true }],
         },
       },
-      {
-        label: 'product Code',
-        prop: 'productCode',
-        type: 'input',
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'Short Name',
-        prop: 'shortName',
-        type: 'input',
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'description',
-        prop: 'description',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'price',
-        prop: 'price',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true,type:number }],
-        },
-      },
-      {
-        label: 'Openning Quantity',
-        prop: 'OpeningQuantity',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true,type:number }],
-        },
-      }
     ],
   };
   tableWidthConfig: TableWidthConfig[] = [
     {
-      field: 'productName',
+      field: 'id',
+      width: '70px',
+    },
+    {
+      field: 'branchName',
       width: '200px',
     },
     {
-      field: 'productCode',
-      width: '100px',
+      field: 'branchAddress',
+      width: '200px',
     },
     {
-      field: 'category',
-      width: '100px',
+      field: 'branchManager',
+      width: '200px',
     },
-    {
-      field: 'description',
-      width: '100px',
-    },
-    {
-      field: 'price',
-      width: '100px',
-    },
-    {
-      field: 'timeline',
-      width: '100px',
-    },
-    {
-      field: 'Actions',
-      width: '100px',
-    },
+    
   ];
   
   defaultRowData = {
     id: '',
-    productName: '',
-    productCode: '',
+    branchName: '',
+    branchAddress: '',
     category: '',
-    description: '',
-    price: 0,
   };
   language: string;
   selectedItem: string = '';
@@ -162,6 +119,8 @@ export class ListProductComponent implements OnInit{
     private breadCrumbService: BreadCrumbService,
     private dialogService: DialogService,
     private service: ProductService,
+    private branchService: BranchService,
+    private usrservice: UserService,
     private route: ActivatedRoute,
     private translate: TranslateService,
     private router: Router,
@@ -200,7 +159,7 @@ export class ListProductComponent implements OnInit{
     });
     
     this.getList();
-    await this.getCategory()
+    await this.getUserList()
   }
 
   onEditEnd(rowItem: any, field: any) {
@@ -268,37 +227,40 @@ export class ListProductComponent implements OnInit{
             }
           })
   }
+
   async getList() {
-    this.busy = (await this.service.getProducts(ApiEndPoints.GetProducts, this.pager)).subscribe((res:ProductResponse) => {
+    this.busy = (await this.branchService.getBranchList(ApiEndPoints.GetBranch, this.pager)).subscribe((res: BranchResponse) => {
       res.$expandConfig = { expand: false };
-      this.listData = res.data;
       debugger
+      this.listData = res.data;
       this.pager.total = res.totalCount;
+      debugger
     });
   }
+
+
 
   valueChange(event:any){
     debugger
     this.selectedId = event.target.value;
     this.isSelect = true;
     this.selectedItem = event.target.options[event.target.selectedIndex].text;
-    //this.selected = event.target.value;
   }
   // Define the elseBlock property
   get elseBlock(): boolean {
     return !this.isSelect;
   }
-
-  async getCategory(){
-    (await this.catservice.getCategory(ApiEndPoints.GetCategoryDroppdown,this.pager)).subscribe((response:CategoryResponse) => {
+  async getUserList(){
+    (await this.usrservice.getUsers(ApiEndPoints.GetUser)).subscribe((response:UserResponse) => {
       debugger
       this.res = response;
       if(this.res.statusCode == HttpStatusCode.Ok){
-        this.category = this.res.data;
-        this.categoryDropdown = this.category.map(item => ({ id: item.id, name: item.name }));
+        this.usersList = this.res.data;
+        this.userDropdown = this.usersList.map(item => ({ id: item.id, name: item.firstName + item.lastName }));
       }
     });
   }
+ 
 
   onPageChange(e: number) {
     this.pager.pageIndex = e;
@@ -317,18 +279,17 @@ export class ListProductComponent implements OnInit{
 
   updateFormConfigOptions() {
     debugger
-    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.categoryDropdown;
+    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'branchManager').options = this.userDropdown;
   }
   async quickRowAdded(e: any) {
     const formData = new FormData();
-      formData.append('ProductCode', e.productCode||'');
-      formData.append('ProductName', e.productName||'');
-      formData.append('DefaultPrice', e.price||'');
-      formData.append('CategoryId', e.category.id||'');
-      formData.append('Description', e.description || '');
-      formData.append('ShortName', e.shortName || '');
-      (await this.service.updateProduct(ApiEndPoints.AddProduct, formData)).subscribe({
-        next: (res: ProductResponse) => {
+    debugger
+      formData.append('BranchName', e.branchName||'');
+      formData.append('BranchAddress', e.branchAddress||'');
+      formData.append('UserId', e.branchManager.id||0);
+      
+      (await this.branchService.createBranch(ApiEndPoints.CreateBranch, formData)).subscribe({
+        next: (res: BranchResponse) => {
           this.res = res;
           if (this.res.statusCode == HttpStatusCode.Ok) {
             this.headerNewForm = false;
@@ -342,7 +303,7 @@ export class ListProductComponent implements OnInit{
             ];
           }
         },
-        error: (error) => {
+        error: () => {
           debugger
           this.toastMessage = [
             {
@@ -369,7 +330,8 @@ export class ListProductComponent implements OnInit{
       key:field,
       value:rowItem[field]
     }
-    await this.updateproduct(data);
+    await this.updateBranch(data);
+    debugger;
     if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
@@ -386,20 +348,20 @@ export class ListProductComponent implements OnInit{
     {
       linkType: 'routerLink',
       link: './home',
-      name: 'Inventory'
+      name: 'Setting'
     },
     {
       linkType: 'routerLink',
-      link: 'list-product',
-      name: 'Product List'
+      link: 'branch',
+      name: 'Branch'
     }
   ];
 
-  async updateproduct(item:any){
+  async updateBranch(item:any){
     debugger
     const formData = await this.arrayToFormData(item);
-    (await this.service.updateProduct(ApiEndPoints.UpdateProduct, formData)).subscribe({
-      next: (res: ProductResponse) => {
+    (await this.branchService.updateBranch(ApiEndPoints.UpdateBranch, formData)).subscribe({
+      next: (res: BranchResponse) => {
         this.res = res;
         if (this.res.statusCode == HttpStatusCode.Ok) {
           this.toastMessage = [
@@ -411,7 +373,7 @@ export class ListProductComponent implements OnInit{
           ];
         }
       },
-      error: (error) => {
+      error: () => {
         debugger
         this.toastMessage = [
           {

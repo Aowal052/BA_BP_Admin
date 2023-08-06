@@ -9,6 +9,7 @@ import { BasicSettingsComponent } from './user-settings/basic-settings/basic-set
 import { SecuritySettingsComponent } from './user-settings/security-settings/security-settings.component';
 import { MessageNotificationComponent } from './user-settings/message-notification/message-notification.component';
 import { AdminFormModule } from 'src/app/@shared/components/admin-form';
+import { AddUserComponent } from './add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AdminFormModule } from 'src/app/@shared/components/admin-form';
     BasicSettingsComponent,
     SecuritySettingsComponent,
     MessageNotificationComponent,
+    AddUserComponent,
   ],
   imports: [SharedModule, UserRoutingModule, TagsInputModule, SplitterModule,
     AdminFormModule,PaginationModule,DatepickerModule,ToastModule],

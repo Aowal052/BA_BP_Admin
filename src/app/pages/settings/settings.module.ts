@@ -11,6 +11,8 @@ import { DynamicFormsModule } from 'src/app/@shared/components/dynamic-forms';
 import { SharedModule } from 'src/app/@shared/shared.module';
 import { FormRoutingModule } from '../form/form-routing.module';
 import { ProductPriceConfigComponent } from './product-price-config/product-price-config.component';
+import { VehicleComponent } from './vehicle/vehicle.component';
+import { BranchComponent } from './branch/branch.component';
 
 
 @NgModule({
@@ -18,7 +20,9 @@ import { ProductPriceConfigComponent } from './product-price-config/product-pric
     CommissionComponent,
     OffersComponent,
     SettingsComponent,
-    ProductPriceConfigComponent
+    ProductPriceConfigComponent,
+    VehicleComponent,
+    BranchComponent
   ],
   imports: [
     CommonModule,

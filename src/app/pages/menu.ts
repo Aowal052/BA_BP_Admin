@@ -129,6 +129,7 @@ export default function (values: any) {
     {
       title: values['user']['title'],
       children: [
+        { title: values['user']['addusers'], link: '/pages/user/add-user' },
         { title: values['user']['center'], link: '/pages/user/center' },
         { title: values['user']['settings'], link: '/pages/user/settings' },
       ],
@@ -140,7 +141,9 @@ export default function (values: any) {
       children: [
         { title: values['settings']['commision'], link: '/pages/settings/create-commission' },
         { title: values['settings']['offer'], link: '/pages/settings/create-offer' },
-        { title: values['settings']['priceConfiguration'],link: '/pages/settings/configure-product-price'}
+        { title: values['settings']['priceConfiguration'],link: '/pages/settings/configure-product-price'},
+        { title: values['settings']['vehicles'],link: '/pages/settings/vehicle'},
+        { title: values['settings']['branches'],link: '/pages/settings/branch'}
       ],
       link: '/pages/settings',
       menuIcon: 'icon icon-mine',
