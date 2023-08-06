@@ -69,7 +69,7 @@ export class VehicleComponent {
       },
       {
         label: 'Driver Licence',
-        prop: 'driverLicence',
+        prop: 'driverLicenseNo',
         type: 'input',
       },
       {
