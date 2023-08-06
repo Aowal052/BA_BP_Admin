@@ -21,7 +21,7 @@
                         <div class="da-header-item-label">From Date :</div>
                         <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
                           <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
-                            [(ngModel)]="selectedDate1" autocomplete="off" dDatepicker #datePicker1="datepicker"
+                            [(ngModel)]="searchModel.fromDate" autocomplete="off" dDatepicker #datePicker1="datepicker"
                             (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
                           <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
                             <i class="icon icon-close"></i>
@@ -34,13 +34,16 @@
                       <div class="da-header-item">
                         <div class="da-header-item-label">To Date :</div>
                         <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
-                          <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
-                            [(ngModel)]="selectedDate1" autocomplete="off" dDatepicker #datePicker1="datepicker"
-                            (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
-                          <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                          <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker2.toggle()" name="dp"
+                            [(ngModel)]="searchModel.toDate" 
+                            autocomplete="off" 
+                            dDatepicker #datePicker2="datepicker"
+                            (selectedDateChange)="getValue($event)" 
+                            appendToBody [appendToBodyDirections]="appendToBodyDirections" />
+                          <div *ngIf="selectedDate2" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker2.clearAll()">
                             <i class="icon icon-close"></i>
                           </div>
-                          <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                          <div class="devui-input-group-addon" (click)="datePicker2.toggle()">
                             <i class="icon icon-calendar"></i>
                           </div>
                         </div>
@@ -50,12 +53,13 @@
                         <d-select [placeholder]="'change table layout'" [options]="StatusOptions" [(ngModel)]="searchModel.status"></d-select>
                       </div>
                       <div class="da-header-item">
+                        <div class="da-header-item-label" style="width: 70px;">Order Id :</div>
                         <input dTextInput [placeholder]="'Order Id'" [(ngModel)]="searchModel.orderId" />
                       </div>
                       
-                      <div class="da-header-item">
-                        <d-button (click)="reset()">Search</d-button>
-                      </div>
+                    </div>
+                    <div class="da-header-item">
+                      <d-button (click)="search(searchModel)">Search</d-button>
                     </div>
                   </div>
                     <div class="list-content" dLoading [loading]="busy">
@@ -127,11 +131,19 @@
                         </d-data-table>
                     </div>
                     <div class="da-list-footer">
-                        <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.pageSize"
-                            [(pageIndex)]="pager.pageIndex" [canViewTotal]="true" [canChangePageSize]="true"
-                            [canJumpPage]="true" [maxItems]="5" (pageIndexChange)="onPageChange($event)"
-                            (pageSizeChange)="onSizeChange($event)">
-                        </d-pagination>
+                      <d-pagination
+                      [size]="'sm'"
+                      [total]="pager.total"
+                      [(pageSize)]="pager.pageSize"
+                      [(pageIndex)]="pager.pageIndex"
+                      [canViewTotal]="true"
+                      [canChangePageSize]="true"
+                      [canJumpPage]="true"
+                      [maxItems]="5"
+                      (pageIndexChange)="onPageChange($event)"
+                      (pageSizeChange)="onSizeChange($event)"
+                    >
+                    </d-pagination>
                     </div>
                 </div>
             </da-col-item>

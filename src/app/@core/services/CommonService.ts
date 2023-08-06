@@ -29,6 +29,16 @@ export class CommonService {
     return this.headingSubject;
   }
 
+  async dateConvertion(dateString:string){
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+    return formattedDate;
+  }
+
   async getHttpOptions() {
     const token = localStorage.getItem("id_token");
     const headers = new HttpHeaders({

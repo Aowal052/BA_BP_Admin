@@ -48,9 +48,9 @@ export class OrderService {
       })
     );
   }
-  async getSalesOrders(endpoint:string,pager:any): Promise<Observable<any>> {
+  async getSalesOrders(endpoint:string,param:any): Promise<Observable<any>> {
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<OrderResponse>(environment.baseUrl + endpoint + '?pageNumber=' + pager.pageIndex + '&pageSize=' + pager.pageSize, httpOptions).pipe(
+    return this.http.post<OrderResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {

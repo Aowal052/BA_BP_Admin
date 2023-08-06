@@ -51,6 +51,17 @@ export class SalesInvoiceService {
         })
       );
     }
+    async post(endpoint:string,param:any):Promise<Observable<SalesInvoiceResponse>>{
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.post<SalesInvoiceResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+        catchError((error) => {
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
 
     async getChallanMasterListDetails(endpoint:string,pager:any): Promise<Observable<any>> {
       const httpOptions = await this.service.getHttpOptions();

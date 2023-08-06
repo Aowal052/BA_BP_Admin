@@ -273,6 +273,8 @@ export class GatePassCreateComponent implements OnInit {
   data: any;
   isActive: boolean = false;
   datePicker1: any;
+  datePicker2: any;
+  datePicker3: any;
 
   startDate = new Date();
   endDate = null;
@@ -421,20 +423,11 @@ export class GatePassCreateComponent implements OnInit {
     this.items.length>0?this.isActive = true:this.isActive=false;
   }
   async placeGatePass(master: any) {
-    const masterData = await this.comService.createFormData(master);
-
+    const date = new Date(this.masterData.selectedDate1); // Assuming this is your date
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }as Intl.DateTimeFormatOptions;
     const formData = new FormData();
-
-    debugger
-    const gatePassDate = new Date(); // Assuming you have the Date object
-
-    // Formatting the date as 'YYYY-MM-DD' (e.g., '2023-07-20')
-    const formattedDate = `${gatePassDate.getFullYear()}-${String(gatePassDate.getMonth() + 1).padStart(2, '0')}-${String(gatePassDate.getDate()).padStart(2, '0')}`;
-    //const formattedDate = new Date()
-    formData.append('GatePassDate', formattedDate);
-    debugger
+    formData.append('GatePassDate', date.toLocaleDateString('en-GB', options));
     formData.append('VehicleId', master.selectedVehicle.id);
-
 
     //Append list data
     for (let i = 0; i < this.items.length; i++) {

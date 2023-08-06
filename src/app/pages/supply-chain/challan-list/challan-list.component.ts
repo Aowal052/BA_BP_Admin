@@ -2,6 +2,7 @@ import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
@@ -9,7 +10,9 @@ import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
+import { SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
+import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/delivery-challan.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
@@ -24,7 +27,10 @@ import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 export class ChallanListComponent implements OnInit{
   filterAreaShow = false;
   columnsLayout: FormLayout = FormLayout.Columns;
+  appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   multipleSelectConfig: any;
+  selectedDate1:any;
+  selectedDate2:any;
   master:any =[];
   selectOptions = [
     {
@@ -218,6 +224,10 @@ export class ChallanListComponent implements OnInit{
     estimatedDeliveryDate: new Date,
     selectedCustomer:{id:0,label:''},
     selectedDiscount: { id: 0, name: '' },
+    customerDeliveryAddress:'',
+    selectedSubCustomer:{id:0,label:''},
+    subCustomerName:'',
+    subCustomerDeliveryAddress:'',
     totalPrice: 0,
     pdc:true,
     genDiscount:0,
@@ -228,6 +238,17 @@ export class ChallanListComponent implements OnInit{
     deliveryAddress:'',
     remarks:''
   }
+  currentDate = new Date();
+  searchModel = {
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
+    toDate: new Date(),
+    challanNo:'',
+    selectedCustomer:{id:0,label:''},
+    selectedSubCustomer:{id:0,label:''},
+  }
   customerDropdownList:any[] = [];
   customerList: any[] = [];
   selectedItem: string = '';
@@ -235,9 +256,14 @@ export class ChallanListComponent implements OnInit{
   selectedId : string = '';
   msgs: Array<Object> = [];
   data:any;
+  subCustomerList: any[] = [];
+  subCustomerDropdownList:any[] = [];
+  
+  StatusOptions = ['Approved', 'Rejected'];
   constructor(
     private listDataService: ListDataService, 
     private service:OrderService,
+    private challanService: DeliveryChallanService,
     private SaleInvservice:SalesInvoiceService,
     private comService: CommonService,
     private proService:ProductService,
@@ -246,11 +272,40 @@ export class ChallanListComponent implements OnInit{
     private router: Router,) {}
 
   ngOnInit() {
-    this.getList();
+    this.search(this.searchModel);
+    this.getCustomerDropdown();
   }
-
-  search() {
-    this.getList();
+  async genarateSubInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    debugger
+    await this.getSubCustomerDropdown(customer.id);
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
+  }
+  async getSubCustomerDropdown(id: any) {
+    debugger
+     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
+       this.subCustomerDropdownList = res.data;
+       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+     });
+   }
+   async search(model:any) {
+    var data =this.searchModel
+    var fromData = new FormData();
+    //this.searchModel.fromDate = new Date((await this.comService.dateConvertion(this.searchModel.fromDate.toDateString())).toString())
+    //this.searchModel.toDate = new Date((await this.comService.dateConvertion(this.searchModel.toDate.toDateString())).toString())
+    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageSize",this.searchModel.pageSize.toString());
+    fromData.append("FromDate", this.searchModel.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("Todate",this.searchModel.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("SubCustomerId",this.searchModel.selectedSubCustomer.id.toString());
+    fromData.append("CustomerId",this.searchModel.selectedCustomer.id.toString());
+    fromData.append("challanNo",this.searchModel.challanNo.toString());
+    debugger
+    this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetChallanMasterList, fromData)).subscribe((res:OrderResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      this.basicDataSource = data;
+      this.pager.total = res.totalCount;
+    });
   }
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
@@ -263,15 +318,27 @@ export class ChallanListComponent implements OnInit{
       return true;
     }
   };
-  
+  async getCustomerDropdown() {
+    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
+      this.customerDropdownList = res.data;
+      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+    });
+  }
   async getList() {
-    debugger;
-    this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, this.pager))
+    var fromData = new FormData();
+    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageSize",this.searchModel.pageSize.toString());
+    this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, fromData))
                .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
     });
+  }
+  async genarateMasterInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    await this.getSubCustomerDropdown(customer.id);
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
 
   async viewRow(row: any, index: number) {
@@ -303,13 +370,13 @@ export class ChallanListComponent implements OnInit{
     this.msgs = [{ severity: type, summary: title, detail: msg }];
   }
   onPageChange(e: number) {
-    this.pager.pageIndex = e;
-    this.getList();
+    this.searchModel.pageIndex = e;
+    this.search(this.searchModel);
   }
 
   onSizeChange(e: number) {
-    this.pager.pageSize = e;
-    this.getList();
+    this.searchModel.pageSize = e;
+    this.search(this.searchModel);
   }
 
   reset() {
@@ -318,8 +385,8 @@ export class ChallanListComponent implements OnInit{
       size: 'md',
       layout: 'auto',
     };
-    this.pager.pageIndex = 1;
-    this.getList();
+    this.searchModel.pageIndex = 1;
+    this.search(this.searchModel);
   }
 
   onSubmitted(e: any) {

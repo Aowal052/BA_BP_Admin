@@ -5,10 +5,14 @@ import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
+import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
+import { SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
+import { CustomerService } from 'src/app/@core/services/customer/customer.service';
+import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/delivery-challan.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
@@ -217,6 +221,7 @@ export class InvoiceListComponent implements OnInit{
     estimatedDeliveryDate: new Date,
     selectedCustomer:{id:0,label:''},
     selectedDiscount: { id: 0, name: '' },
+    customerDeliveryAddress:'',
     totalPrice: 0,
     pdc:true,
     genDiscount:0,
@@ -238,11 +243,21 @@ export class InvoiceListComponent implements OnInit{
   selectedDate1 = new Date();
   selectedDate2 = null;
   selectedDate3 = null;
+  datePicker2:any;
+  subCustomerList: any[] = [];
+  subCustomerDropdownList:any[] = [];
   disabled = true;
+  currentDate = new Date();
   searchModel = {
-    fromDate: new Date(),
-    orderId:'',
-    status:'',
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
+    toDate: new Date(),
+    challanNo:'',
+    invoiceNo:'',
+    selectedCustomer:{id:0,label:''},
+    selectedSubCustomer:{id:0,label:''},
   }
   StatusOptions = ['Approved', 'Rejected'];
   dateConfig = {
@@ -261,7 +276,8 @@ export class InvoiceListComponent implements OnInit{
   appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   constructor(
     private listDataService: ListDataService, 
-    private service:OrderService,
+    private cusService:CustomerService,
+    private challanService:DeliveryChallanService,
     private comService: CommonService,
     private SaleInvservice:SalesInvoiceService,
     private dialogService: DialogService, 
@@ -270,6 +286,7 @@ export class InvoiceListComponent implements OnInit{
 
     ngOnInit() {
       this.getList();
+      this.getCustomerDropdown();
     }
   
     search() {
@@ -286,13 +303,38 @@ export class InvoiceListComponent implements OnInit{
         return true;
       }
     };
+    async getCustomerDropdown() {
+      this.busy = (await this.cusService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
+        this.customerDropdownList = res.data;
+        this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+      });
+    }
+    async genarateMasterInfo(data:any){
+      const customer = this.customerDropdownList.find(x=>x.id == data.id);
+      await this.getSubCustomerDropdown(customer.id);
+      this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
+    }
+    async getSubCustomerDropdown(id: any) {
+      debugger
+       this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
+         this.subCustomerDropdownList = res.data;
+         this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+       });
+     }
     getValue(value:any) {
       console.log(value);
     }
     async getList() {
-      const formData = new FormData();
-    formData.append('pageIndex', this.pager.pageIndex.toString());
-    formData.append('pageSize', this.pager.pageSize.toString());
+      debugger
+      var formData = new FormData();
+      formData.append("PageIndex",this.searchModel.pageIndex.toString());
+      formData.append("PageSize",this.searchModel.pageSize.toString());
+      formData.append("FromDate", this.searchModel.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
+      formData.append("Todate",this.searchModel.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
+      formData.append("SubCustomerId",this.searchModel.selectedSubCustomer.id.toString());
+      formData.append("CustomerId",this.searchModel.selectedCustomer.id.toString());
+      formData.append("challanNo",this.searchModel.challanNo.toString());
+      formData.append("InvoiceNo",this.searchModel.invoiceNo.toString());
 
       this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetInvoiceMaster, formData))
                  .subscribe((res:SalesInvoiceResponse) => {
@@ -301,7 +343,12 @@ export class InvoiceListComponent implements OnInit{
         this.pager.total = res.totalCount;
       });
     }
-  
+    async genarateSubInfo(data:any){
+      const customer = this.customerDropdownList.find(x=>x.id == data.id);
+      debugger
+      await this.getSubCustomerDropdown(customer.id);
+      this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
+    }
     async viewRow(row: any, index: number) {
       debugger
       this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetInvoiceDetails, row.id))
@@ -343,12 +390,12 @@ export class InvoiceListComponent implements OnInit{
       this.msgs = [{ severity: type, summary: title, detail: msg }];
     }
     onPageChange(e: number) {
-      this.pager.pageIndex = e;
+      this.searchModel.pageIndex = e;
       this.getList();
     }
   
     onSizeChange(e: number) {
-      this.pager.pageSize = e;
+      this.searchModel.pageSize = e;
       this.getList();
     }
   

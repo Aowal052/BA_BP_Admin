@@ -2,15 +2,19 @@ import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
+import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { GatePassResponse } from 'src/app/@core/model/GatePassResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
+import { SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
 import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
+import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/delivery-challan.service';
 import { GatePassService } from 'src/app/@core/services/gatepass/gate-pass.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
@@ -237,6 +241,7 @@ export class CreateInvoiceComponent implements OnInit{
     estimatedDeliveryDate: new Date,
     selectedCustomer:{id:0,label:''},
     selectedDiscount: { id: 0, name: '' },
+    customerDeliveryAddress:'',
     totalPrice: 0,
     pdc:true,
     genDiscount:0,
@@ -247,8 +252,24 @@ export class CreateInvoiceComponent implements OnInit{
     deliveryAddress:'',
     remarks:''
   }
-  customerDropdownList:any[] = [];
+  selectedDate1:any;
+  selectedDate2:any;  
+  subCustomerList: any[] = [];
+  subCustomerDropdownList:any[] = [];
+  appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
+  customerDropdownList: any[] = [];
   customerList: any[] = [];
+  currentDate = new Date();
+  searchModel = {
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
+    toDate: new Date(),
+    challanNo:'',
+    selectedCustomer:{id:0,label:''},
+    selectedSubCustomer:{id:0,label:''},
+  }
   selectedItem: string = '';
   isSelect : boolean = false;
   selectedId : string = '';
@@ -258,7 +279,7 @@ export class CreateInvoiceComponent implements OnInit{
 
   constructor(
     private listDataService: ListDataService, 
-    private service:OrderService,
+    private challanService:DeliveryChallanService,
     private SaleInvservice:SalesInvoiceService,
     private comService: CommonService,
     private proService:ProductService,
@@ -268,6 +289,7 @@ export class CreateInvoiceComponent implements OnInit{
 
   ngOnInit() {
     this.getList();
+    this.getCustomerDropdown();
   }
 
   search() {
@@ -284,14 +306,45 @@ export class CreateInvoiceComponent implements OnInit{
       return true;
     }
   };
-  
+  async getCustomerDropdown() {
+    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
+      this.customerDropdownList = res.data;
+      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+    });
+  }
+  async genarateSubInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    debugger
+    await this.getSubCustomerDropdown(customer.id);
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
+  }
+  async getSubCustomerDropdown(id: any) {
+    this.searchModel.selectedSubCustomer = {id:0,label:''}
+     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
+       this.subCustomerDropdownList = res.data;
+       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+     });
+   }
+  async genarateMasterInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    await this.getSubCustomerDropdown(customer.id);
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
+  }
   async getList() {
     debugger;
-    this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, this.pager))
+    var fromData = new FormData();
+    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageSize",this.searchModel.pageSize.toString());
+    fromData.append("FromDate", this.searchModel.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("Todate",this.searchModel.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("SubCustomerId",this.searchModel.selectedSubCustomer.id.toString());
+    fromData.append("CustomerId",this.searchModel.selectedCustomer.id.toString());
+    fromData.append("ChallanNo",this.searchModel.challanNo.toString());
+    this.busy = (await this.SaleInvservice.post(ApiEndPoints.GetChallanMasterList, fromData))
                .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
-      this.pager.total = res.totalCount;
+      this.searchModel.total = res.totalCount;
     });
   }
 
@@ -324,12 +377,12 @@ export class CreateInvoiceComponent implements OnInit{
     this.msgs = [{ severity: type, summary: title, detail: msg }];
   }
   onPageChange(e: number) {
-    this.pager.pageIndex = e;
+    this.searchModel.pageIndex = e;
     this.getList();
   }
 
   onSizeChange(e: number) {
-    this.pager.pageSize = e;
+    this.searchModel.pageSize = e;
     this.getList();
   }
 

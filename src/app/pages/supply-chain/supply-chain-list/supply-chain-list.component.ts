@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DataTableComponent, DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
@@ -10,7 +11,9 @@ import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
+import { SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
+import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/delivery-challan.service';
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
@@ -248,6 +251,7 @@ export class SupplyChainListComponent implements OnInit {
     estimatedDeliveryDate: new Date,
     selectedCustomer: { id: 0, label: '' },
     selectedDiscount: { id: 0, name: '' },
+    customerDeliveryAddress:'',
     totalPrice: 0,
     pdc: true,
     genDiscount: 0,
@@ -258,6 +262,20 @@ export class SupplyChainListComponent implements OnInit {
     deliveryAddress: '',
     remarks: ''
   }
+  subCustomerList: any[] = [];
+  subCustomerDropdownList:any[] = [];
+  currentDate = new Date();
+  searchModel = {
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
+    toDate: new Date(),
+    challanNo:'',
+    selectedCustomer:{id:0,label:''},
+    selectedSubCustomer:{id:0,label:''},
+  }
+  appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   customerDropdownList: any[] = [];
   customerList: any[] = [];
   selectedItem: string = '';
@@ -265,6 +283,8 @@ export class SupplyChainListComponent implements OnInit {
   selectedId: string = '';
   msgs: Array<Object> = [];
   data: any;
+  selectedDate1:any;
+  selectedDate2:any;
   //@ViewChild(DataTableComponent, { static: true })
   //item!: DataTableComponent;
   //items: any[] = [];
@@ -272,6 +292,7 @@ export class SupplyChainListComponent implements OnInit {
     private listDataService: ListDataService,
     private service: OrderService,
     private comService: CommonService,
+    private challanService:DeliveryChallanService,
     private proService: ProductService,
     private dialogService: DialogService,
     private SaleInvservice: SalesInvoiceService,
@@ -280,6 +301,7 @@ export class SupplyChainListComponent implements OnInit {
   ngOnInit() {
     this.getList();
     this.getProductList();
+    this.getCustomerDropdown();
   }
   // changeProduct(product: any) {
   //   this.productInfo = this.dropdownProductList.find(x => x.id == product.id);
@@ -288,7 +310,7 @@ export class SupplyChainListComponent implements OnInit {
   //   this.productRowData.unit = this.selectUnits.find(x => x.id == 1) ?? {};
   //   this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   // }
-  search() {
+  search(data:any) {
     this.getList();
   }
   beforeEditStart = (rowItem: any, field: any) => {
@@ -334,11 +356,18 @@ export class SupplyChainListComponent implements OnInit {
   //   //this.selected = event.target.value;
   // }
   async getList() {
-    this.busy = (await this.SaleInvservice.getApprovedSalesOrder(ApiEndPoints.GetApprovedSalesOrder, this.pager)).subscribe((res: SalesInvoiceResponse) => {
+    var fromData = new FormData();
+    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageSize",this.searchModel.pageSize.toString());
+    fromData.append("FromDate", this.searchModel.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("Todate",this.searchModel.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("SubCustomerId",this.searchModel.selectedSubCustomer.id.toString());
+    fromData.append("CustomerId",this.searchModel.selectedCustomer.id.toString());
+    this.busy = (await this.SaleInvservice.post(ApiEndPoints.GetApprovedSalesOrder, fromData)).subscribe((res: SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       debugger
-      this.pager.total = res.totalCount;
+      this.searchModel.total = res.totalCount;
     });
   }
   async getCustomerDropdown() {
@@ -351,6 +380,24 @@ export class SupplyChainListComponent implements OnInit {
     debugger
     this.productRowDataList[index].totalPrice = productRowData.remainingQuantity * productRowData.unitPrice;
     debugger
+  }
+  async genarateSubInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    debugger
+    await this.getSubCustomerDropdown(customer.id);
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
+  }
+  async getSubCustomerDropdown(id: any) {
+    this.searchModel.selectedSubCustomer = {id:0,label:''}
+     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
+       this.subCustomerDropdownList = res.data;
+       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+     });
+   }
+  async genarateMasterInfo(data:any){
+    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    await this.getSubCustomerDropdown(customer.id);
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
   async viewRow(row: any, index: number) {
     this.productRowDataList = [];
@@ -432,12 +479,12 @@ export class SupplyChainListComponent implements OnInit {
     this.msgs = [{ severity: type, summary: title, detail: msg }];
   }
   onPageChange(e: number) {
-    this.pager.pageIndex = e;
+    this.searchModel.pageIndex = e;
     this.getList();
   }
 
   onSizeChange(e: number) {
-    this.pager.pageSize = e;
+    this.searchModel.pageSize = e;
     this.getList();
   }
 
@@ -447,7 +494,7 @@ export class SupplyChainListComponent implements OnInit {
       size: 'md',
       layout: 'auto',
     };
-    this.pager.pageIndex = 1;
+    this.searchModel.pageIndex = 1;
     this.getList();
   }
 

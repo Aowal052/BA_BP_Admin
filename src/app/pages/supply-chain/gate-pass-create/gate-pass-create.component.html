@@ -28,7 +28,7 @@
                                                           class="devui-input devui-form-control"
                                                           placeholder="y/MM/dd"
                                                           name="gatePassDate"
-                                                          [(ngModel)]="startDate"
+                                                          [(ngModel)]="masterData.selectedDate1"
                                                           (click)="datePicker1.toggle()"
                                                           autocomplete="off"
                                                           dDatepicker
@@ -130,29 +130,57 @@
                             <div class="two-date-wrapper" dTwoDatePicker [hideOnRangeSelected]="false"
                                 [cssClass]="'custom-css-class'" (selectedRangeChange)="selectRange($event)">
                                 <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
-                                    <input class="devui-input devui-form-control" placeholder="y/MM/dd"
-                                        [(ngModel)]="rangeStart" dTwoDatePickerStart #startPicker2="twoDatePickerStart"
-                                        (selectStart)="selectStart($event)" (click)="startPicker2.toggle()" />
-                                    <div *ngIf="rangeStart" class="devui-input-group-addon close-icon-wrapper"
-                                        (click)="startPicker2.clear()">
-                                        <i class="icon icon-close"></i>
+                                    <input
+                                      class="devui-input devui-form-control"
+                                      placeholder="y/MM/dd"
+                                      name="dp"
+                                      [(ngModel)]="startDate"
+                                      (click)="datePicker2.toggle()"
+                                      autocomplete="off"
+                                      dDatepicker
+                                      appendToBody
+                                      #datePicker2="datepicker"
+                                      (selectedDateChange)="getValue($event)"
+                                      [customViewTemplate]="fromDate"
+                                    />
+                                    <div *ngIf="startDate" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                      <i class="icon icon-close"></i>
                                     </div>
-                                    <div class="devui-input-group-addon" (click)="startPicker2.toggle()">
-                                        <i class="icon icon-calendar"></i>
+                                    <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                                      <i class="icon icon-calendar"></i>
                                     </div>
-                                </div>
-                                <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
-                                    <input class="devui-input devui-form-control" placeholder="y/MM/dd"
-                                        [(ngModel)]="rangeEnd" dTwoDatePickerEnd #endPicker2="twoDatePickerEnd"
-                                        (selectEnd)="selectEnd($event)" (click)="endPicker2.toggle()" />
-                                    <div *ngIf="rangeEnd" class="devui-input-group-addon close-icon-wrapper"
-                                        (click)="endPicker2.clear()">
-                                        <i class="icon icon-close"></i>
+                                  </div>
+                                  <ng-template #fromDate let-chooseDate="chooseDate" let-datePicker>
+                                    <div class="box">
+                                      <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
                                     </div>
-                                    <div class="devui-input-group-addon" (click)="endPicker2.toggle()">
-                                        <i class="icon icon-calendar"></i>
+                                  </ng-template>
+                                  <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
+                                    <input
+                                      class="devui-input devui-form-control"
+                                      placeholder="y/MM/dd"
+                                      name="dp"
+                                      [(ngModel)]="startDate"
+                                      (click)="datePicker3.toggle()"
+                                      autocomplete="off"
+                                      dDatepicker
+                                      appendToBody
+                                      #datePicker3="datepicker"
+                                      (selectedDateChange)="getValue($event)"
+                                      [customViewTemplate]="toDate"
+                                    />
+                                    <div *ngIf="startDate" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                      <i class="icon icon-close"></i>
                                     </div>
-                                </div>
+                                    <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                                      <i class="icon icon-calendar"></i>
+                                    </div>
+                                  </div>
+                                  <ng-template #toDate let-chooseDate="chooseDate" let-datePicker>
+                                    <div class="box">
+                                      <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
+                                    </div>
+                                  </ng-template>
                             </div>
                         </div>
                         <div class="da-header-item">

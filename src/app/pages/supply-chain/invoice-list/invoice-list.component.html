@@ -17,7 +17,7 @@
                                 <div class="da-header-item-label">From Date :</div>
                                 <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
                                   <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
-                                    [(ngModel)]="selectedDate1" autocomplete="off" dDatepicker #datePicker1="datepicker"
+                                    [(ngModel)]="searchModel.fromDate" autocomplete="off" dDatepicker #datePicker1="datepicker"
                                     (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
                                   <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
                                     <i class="icon icon-close"></i>
@@ -30,23 +30,34 @@
                               <div class="da-header-item">
                                 <div class="da-header-item-label">To Date :</div>
                                 <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
-                                  <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
-                                    [(ngModel)]="selectedDate1" autocomplete="off" dDatepicker #datePicker1="datepicker"
+                                  <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker2.toggle()" name="dp"
+                                    [(ngModel)]="searchModel.fromDate" autocomplete="off" dDatepicker #datePicker2="datepicker"
                                     (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
-                                  <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                  <div *ngIf="selectedDate2" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker2.clearAll()">
                                     <i class="icon icon-close"></i>
                                   </div>
-                                  <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                                  <div class="devui-input-group-addon" (click)="datePicker2.toggle()">
                                     <i class="icon icon-calendar"></i>
                                   </div>
                                 </div>
                               </div>
                               <div class="da-header-item">
-                                <div class="da-header-item-label">Status :</div>
-                                <d-select [placeholder]="'change table layout'" [options]="StatusOptions" [(ngModel)]="searchModel.status"></d-select>
+                                <d-form-label [required]="true">Customer: </d-form-label>
+                            <d-form-item>
+                              <d-form-control class="form-control-width">
+                                <d-select [options]="customerList" name="CustomerId" [isSearch]="true" [filterKey]="'label'"
+                                  placeholder="Select Customer" (ngModelChange)="genarateMasterInfo($event)"
+                                  [(ngModel)]="searchModel.selectedCustomer"></d-select>
+                              </d-form-control>
+                            </d-form-item>
                               </div>
                               <div class="da-header-item">
-                                <input dTextInput [placeholder]="'Order Id'" [(ngModel)]="searchModel.orderId" />
+                                <div class="da-header-item-label" style="width: 100px;">Chalan No :</div>
+                                <input dTextInput [placeholder]="'Chalan No'" [(ngModel)]="searchModel.challanNo" />
+                              </div>
+                              <div class="da-header-item">
+                                <div class="da-header-item-label" style="width: 100px;">Invoice No :</div>
+                                <input dTextInput [placeholder]="'Invoice No'" [(ngModel)]="searchModel.invoiceNo" />
                               </div>
                               
                               <div class="da-header-item">

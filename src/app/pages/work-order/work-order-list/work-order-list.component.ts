@@ -203,11 +203,20 @@ export class WorkOrderListComponent {
     { id: 4, name: 'Eid Offer' },
     { id: 5, name: 'Promotional Offer' },
   ];
+  
+  currentDate = new Date();
   searchModel = {
-    fromDate: new Date(),
-    orderId:'',
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
+    toDate: new Date(),
+    orderId:0,
     status:'',
   }
+
+
+// Set the fromDate to one month behind the current date
   masterData = {
     id:0,
     orderDate:(new Date).toDateString(),
@@ -270,8 +279,23 @@ export class WorkOrderListComponent {
   getValue(value:any) {
     console.log(value);
   }
-  search() {
-    this.getList();
+  async search(model:any) {
+    var data =this.searchModel
+    var fromData = new FormData();
+    //this.searchModel.fromDate = new Date((await this.comService.dateConvertion(this.searchModel.fromDate.toDateString())).toString())
+    //this.searchModel.toDate = new Date((await this.comService.dateConvertion(this.searchModel.toDate.toDateString())).toString())
+    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageSize",this.searchModel.pageSize.toString());
+    fromData.append("FromDate", this.searchModel.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("ToDate",this.searchModel.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
+    fromData.append("Status",this.searchModel.status.toString());
+    fromData.append("OrderId",this.searchModel.orderId.toString());
+    debugger
+    this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetSalesOrder, fromData)).subscribe((res:OrderResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      this.basicDataSource = data;
+      this.pager.total = res.totalCount;
+    });
   }
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
@@ -305,7 +329,7 @@ export class WorkOrderListComponent {
       const data = JSON.parse(JSON.stringify(res.data));
       this.dropdownProductList = data;
       this.productList = res.data.map(({ id, productName }) => ({ id: id, label: productName }));
-      this.pager.total = res.totalCount;
+      //this.pager.total = res.totalCount;
     });
   }
   valueChange(event:any){
@@ -316,10 +340,14 @@ export class WorkOrderListComponent {
     //this.selected = event.target.value;
   }
   async getList() {
-    this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetOrders, this.pager)).subscribe((res:OrderResponse) => {
+    var fromData = new FormData();
+    fromData.append("PageIndex",this.pager.pageIndex.toString());
+    fromData.append("PageSize",this.pager.pageSize.toString());
+    this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetSalesOrder, fromData)).subscribe((res:OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
+      debugger
     });
   }
   async getCustomerDropdown() {
