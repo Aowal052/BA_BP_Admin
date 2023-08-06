@@ -7,6 +7,7 @@ import { UserResponse } from '../../model/UserResponse';
 import { environment } from 'src/environments/environment';
 import { CustomerResponse } from '../../model/CustomerResponse';
 import { ProductResponse } from '../../model/ProductResponse';
+import { UserRoleResponse } from '../../model/UserRoleResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,32 @@ export class UserService {
   async getUsers(endpoint:string):Promise<Observable<UserResponse>>{
     const httpOptions = await this.service.getHttpOptions();
     return this.http.get<UserResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+
+  async createUser(endpoint:string,param:any):Promise<Observable<UserResponse>>{
+    debugger
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.post<UserResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+      catchError((error) => {
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+
+  async getRoles(endpoint:string):Promise<Observable<UserRoleResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<UserRoleResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {

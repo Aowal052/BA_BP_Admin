@@ -1,1 +1,110 @@
-<p>add-user works!</p>
+<div class="da-content-banner">
+  <d-breadcrumb>
+    <d-breadcrumb-item *ngFor="let item of breadItem">
+      <!-- <a rel="noopener" (click)="navigate($event, item)">{{ item.name }}</a> -->
+      <a rel="noopener">{{ item.name }}</a>
+    </d-breadcrumb-item>
+  </d-breadcrumb>
+</div>
+
+<div class="da-content-wrapper">
+  <d-toast [value]="toastMessage"></d-toast>
+  <da-layout-row [daGutter]="[24, 24]">
+    <da-col-item [daSpan]="24" [daXs]="24">
+      <div class="da-advance-form" dLoading [loading]="busy">
+        <div class="da-advace-form-content">
+          <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+            <thead dTableHead>
+              <tr dTableRow>
+                <th dHeadCell>Id</th>
+                <th dHeadCell>User</th>
+                <th dHeadCell>First Name</th>
+                <th dHeadCell>Last Name</th>
+                <th dHeadCell>Email</th>
+                <th dHeadCell>Role</th>
+
+              </tr>
+            </thead>
+            <tbody dTableBody>
+              <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                <tr dTableRow *ngIf="rowIndex === 0">
+                  <td dTableCell [attr.colspan]="tableWidthConfig.length">
+                    <div *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">
+                      <span class="tips-icon icon-add"></span>
+                      <span style="margin-left: 10px">Create new data</span>
+                    </div>
+                    <div *ngIf="headerNewForm" class="edit-padding-fix">
+                      <da-admin-form [formConfig]="formConfig" [formData]="defaultRowData" class="editable-row"
+                        (submitted)="quickRowAdded($event)" (canceled)="quickRowCancel()"></da-admin-form>
+                    </div>
+                  </td>
+                </tr>
+                <tr dTableRow>
+                  <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
+                    [rowItem]="rowItem" [field]="'id'" [beforeEditStart]="beforeEditStart">
+                    <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
+                    <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
+                      <input class="devui-form-control" name="id" [(ngModel)]="rowItem.id" [attr.maxlength]="50"
+                        [attr.minlength]="3" />
+                    </div>
+                  </td>
+                  <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['titleName']"
+                    [rowItem]="rowItem" [field]="'userId'" [beforeEditStart]="beforeEditStart">
+                    <span *ngIf="!rowItem['titleName']">
+                      <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
+                      {{ rowItem?.userId }}</span>
+                    <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
+                      <input class="devui-form-control" name="userId" [(ngModel)]="rowItem.userId"
+                        [attr.maxlength]="200" [attr.minlength]="50" />
+                    </div>
+                  </td>
+                  <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['iterationEdit']"
+                    [rowItem]="rowItem" [field]="'firstName'" [beforeEditStart]="beforeEditStart">
+                    <span *ngIf="!rowItem['iterationEdit']">{{
+                      rowItem?.firstName
+                      }}</span>
+                    <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
+                      <input dTextInput size="sm" [(ngModel)]="rowItem.firstName" />
+                    </div>
+                  </td>
+                  <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['iterationEdit']"
+                    [rowItem]="rowItem" [field]="'lastName'" [beforeEditStart]="beforeEditStart">
+                    <span *ngIf="!rowItem['iterationEdit']">{{
+                      rowItem?.lastName
+                      }}</span>
+                    <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
+                      <input dTextInput size="sm" [(ngModel)]="rowItem.lastName" />
+                    </div>
+                  </td>
+                  <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['iterationEdit']"
+                    [rowItem]="rowItem" [field]="'email'" [beforeEditStart]="beforeEditStart">
+                    <span *ngIf="!rowItem['iterationEdit']">{{
+                      rowItem?.email
+                      }}</span>
+                    <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
+                      <input dTextInput size="sm" [(ngModel)]="rowItem.email" />
+                    </div>
+                  </td>
+                  <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['iterationEdit']"
+                    [rowItem]="rowItem" [field]="'UserRole'" [beforeEditStart]="beforeEditStart">
+                    <span *ngIf="!rowItem['iterationEdit']">{{
+                      rowItem?.UserRole
+                      }}</span>
+                    <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
+                      <input dTextInput size="sm" [(ngModel)]="rowItem.UserRole" />
+                    </div>
+                  </td>
+
+                </tr>
+              </ng-template>
+            </tbody>
+          </d-data-table>
+        </div>
+        <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.pageSize" [(pageIndex)]="pager.pageIndex"
+          [canViewTotal]="true" [canChangePageSize]="true" [canJumpPage]="true" [maxItems]="5"
+          (pageIndexChange)="onPageChange($event)" (pageSizeChange)="onSizeChange($event)">
+        </d-pagination>
+      </div>
+    </da-col-item>
+  </da-layout-row>
+</div>

@@ -1,6 +1,8 @@
 export class ApiEndPoints{
     static readonly Login: string = 'v1/Accounts/Login';
     static readonly GetUser: string = 'v1/Accounts/Get';
+    static readonly CreateUser: string = 'v2/Accounts/register';
+    static readonly GetRole: string = 'v1/Accounts/GetRole';
     //#region customer
     static readonly CreateCustomer: string = 'Customer/Create';
     static readonly UpdateCustomer: string = 'Customer/Update';
