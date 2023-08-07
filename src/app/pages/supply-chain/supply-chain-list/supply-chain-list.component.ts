@@ -382,7 +382,7 @@ export class SupplyChainListComponent implements OnInit {
     debugger
   }
   async genarateSubInfo(data:any){
-    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    const customer = this.subCustomerDropdownList.find(x=>x.id == data.id);
     debugger
     await this.getSubCustomerDropdown(customer.id);
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';

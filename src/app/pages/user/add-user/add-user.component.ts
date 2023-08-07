@@ -268,7 +268,7 @@ export class AddUserComponent {
     });
   }
   async getList() {
-    this.busy = (await this.usrservice.getUsers(ApiEndPoints.GetUser)).subscribe((res: UserResponse) => {
+    this.busy = (await this.usrservice.getUserList(ApiEndPoints.GetUsers, this.pager)).subscribe((res: UserResponse) => {
       res.$expandConfig = { expand: false };
       debugger
       this.listData = res.data;
