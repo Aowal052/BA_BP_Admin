@@ -343,12 +343,33 @@
                             </tr>
                         </ng-template>
                     </tbody>
-
                 </d-data-table>
-                      <div class="btn-group over-flow-ellipsis">
-                        <d-button bsStyle="text-dark" title="Download PDF" (btnClick)="generatePDF()">Download PDF</d-button>
+                <div class="da-content-wrapper" style="margin-top: 8%;">
+                <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+                  <da-row-item>
+                    <da-layout-row [daGutter]="[0, 0]">
+                      <da-col-item [daXs]="16" [daMs]="24">
+                        <div class="u-1-2">
+                          <d-form-item>
+                            
+                            <d-form-label>গ্রাহকের স্বাক্ষর : </d-form-label>
+                          </d-form-item>
+                        </div>
+                    </da-col-item>
+                    <da-col-item [daXs]="8" [daMs]="24">
+                      <div class="u-1-2">
+                        <d-form-item>
+                          <d-form-label style="text-decoration: overline;">কোম্পানি কর্তৃপক্ষের স্বাক্ষর : </d-form-label>
+                        </d-form-item>
                       </div>
-          
-                                
+                  </da-col-item>
+                    </da-layout-row>
+                  </da-row-item>
+                </da-layout-col>   
+              </div>  
+      </div>
+      
+      <div class="btn-group over-flow-ellipsis">
+        <d-button bsStyle="text-dark" title="Download PDF" (btnClick)="generatePDF()">Download PDF</d-button>
       </div>
   </ng-template>

@@ -28,58 +28,50 @@ export class CommonService {
   getHeading(): BehaviorSubject<string> {
     return this.headingSubject;
   }
+  units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  thousands = ['', 'Thousand', 'Million', 'Billion'];
+
   async convertNumberToText(number: number): Promise<string> {
-    const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-    const thousands = ['', 'Thousand', 'Million', 'Billion'];
-
-    function convertChunk(num: number, units: string[], teens: string[], tens: string[]): string {
-      if (num === 0) return '';
-
-      if (num < 10) return units[num];
-      if (num < 20) return teens[num - 10];
-
-      const tensDigit = Math.floor(num / 10) % 10;
-      const unitsDigit = num % 10;
-
-      if (tensDigit === 0) {
-        return units[unitsDigit];
-      }
-
-      return (tensDigit === 0 ? '' : tens[tensDigit] + ' ') + units[unitsDigit];
+    if (number === 0) {
+      return 'Zero';
     }
 
-    if (number === 0) return 'Zero';
+    const integerPart = Math.floor(number);
+    const decimalPart = Math.round((number - integerPart) * 100);
 
-    let text = '';
-    let chunkIndex = 0;
+    const integerText = this.convertChunk(integerPart);
+    const decimalText = decimalPart > 0 ? ` and ${this.convertChunk(decimalPart)} Poisa` : '';
 
-  let integerPart = Math.floor(number);
-  const decimalPart = Math.round((number - integerPart) * 100); // Convert decimal part to poisa
-
-  while (integerPart > 0) {
-    const chunk = integerPart % 1000;
-    if (chunk > 0) {
-      if (chunkIndex > 0) {
-        text = convertChunk(chunk, units, teens, tens) + ' ' + thousands[chunkIndex] + ' ' + text;
-      } else {
-        text = convertChunk(chunk, units, teens, tens);
+    return `${integerText} Taka${decimalText}`;
+  }
+  private convertChunk(chunk: number): string {
+    if (chunk === 0) {
+      return '';
+    } else if (chunk < 10) {
+      return this.units[chunk];
+    } else if (chunk < 20) {
+      return this.teens[chunk - 10];
+    } else if (chunk < 100) {
+      const tensDigit = Math.floor(chunk / 10);
+      const unitsDigit = chunk % 10;
+      return `${this.tens[tensDigit]}${unitsDigit > 0 ? ' ' + this.units[unitsDigit] : ''}`;
+    } else if (chunk < 1000) {
+      const hundredsDigit = Math.floor(chunk / 100);
+      const remainder = chunk % 100;
+      return `${this.units[hundredsDigit]} Hundred${remainder > 0 ? ' and ' + this.convertChunk(remainder) : ''}`;
+    } else {
+      let chunkText = '';
+      for (let i = 0; chunk > 0; i++) {
+        const currentChunk = chunk % 1000;
+        if (currentChunk !== 0) {
+          chunkText = `${this.convertChunk(currentChunk)} ${this.thousands[i]} ${chunkText}`;
+        }
+        chunk = Math.floor(chunk / 1000);
       }
+      return chunkText;
     }
-    integerPart = Math.floor(integerPart / 1000);
-    chunkIndex++;
-  }
-
-  if (text.length === 0) {
-    text = 'Zero';
-  }
-
-  if (decimalPart > 0) {
-    text += ' and ' + (decimalPart < 10 ? 'Zero ' : '') + convertChunk(decimalPart, units, teens, tens) + ' Poisa';
-  }
-
-  return text.trim() + ' Taka';
   }
 
   async dateConvertion(dateString:string){

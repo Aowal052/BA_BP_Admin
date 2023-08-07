@@ -373,9 +373,9 @@ export class InvoiceListComponent implements OnInit{
         this.discount.forEach(discount => {
           this.netPriceinfo[0].netTotal  = discount.discountType =="Percent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountValue)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountValue));
         });
+        debugger
+        this.netPriceinfo[0].netPriceInText = await this.comService.convertNumberToText(this.netPriceinfo[0].netTotal)
       });
-      debugger
-      this.netPriceinfo[0].netPriceInText = await this.comService.convertNumberToText(this.netPriceinfo[0].netTotal)
       this.master = this.basicDataSource.find(x=>x.id==row.id);
       this.editRowIndex = index;
       this.formData = row;
