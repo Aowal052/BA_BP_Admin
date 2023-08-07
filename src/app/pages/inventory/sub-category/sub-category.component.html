@@ -12,14 +12,7 @@
       <da-col-item [daSpan]="24" [daXs]="24">
         <div class="da-advance-form" dLoading [loading]="busy">
           <div class="da-advace-form-content">
-            <div
-                        *ngIf="!headerNewForm"
-                        (click)="newRow()"
-                        class="cursor-pointer"
-                      >
-                        <span class="tips-icon icon-add"></span>
-                        <span style="margin-left: 10px">Create new data</span>
-                      </div>
+          
             <d-data-table
              #dataTable 
              [dataSource]="subCategory" 

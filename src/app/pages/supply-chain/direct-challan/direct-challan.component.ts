@@ -476,6 +476,7 @@ export class DirectChallanComponent implements OnInit{
     const subCoustomer = this.subCustomerDropdownList.find(x=>x.id == data.id);
     this.masterData.customerDeliveryAddress = subCoustomer?.deliveryAddress??'';
   }
+  
   async genarateMasterInfo(data:any){
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
     await this.getSubCustomerDropdown(customer.id);

@@ -34,7 +34,19 @@ export class UserService {
 
   async getUsers(endpoint:string):Promise<Observable<UserResponse>>{
     const httpOptions = await this.service.getHttpOptions();
-    return this.http.get<UserResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
+    return this.http.get<UserResponse>(environment.baseUrl + endpoint , httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+  async getUserList(endpoint:string,pager:any):Promise<Observable<UserResponse>>{
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.get<UserResponse>(environment.baseUrl  + endpoint + '?PageIndex=' + pager.pageIndex + '&PageSize=' + pager.pageSize, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {

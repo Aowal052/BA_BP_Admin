@@ -86,12 +86,12 @@
                     </div>
                   </td>
                   <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['iterationEdit']"
-                    [rowItem]="rowItem" [field]="'UserRole'" [beforeEditStart]="beforeEditStart">
+                    [rowItem]="rowItem" [field]="'userRole'" [beforeEditStart]="beforeEditStart">
                     <span *ngIf="!rowItem['iterationEdit']">{{
-                      rowItem?.UserRole
+                      rowItem?.userRole
                       }}</span>
                     <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
-                      <input dTextInput size="sm" [(ngModel)]="rowItem.UserRole" />
+                      <input dTextInput size="sm" [(ngModel)]="rowItem.userRole" />
                     </div>
                   </td>
 

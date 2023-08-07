@@ -1,26 +1,19 @@
-import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
-import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
 import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { GatePassResponse } from 'src/app/@core/model/GatePassResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
 import { SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
-import { Vehicle, VehicleResponse } from 'src/app/@core/model/VehicleResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
 import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/delivery-challan.service';
-import { GatePassService } from 'src/app/@core/services/gatepass/gate-pass.service';
-import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
-import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 
 @Component({
   selector: 'app-create-invoice',
@@ -313,7 +306,7 @@ export class CreateInvoiceComponent implements OnInit{
     });
   }
   async genarateSubInfo(data:any){
-    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    const customer = this.subCustomerDropdownList.find(x=>x.id == data.id);
     debugger
     await this.getSubCustomerDropdown(customer.id);
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
@@ -321,7 +314,8 @@ export class CreateInvoiceComponent implements OnInit{
   async getSubCustomerDropdown(id: any) {
     this.searchModel.selectedSubCustomer = {id:0,label:''}
      this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
-       this.subCustomerDropdownList = res.data;
+       debugger
+      this.subCustomerDropdownList = res.data;
        this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
      });
    }

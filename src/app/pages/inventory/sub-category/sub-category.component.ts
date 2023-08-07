@@ -32,8 +32,8 @@ export class SubCategoryComponent {
     },
     {
       linkType: 'routerLink',
-      link: 'list-product',
-      name: 'Product List'
+      link: 'sub-category',
+      name: 'Sub Category'
     }
   ];
 

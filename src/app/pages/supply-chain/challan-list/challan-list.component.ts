@@ -261,22 +261,19 @@ export class ChallanListComponent implements OnInit{
   
   StatusOptions = ['Approved', 'Rejected'];
   constructor(
-    private listDataService: ListDataService, 
     private service:OrderService,
     private challanService: DeliveryChallanService,
     private SaleInvservice:SalesInvoiceService,
     private comService: CommonService,
     private proService:ProductService,
-    private dialogService: DialogService, 
-    private cdr: ChangeDetectorRef,
-    private router: Router,) {}
+    private dialogService: DialogService,) {}
 
   ngOnInit() {
     this.search(this.searchModel);
     this.getCustomerDropdown();
   }
   async genarateSubInfo(data:any){
-    const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    const customer = this.subCustomerDropdownList.find(x=>x.id == data.id);
     debugger
     await this.getSubCustomerDropdown(customer.id);
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
@@ -289,7 +286,6 @@ export class ChallanListComponent implements OnInit{
      });
    }
    async search(model:any) {
-    var data =this.searchModel
     var fromData = new FormData();
     //this.searchModel.fromDate = new Date((await this.comService.dateConvertion(this.searchModel.fromDate.toDateString())).toString())
     //this.searchModel.toDate = new Date((await this.comService.dateConvertion(this.searchModel.toDate.toDateString())).toString())
@@ -307,7 +303,7 @@ export class ChallanListComponent implements OnInit{
       this.pager.total = res.totalCount;
     });
   }
-  beforeEditStart = (rowItem: any, field: any) => {
+  beforeEditStart = () => {
     return true;
   };
   
@@ -411,7 +407,7 @@ export class ChallanListComponent implements OnInit{
 
   
 items: Array<any> = [];
-onRowCheckChange(checked: boolean, rowIndex: number, nestedIndex: string, rowItem: any) {
+onRowCheckChange(rowItem: any) {
   this.items.push(rowItem);
 }
  
