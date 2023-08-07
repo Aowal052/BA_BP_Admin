@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { AppendToBodyDirection } from 'ng-devui/utils';
@@ -17,6 +17,9 @@ import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 @Component({
   selector: 'app-invoice-list',
@@ -202,7 +205,10 @@ export class InvoiceListComponent implements OnInit{
   busy!: Subscription;
   toastMessage:any;
   @ViewChild('EditorTemplate', { static: true })
+  
   EditorTemplate!: TemplateRef<any>;
+  
+  @ViewChild('pdfContent') pdfContent!: ElementRef;
   selectUnits = [
     {
       id: 1,
@@ -271,7 +277,8 @@ export class InvoiceListComponent implements OnInit{
     }
   };
   netPriceinfo = [{
-    netTotal:0
+    netTotal:0,
+    netPriceInText:''
   }];
   appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   constructor(
@@ -350,7 +357,6 @@ export class InvoiceListComponent implements OnInit{
       this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
     }
     async viewRow(row: any, index: number) {
-      debugger
       this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetInvoiceDetails, row.id))
                   .subscribe((res:SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
@@ -359,17 +365,17 @@ export class InvoiceListComponent implements OnInit{
         this.netPriceinfo[0].netTotal =this.listData.reduce((total,item)=>total+item.totalPrice,0)
         this.netPriceinfo[0].netTotal  = this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * this.basicDataSource[0].generalDiscount)/100;
       });
-      debugger
       this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetDiscountByInvoiceId, this.basicDataSource[0].id))
-                  .subscribe((res:SalesInvoiceResponse) => {
+                  .subscribe(async (res:SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
-        debugger
         this.discount = data;
       
         this.discount.forEach(discount => {
           this.netPriceinfo[0].netTotal  = discount.discountType =="Percent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountValue)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountValue));
         });
       });
+      debugger
+      this.netPriceinfo[0].netPriceInText = await this.comService.convertNumberToText(this.netPriceinfo[0].netTotal)
       this.master = this.basicDataSource.find(x=>x.id==row.id);
       this.editRowIndex = index;
       this.formData = row;
@@ -441,4 +447,25 @@ export class InvoiceListComponent implements OnInit{
     cancelRequest(){
       this.editForm.modalInstance.hide();
     }
+    generatePDF(): void {
+      const DATA: any = document.getElementById('pdfContent');
+      const scale = 5; // Increase the scale factor for higher resolution
+
+      html2canvas(DATA, { scale: scale }).then((canvas) => {
+        const fileWidth = 208;
+        const fileHeight = (canvas.height * fileWidth) / canvas.width;
+        const FILEURI = canvas.toDataURL('image/png');
+        const PDF = new jsPDF('p', 'mm', 'a4');
+        // Calculate the horizontal centering position
+        const xPos = 10;//(PDF.internal.pageSize.getWidth() - fileWidth) / 2;
+
+        // Calculate the vertical position (no top margin)
+        const yPos =  10//(PDF.internal.pageSize.getHeight() - fileHeight) / 2;
+        PDF.addImage(FILEURI, 'PNG', xPos, yPos, fileWidth, fileHeight);
+        PDF.save('angular-demo.pdf');
+      });
+    }
 }
+
+
+

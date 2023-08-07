@@ -131,76 +131,80 @@
       </div>
   
   <ng-template #EditorTemplate>
-      <h3>Master Info</h3>
-          <div class="grid">
+      <div #pdfContent id="pdfContent">
+        <h1 style="text-align: center;">BP PLASTIC</h1>
+        <h3 style="text-align: center;">12,Ray Esshor Chandra Shill, Bahadur Street, Nolgola, Mitford Road, Dhaka-1100
+          <br>
+          Phone No: 57314606, 7341752, 7343346
+        </h3>
+        <h3 style="text-align: center;">Invoice </h3>
+          <div class="grid center-element">
             <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
               <da-row-item>
                 <da-layout-row [daGutter]="[0, 0]">
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  <da-col-item [daXs]="16" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                         <d-form-label>Invoice No : {{master.invoiceNo}}</d-form-label>
                       </d-form-item>
                     </div>
                 </da-col-item>
-                <da-col-item [daXs]="12" [daMs]="24">
+                <da-col-item [daXs]="8" [daMs]="24">
                   <div class="u-1-2">
                     <d-form-item>
                       <d-form-label>Invoice Date : {{master.invoiceDate}}</d-form-label>
                     </d-form-item>
                   </div>
               </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  <da-col-item [daXs]="16" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                         <d-form-label>Customer Name : {{ master.customerName}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  <da-col-item [daXs]="8" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                         <d-form-label>Gate Pass No : {{master.gatePassNo}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  <da-col-item [daXs]="16" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                         <d-form-label>Customer Address : {{ master.customerAddress}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
-                </da-layout-row>
-              </da-row-item>
-        
-              <da-row-item>
-                <da-layout-row [daGutter]="[0, 0]">
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-2">
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  
+                  <da-col-item [daXs]="8" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                           <d-form-label > Location : Main Location</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  <da-col-item [daXs]="16" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                         <d-form-label >Despatch Thru : </d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
+                  <da-col-item [daXs]="8" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
                         <d-form-label >Destination : {{master.deliveryAddress}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
+
+                </da-layout-row>
+              </da-row-item>
+        
+              <da-row-item>
+                <da-layout-row [daGutter]="[0, 0]">
                 </da-layout-row>
               </da-row-item>
         
@@ -312,7 +316,6 @@
                                     [beforeEditStart]="beforeEditStart"
                                     [beforeEditEnd]="beforeEditEnd">
                                     <span style="margin-left: 6px">{{ rowItem.netTotal  }}</span>
-
                                 </td>
 
                             </tr>
@@ -320,10 +323,32 @@
                     </tbody>
 
                 </d-data-table>
-          <!-- <div>
-              <d-form-operation>
-                  
-                  <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
-                </d-form-operation>
-          </div> -->
+                <d-data-table #dataTable [dataSource]="netPriceinfo" [scrollable]="true"
+                    [tableWidthConfig]="tableWidthConfig">
+                    
+                    <tbody dTableBody>
+                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            <tr dTableRow>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span style="margin-left: 6px">Net Amount in text</span>
+                                </td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'netPriceInText'"
+                                    [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ rowItem.netPriceInText  }}</span>
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </tbody>
+
+                </d-data-table>
+                      <div class="btn-group over-flow-ellipsis">
+                        <d-button bsStyle="text-dark" title="Download PDF" (btnClick)="generatePDF()">Download PDF</d-button>
+                      </div>
+          
+                                
+      </div>
   </ng-template>
