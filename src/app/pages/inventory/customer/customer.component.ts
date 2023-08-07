@@ -6,18 +6,13 @@ import { BreadCrumbService, DialogService, EditableTip, FormLayout, HelperUtils,
 import { I18nService } from 'ng-devui/i18n';
 import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { Category, CategoryResponse } from 'src/app/@core/model/CategoryResponse';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { UserResponse, Users } from 'src/app/@core/model/UserResponse';
-import { CategoryService } from 'src/app/@core/services/category/CategoryService';
 import { CustomerService } from 'src/app/@core/services/customer/customer.service';
 import { PersonalizeService } from 'src/app/@core/services/personalize.service';
-import { ProductService } from 'src/app/@core/services/product/product.service';
 import { UserService } from 'src/app/@core/services/user/user.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { ThemeType } from 'src/app/@shared/models/theme';
-import { User } from 'src/app/@shared/models/user';
 import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
@@ -69,7 +64,7 @@ export class CustomerComponent implements OnInit{
         },
       },
       {
-        label: 'KeyAccountManager',
+        label: 'Key Account',
         prop: 'KeyAccountManager',
         type: 'select',
         options:  this.categoryDropdown,
@@ -96,100 +91,67 @@ export class CustomerComponent implements OnInit{
         label: 'Bin Number',
         prop: 'bin',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+       
       },
       {
         label: 'Tin Number',
         prop: 'tin',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'NID Number',
         prop: 'nid',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'ContactPerson',
         prop: 'contactPerson',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CpDesignation',
         prop: 'CpDesignation',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CpDepartment',
         prop: 'CpDepartment',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CpMobile',
         prop: 'CpMobile',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+       
       },
       {
         label: 'CpEmail',
         prop: 'CpEmail',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+       
       },
       {
         label: 'OpeningAmount',
         prop: 'OpeningAmount',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CustomerType',
         prop: 'CustomerType',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CreditLimit',
         prop: 'CreditLimit',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
     ],
   };

@@ -27,6 +27,7 @@ export class OrderService {
     })
   };
   async UpdateStatus(endpoint:string,param:any):Promise<Observable<OrderResponse>>{
+    debugger
     const httpOptions = await this.service.getHttpOptions();
     return this.http.post<OrderResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
       catchError((error) => {

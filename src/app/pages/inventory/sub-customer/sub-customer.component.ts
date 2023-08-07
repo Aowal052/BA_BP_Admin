@@ -100,37 +100,24 @@ export class SubCustomerComponent {
         label: 'ContactPerson',
         prop: 'contactPerson',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CpDesignation',
         prop: 'CpDesignation',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
       },
       {
         label: 'CpDepartment',
         prop: 'CpDepartment',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CpMobile',
         prop: 'CpMobile',
         type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
+        
       },
       {
         label: 'CpEmail',
