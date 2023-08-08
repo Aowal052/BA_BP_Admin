@@ -2,9 +2,14 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+interface Dictionary<T> {
+  [key: number]: T;
+}
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class CommonService {
    dateFormate: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -21,6 +26,8 @@ export class CommonService {
   ];
   private headingSubject = new BehaviorSubject<string>('');
 
+  
+
   setHeading(heading: string): void {
     this.headingSubject.next(heading);
   }
@@ -28,51 +35,311 @@ export class CommonService {
   getHeading(): BehaviorSubject<string> {
     return this.headingSubject;
   }
-  units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-  teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
   tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-  thousands = ['', 'Thousand', 'Million', 'Billion'];
+  hundreds = ['', 'Hundred', 'Thousand', 'Lak', 'Core'];
 
-  async convertNumberToText(number: number): Promise<string> {
-    if (number === 0) {
-      return 'Zero';
-    }
-
-    const integerPart = Math.floor(number);
-    const decimalPart = Math.round((number - integerPart) * 100);
-
-    const integerText = this.convertChunk(integerPart);
-    const decimalText = decimalPart > 0 ? ` and ${this.convertChunk(decimalPart)} Poisa` : '';
-
-    return `${integerText} Taka${decimalText}`;
-  }
-  private convertChunk(chunk: number): string {
-    if (chunk === 0) {
+  convertToBDTkFormatAmt(ConAmt: string): string {
+    if (!ConAmt || ConAmt.trim() === '') {
       return '';
-    } else if (chunk < 10) {
-      return this.units[chunk];
-    } else if (chunk < 20) {
-      return this.teens[chunk - 10];
-    } else if (chunk < 100) {
-      const tensDigit = Math.floor(chunk / 10);
-      const unitsDigit = chunk % 10;
-      return `${this.tens[tensDigit]}${unitsDigit > 0 ? ' ' + this.units[unitsDigit] : ''}`;
-    } else if (chunk < 1000) {
-      const hundredsDigit = Math.floor(chunk / 100);
-      const remainder = chunk % 100;
-      return `${this.units[hundredsDigit]} Hundred${remainder > 0 ? ' and ' + this.convertChunk(remainder) : ''}`;
-    } else {
-      let chunkText = '';
-      for (let i = 0; chunk > 0; i++) {
-        const currentChunk = chunk % 1000;
-        if (currentChunk !== 0) {
-          chunkText = `${this.convertChunk(currentChunk)} ${this.thousands[i]} ${chunkText}`;
-        }
-        chunk = Math.floor(chunk / 1000);
-      }
-      return chunkText;
     }
+
+    const GetAmt: number = this.getNumbers(ConAmt);
+    const Minus: string = (GetAmt < 0) ? '-' : '';
+    const TmpAmt: string[] = Math.round(Math.abs(GetAmt)).toString().split('.');
+    let MainAmt: string = TmpAmt[0];
+    const Points: string = (TmpAmt.length > 1) ? '.' + TmpAmt[1] : '';
+    let StrMoney: string = '';
+
+    while (MainAmt.length > 0) {
+      if (MainAmt.length < 4) {
+        StrMoney = (StrMoney === '') ? MainAmt : MainAmt + ',' + StrMoney;
+        MainAmt = '';
+      } else {
+        StrMoney = (StrMoney === '') ? MainAmt.substring(MainAmt.length - 3, 3) : MainAmt.substring(MainAmt.length - 3, 3) + ',' + StrMoney;
+        MainAmt = MainAmt.substring(0, MainAmt.length - 3);
+
+        if (MainAmt.length < 3) {
+          StrMoney = MainAmt + ',' + StrMoney;
+          MainAmt = '';
+        } else {
+          StrMoney = MainAmt.substring(MainAmt.length - 2, 2) + ',' + StrMoney;
+          MainAmt = MainAmt.substring(0, MainAmt.length - 2);
+
+          if (MainAmt.length < 3) {
+            StrMoney = MainAmt + ',' + StrMoney;
+            MainAmt = '';
+          } else {
+            StrMoney = MainAmt.substring(MainAmt.length - 2, 2) + ',' + StrMoney;
+            MainAmt = MainAmt.substring(0, MainAmt.length - 2);
+          }
+        }
+      }
+    }
+
+    ConAmt = Minus + StrMoney + Points;
+
+    return ConAmt;
   }
+  private getNumbers(value: string): number {
+    const numValue = parseFloat(value.replace(/,/g, ''));
+    return isNaN(numValue) ? 0 : numValue;
+  }
+  convertToBDTkFormatWord(ConAmt: string, UpCase: string): string {
+    const ones = this.ones;
+    const tens = this.tens;
+    const hundreds = this.hundreds;
+
+    if (!ConAmt || ConAmt.trim() === '') {
+      return '';
+    }
+
+    let Points = '';
+    let StrMoney = '';
+    const Minus = (parseFloat(ConAmt) < 0) ? 'Negative ' : '';
+
+    const TmpAmt = this.convertToBDTkFormatAmt(ConAmt).split('.');
+    StrMoney = Math.abs(parseFloat(TmpAmt[0])).toString();
+    Points = (TmpAmt.length > 1) ? TmpAmt[1] : '';
+
+    const TmpAmt2 = StrMoney.split(',').reverse();
+    let Count = 1;
+    ConAmt = '';
+
+    for (const Amt of TmpAmt2) {
+      StrMoney = '';
+      if (parseInt(Amt) < 20) {
+        StrMoney = (parseInt(Amt) > 0) ? ones[parseInt(Amt)] : '';
+      } else if (parseInt(Amt) < 100) {
+        if (parseInt(Amt.substring(0, 1)) > 0) {
+          StrMoney = tens[parseInt(Amt.substring(0, 1))];
+        }
+        if (parseInt(Amt.substring(1, 1)) > 0) {
+          StrMoney = StrMoney + (StrMoney === '' ? '' : ' ') + ones[parseInt(Amt.substring(1, 1))];
+        }
+      } else {
+        if (parseInt(Amt.substring(0, 1)) > 0) {
+          StrMoney = tens[parseInt(Amt.substring(0, 1))] + ' ' + hundreds[1];
+        }
+        if (parseInt(Amt.substring(1, 1)) > 0) {
+          StrMoney = StrMoney + (StrMoney === '' ? '' : ' ') + tens[parseInt(Amt.substring(1, 1))];
+        }
+        if (parseInt(Amt.substring(2, 1)) > 0) {
+          StrMoney = StrMoney + (StrMoney === '' ? '' : ' ') + ones[parseInt(Amt.substring(2, 1))];
+        }
+      }
+
+      if (Count > 1) {
+        StrMoney = StrMoney === '' ? '' : StrMoney + ' ' + hundreds[Count];
+      }
+
+      Count++;
+      if (Count > 4) {
+        Count = 2;
+      }
+      ConAmt = StrMoney + (ConAmt === '' ? '' : ' ') + ConAmt;
+    }
+
+    if (ConAmt !== '') {
+      ConAmt = ConAmt + ' Taka';
+    }
+
+    if (Points !== '' && parseInt(Points) > 0) {
+      StrMoney = '';
+      if (Points.length === 1) {
+        StrMoney = tens[parseInt(Points)];
+      } else {
+        if (parseInt(Points.substring(0, 1)) > 1) {
+          StrMoney = tens[parseInt(Points.substring(0, 1))];
+          if (parseInt(Points.substring(1, 1)) > 0) {
+            StrMoney = StrMoney + (StrMoney === '' ? '' : ' ') + ones[parseInt(Points.substring(1, 1))];
+          }
+        } else if (parseInt(Points.substring(0, 1)) > 0) {
+          StrMoney = ones[parseInt(Points)];
+        }
+        ConAmt = ConAmt + ' And ' + StrMoney + ' Poisa';
+      }
+    }
+
+    if (ConAmt !== '') {
+      ConAmt = ConAmt + ' Only.';
+    }
+
+    if (ConAmt !== '' && UpCase !== '') {
+      if (UpCase === 'Up') {
+        ConAmt = ConAmt.toUpperCase();
+      } else if (UpCase === 'Lo') {
+        ConAmt = ConAmt.toLowerCase();
+      } else {
+        ConAmt = ConAmt.charAt(0).toUpperCase() + ConAmt.slice(1).toLowerCase();
+      }
+    }
+
+    return ConAmt;
+  }
+
+  public rkBDTkFormatWord(ConAmt: string = '', UpCase: string = ''): string {
+    const ones: Dictionary<string> = {
+      1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven',
+      12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen', 19: 'Nineteen'
+    };
+    const tens: Dictionary<string> = {
+      2: 'Twenty', 3: 'Thirty', 4: 'Forty', 5: 'Fifty', 6: 'Sixty', 7: 'Seventy', 8: 'Eighty', 9: 'Ninety'
+    };
+    const hundreds: Dictionary<string> = {
+      1: 'Hundred', 2: 'Thousand', 3: 'Lak', 4: 'Core'
+    };
+    
+    if (!ConAmt) {
+      return '';
+    }
+    
+    let Points = '';
+    let StrMoney = '';
+    const Minus = (parseFloat(ConAmt) < 0) ? 'Negative ' : '';
+    
+    const TmpAmt = this.rkBDTkFormatAmt(ConAmt).split('.');
+    StrMoney = TmpAmt[0].toString();
+    Points = (TmpAmt.length > 1) ? TmpAmt[1] : '';
+    
+    const TmpAmtArray = StrMoney.split(',').reverse();
+    let Count = 1;
+    ConAmt = '';
+    
+    TmpAmtArray.forEach((Amt) => {
+      StrMoney = '';
+    
+      if (parseInt(Amt) < 20) {
+        StrMoney = (parseInt(Amt) > 0) ? ones[parseInt(Amt)] : '';
+      } else if (parseInt(Amt) < 100) {
+        if (parseInt(Amt.charAt(0)) > 0) {
+          StrMoney = tens[parseInt(Amt.charAt(0))];
+        }
+        if (parseInt(Amt.charAt(1)) > 0) {
+          StrMoney = StrMoney + (StrMoney ? ' ' : '') + ones[parseInt(Amt.charAt(1))];
+        }
+      } else if (parseInt(Amt) < 1000) {
+        if (parseInt(Amt.charAt(0)) > 0) {
+          StrMoney = ones[parseInt(Amt.charAt(0))] + ' ' + hundreds[1];
+        }
+        if (parseInt(Amt.charAt(1)) > 0) {
+          StrMoney = StrMoney + (StrMoney ? ' ' : '') + tens[parseInt(Amt.charAt(1))];
+        }
+        if (parseInt(Amt.charAt(2)) > 0) {
+          StrMoney = StrMoney + (StrMoney ? ' ' : '') + ones[parseInt(Amt.charAt(2))];
+        }
+      } else {
+        const thousands = Amt.substring(0, Amt.length - 3);
+        const hundredsPart = Amt.substring(Amt.length - 3);
+        StrMoney = ones[parseInt(thousands)] + ' ' + hundreds[2];
+        
+        if (parseInt(hundredsPart) < 20) {
+          StrMoney += (parseInt(hundredsPart) > 0) ? ' ' + ones[parseInt(hundredsPart)] : '';
+        } else {
+          if (parseInt(hundredsPart.charAt(0)) > 0) {
+            StrMoney += ' ' + tens[parseInt(hundredsPart.charAt(0))];
+          }
+          if (parseInt(hundredsPart.charAt(1)) > 0) {
+            StrMoney += (StrMoney ? ' ' : '') + ones[parseInt(hundredsPart.charAt(1))];
+          }
+          if (parseInt(hundredsPart.charAt(2)) > 0) {
+            StrMoney += (StrMoney ? ' ' : '') + ones[parseInt(hundredsPart.charAt(2))];
+          }
+        }
+      }
+    
+      if (Count > 1) {
+        StrMoney = StrMoney ? StrMoney + ' ' + hundreds[Count] : '';
+      }
+    
+      Count++;
+      if (Count > 4) {
+        Count = 2;
+      }
+      ConAmt = StrMoney + (ConAmt ? ' ' : '') + ConAmt;
+    });
+    
+    if (ConAmt) {
+      ConAmt = ConAmt + ' Taka';
+    }
+    
+    if (Points && parseInt(Points) > 0) {
+      StrMoney = '';
+    
+      if (Points.length === 1) {
+        StrMoney = tens[parseInt(Points)];
+      } else {
+        if (parseInt(Points.charAt(0)) > 1) {
+          StrMoney = tens[parseInt(Points.charAt(0))];
+          if (parseInt(Points.charAt(1)) > 0) {
+            StrMoney = StrMoney + (StrMoney ? ' ' : '') + ones[parseInt(Points.charAt(1))];
+          }
+        } else if (parseInt(Points.charAt(0)) > 0) {
+          StrMoney = ones[parseInt(Points.charAt(0))];
+        }
+        ConAmt = ConAmt + ' And ' + StrMoney + ' Paisa';
+      }
+    }
+    
+    if (ConAmt) {
+      ConAmt = ConAmt + ' Only.';
+    }
+    
+    if (ConAmt && UpCase) {
+      if (UpCase === 'Up') {
+        ConAmt = ConAmt.toUpperCase();
+      } else if (UpCase === 'Lo') {
+        ConAmt = ConAmt.toLowerCase();
+      } else {
+        ConAmt = ConAmt.charAt(0).toUpperCase() + ConAmt.substring(1).toLowerCase();
+      }
+    }
+    
+    return ConAmt;
+  }
+  public rkBDTkFormatAmt(ConAmt: string = ''): string {
+    if (!ConAmt) {
+      return '';
+    }
+
+    const GetAmt: number = this.getNumbers(ConAmt);
+    const Minus: string = (GetAmt < 0) ? '-' : '';
+    const TmpAmt: string[] = Math.abs(GetAmt).toFixed(2).split('.');
+    let MainAmt: string = TmpAmt[0];
+    const Points: string = (TmpAmt.length > 1) ? '.' + TmpAmt[1] : '';
+    let StrMoney: string = '';
+
+    while (MainAmt.length > 0) {
+      if (MainAmt.length < 4) {
+        StrMoney = StrMoney ? MainAmt + ',' + StrMoney : MainAmt;
+        MainAmt = '';
+      } else {
+        StrMoney = StrMoney ? MainAmt.substring(MainAmt.length - 3, MainAmt.length) + ',' + StrMoney : MainAmt.substring(MainAmt.length - 3, MainAmt.length);
+        MainAmt = MainAmt.substring(0, MainAmt.length - 3);
+
+        if (MainAmt.length < 3) {
+          StrMoney = MainAmt + ',' + StrMoney;
+          MainAmt = '';
+        } else {
+          StrMoney = StrMoney ? MainAmt.substring(MainAmt.length - 2, MainAmt.length) + ',' + StrMoney : MainAmt.substring(MainAmt.length - 2, MainAmt.length);
+          MainAmt = MainAmt.substring(0, MainAmt.length - 2);
+
+          if (MainAmt.length < 3) {
+            StrMoney = MainAmt + ',' + StrMoney;
+            MainAmt = '';
+          } else {
+            StrMoney = StrMoney ? MainAmt.substring(MainAmt.length - 2, MainAmt.length) + ',' + StrMoney : MainAmt.substring(MainAmt.length - 2, MainAmt.length);
+            MainAmt = MainAmt.substring(0, MainAmt.length - 2);
+          }
+        }
+      }
+    }
+
+    ConAmt = Minus + StrMoney + Points;
+
+    return ConAmt;
+  }
+
 
   async dateConvertion(dateString:string){
     const date = new Date(dateString);
