@@ -277,12 +277,11 @@ export class GatePassCreateComponent implements OnInit {
   datePicker3: any;
 
   startDate = new Date();
-  endDate = null;
+  endDate = new Date();
   constructor(
     private SaleInvservice: SalesInvoiceService,
     private GatepassService: GatePassService,
     private dialogService: DialogService,
-    private service: OrderService,
     private comService: CommonService,
   ) { }
 
@@ -331,6 +330,7 @@ export class GatePassCreateComponent implements OnInit {
       .subscribe((res: SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
         this.basicDataSource = data;
+        debugger
         this.pager.total = res.totalCount;
       });
   }
