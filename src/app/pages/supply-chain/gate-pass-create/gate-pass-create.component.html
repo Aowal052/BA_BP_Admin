@@ -120,6 +120,7 @@
             </da-col-item>
         </da-layout-row>
     </div>
+    <!-- [(ngModel)]="pager.startDate"  [(ngModel)]="endDate" -->
     <div class="da-content-wrapper">
         <d-toast [value]="msgs"></d-toast>
         <da-layout-row [daGutter]="[24, 24]">
@@ -134,7 +135,8 @@
                                       class="devui-input devui-form-control"
                                       placeholder="y/MM/dd"
                                       name="dp"
-                                      [(ngModel)]="startDate"
+                                      [(ngModel)]="pager.fromDate"
+                                      
                                       (click)="datePicker2.toggle()"
                                       autocomplete="off"
                                       dDatepicker
@@ -160,7 +162,8 @@
                                       class="devui-input devui-form-control"
                                       placeholder="y/MM/dd"
                                       name="dp"
-                                      [(ngModel)]="startDate"
+                                      [(ngModel)]="pager.toDate"
+                                     
                                       (click)="datePicker3.toggle()"
                                       autocomplete="off"
                                       dDatepicker
@@ -169,7 +172,7 @@
                                       (selectedDateChange)="getValue($event)"
                                       [customViewTemplate]="toDate"
                                     />
-                                    <div *ngIf="startDate" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
+                                    <div *ngIf="endDate" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
                                       <i class="icon icon-close"></i>
                                     </div>
                                     <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
