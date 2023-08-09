@@ -227,7 +227,7 @@ export class SalesOrderComponent {
   productRowData = {
     product: '',
     quantity: 0,
-    unit: {},
+    unit: {id:0,label:''},
     unitPrice: 0,
     totalPrice: 0,
 
@@ -480,8 +480,9 @@ export class SalesOrderComponent {
   changeProduct(product:any){
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
     this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
-    this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
+    this.productRowData.unit = {id:1,label:'Dzn'};
+    this.productRowData.unitPrice = this.productRowData.unit.id==1?Number(this.productInfo?.dozenPrice):Number(this.productInfo?.piecePrice)
+    //this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 
@@ -500,14 +501,15 @@ export class SalesOrderComponent {
   }
 
   modifyTotalPrice(event:any,productRow:any){
-    if(event.id===2 && productRow.unit.id != 2)
+    debugger
+    if(event.id===1 && productRow.unit.id != 1)
     {
       this.productRowData.unitPrice = Number(this.productInfo?.dozenPrice)??0;
-      this.productRowData.totalPrice = Number(this.productInfo?.dozenPrice)??0;
+      this.productRowData.totalPrice = Number(Number(this.productInfo?.dozenPrice) * this.productRowData.quantity)??0;
     }
-    else if(event.id === 1){
+    else if(event.id === 2){
       this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
-      this.productRowData.totalPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
+      this.productRowData.totalPrice = Number(Number(this.productInfo?.piecePrice) * this.productRowData.quantity??(Number(this.productInfo?.defaultPrice) * Number(this.productInfo?.piecePrice)))??0;
     }
   }
 
