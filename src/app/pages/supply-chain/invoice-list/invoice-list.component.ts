@@ -280,6 +280,9 @@ export class InvoiceListComponent implements OnInit{
     netTotal:0,
     netPriceInText:''
   }];
+  defaultDiscount = [{
+    genaraleDiscount:0,
+  }];
   appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
   constructor(
     private listDataService: ListDataService, 

@@ -275,24 +275,31 @@
           </tbody>
           
       </d-data-table>
+      <d-data-table #dataTable [dataSource]="defaultDiscount" [scrollable]="true"
+                    [tableWidthConfig]="tableWidthConfig">
+                    
+                    <tbody dTableBody>
+                        <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+                            <tr dTableRow>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span style="margin-left: 6px">Genarale Discount</span>
+                                </td>
+                                <td dTableCell [rowItem]="rowItem" [field]="'genaraleDiscount'"
+                                    [beforeEditStart]="beforeEditStart"
+                                    [beforeEditEnd]="beforeEditEnd">
+                                    <span style="margin-left: 6px">{{ masterData.genDiscount  }} %</span>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </d-data-table>
       <d-data-table #dataTable [dataSource]="discount" [scrollable]="true"
                     [tableWidthConfig]="tableWidthConfig">
                     
                     <tbody dTableBody>
                         <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
-                          <tr dTableRow>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <span style="margin-left: 6px">Genarale Discount</span>
-                            </td>
-                            <td dTableCell
-                                [beforeEditStart]="beforeEditStart"
-                                [beforeEditEnd]="beforeEditEnd">
-                                <span style="margin-left: 6px">{{ masterData.genDiscount  }} %</span>
-                            </td>
-
-                        </tr>
                           <tr dTableRow>
                                 <td></td>
                                 <td></td>
