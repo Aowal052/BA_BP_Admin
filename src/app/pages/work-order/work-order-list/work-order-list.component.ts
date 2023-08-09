@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, TemplateRef, ViewChild } from '@angular/c
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, TableWidthConfig } from 'ng-devui';
 import { AppendToBodyDirection } from 'ng-devui/utils';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { StringHelper } from 'src/app/@core/helper/StringHelper';
@@ -297,6 +297,7 @@ export class WorkOrderListComponent {
       this.searchModel.total = res.totalCount;
     });
   }
+  
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
   };
@@ -328,10 +329,18 @@ export class WorkOrderListComponent {
     this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.dropdownProductList = data;
-      this.productList = res.data.map(({ id, productName }) => ({ id: id, label: productName }));
+      this.productList = res.data.map(({ id, productName,shortName }) => ({ id: id, label: productName,shortName:shortName??'test' }));
       //this.pager.total = res.totalCount;
     });
   }
+  onSelectObject = (term: string) => {
+    debugger
+    return of(
+      this.productList
+        .map((option, index) => ({ id: index, option: option }))
+        .filter((item) => item.option.shortName.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+    );
+  };
   valueChange(event:any){
     debugger
     this.selectedId = event.target.value;

@@ -31,7 +31,7 @@
                                 <div class="da-header-item-label">To Date :</div>
                                 <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
                                   <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker2.toggle()" name="dp"
-                                    [(ngModel)]="searchModel.fromDate" autocomplete="off" dDatepicker #datePicker2="datepicker"
+                                    [(ngModel)]="searchModel.toDate" autocomplete="off" dDatepicker #datePicker2="datepicker"
                                     (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
                                   <div *ngIf="selectedDate2" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker2.clearAll()">
                                     <i class="icon icon-close"></i>
@@ -87,7 +87,7 @@
                                   <d-column field="invoiceDate" header="Invoice Date" [width]="'100px'" >
                                     <d-cell>
                                       <ng-template let-cellItem="cellItem">
-                                        {{ cellItem }}
+                                        {{ cellItem | date:'MM/dd/yyyy'}}
                                       </ng-template>
                                     </d-cell>
                                   </d-column>
@@ -152,7 +152,7 @@
                 <da-col-item [daXs]="8" [daMs]="24">
                   <div class="u-1-2">
                     <d-form-item>
-                      <d-form-label>Invoice Date : {{master.invoiceDate}}</d-form-label>
+                      <d-form-label>Invoice Date : {{master.invoiceDate | date:'MM/dd/yyyy'}}</d-form-label>
                     </d-form-item>
                   </div>
               </da-col-item>
@@ -280,7 +280,20 @@
                     
                     <tbody dTableBody>
                         <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
-                            <tr dTableRow>
+                          <tr dTableRow>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <span style="margin-left: 6px">Genarale Discount</span>
+                            </td>
+                            <td dTableCell
+                                [beforeEditStart]="beforeEditStart"
+                                [beforeEditEnd]="beforeEditEnd">
+                                <span style="margin-left: 6px">{{ masterData.genDiscount  }} %</span>
+                            </td>
+
+                        </tr>
+                          <tr dTableRow>
                                 <td></td>
                                 <td></td>
                                 <td dTableCell [rowItem]="rowItem" [field]="'discountName'"

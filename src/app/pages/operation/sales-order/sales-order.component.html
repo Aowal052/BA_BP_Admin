@@ -26,12 +26,17 @@
                                           <d-form-item>
                                               <d-form-label [required]="true">Product Name</d-form-label>
                                               <d-form-control class="form-control-width">
-                                                  <d-select [options]="productList" name="Product"
-                                                      [isSearch]="true" 
-                                                      [filterKey]="'label'" 
-                                                      [placeholder]="'Select Product Name'"
-                                                      (ngModelChange)="changeProduct($event)"
-                                                      [(ngModel)]="productRowData.product"></d-select>
+                                                      <d-select 
+                                                        [isSearch]="true" 
+                                                        [filterKey]="'label'"
+                                                        [options]="productList"
+                                                        [placeholder]="'Select a Product'"
+                                                        (ngModelChange)="changeProduct($event)"
+                                                        name="product name" 
+                                                        size="sm" 
+                                                        [searchPlaceholder]="'Selech By product short name'"
+                                                        [searchFn]="onSelectObject"
+                                                        [(ngModel)]="productRowData.product"></d-select>
                                               </d-form-control>
                                           </d-form-item>
                                       </div>
