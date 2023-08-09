@@ -184,7 +184,7 @@ export class CommonService {
       12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen', 19: 'Nineteen'
     };
     const tens: Dictionary<string> = {
-      2: 'Twenty', 3: 'Thirty', 4: 'Forty', 5: 'Fifty', 6: 'Sixty', 7: 'Seventy', 8: 'Eighty', 9: 'Ninety'
+      1: 'Ten',2: 'Twenty', 3: 'Thirty', 4: 'Forty', 5: 'Fifty', 6: 'Sixty', 7: 'Seventy', 8: 'Eighty', 9: 'Ninety'
     };
     const hundreds: Dictionary<string> = {
       1: 'Hundred', 2: 'Thousand', 3: 'Lak', 4: 'Core'
@@ -222,11 +222,13 @@ export class CommonService {
         if (parseInt(Amt.charAt(0)) > 0) {
           StrMoney = ones[parseInt(Amt.charAt(0))] + ' ' + hundreds[1];
         }
-        if (parseInt(Amt.charAt(1)) > 0) {
-          StrMoney = StrMoney + (StrMoney ? ' ' : '') + tens[parseInt(Amt.charAt(1))];
-        }
-        if (parseInt(Amt.charAt(2)) > 0) {
+        // if (parseInt(Amt.charAt(1)) > 0) {
+        //   StrMoney = StrMoney + (StrMoney ? ' ' : '') + tens[parseInt(Amt.charAt(1))];
+        // }
+        if (parseInt(Amt.charAt(2)) > 0 && parseInt(Amt.charAt(1)) !== 1) {
           StrMoney = StrMoney + (StrMoney ? ' ' : '') + ones[parseInt(Amt.charAt(2))];
+        } else if (parseInt(Amt.charAt(1)) === 1) {
+          StrMoney = StrMoney + (StrMoney ? ' ' : '') + ones[parseInt(Amt.substring(1, 3))];
         }
       } else {
         const thousands = Amt.substring(0, Amt.length - 3);

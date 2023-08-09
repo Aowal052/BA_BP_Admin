@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { EditableTip, FormLayout, TableWidthConfig, DialogService, MenuConfig, HelperUtils } from 'ng-devui';
 import { Subscription, Subject, takeUntil, map } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
-import { BranchResponse } from 'src/app/@core/model/BranchResponse';
 import { Users, UserResponse } from 'src/app/@core/model/UserResponse';
 import { UserRoleResponse, UserRoles } from 'src/app/@core/model/UserRoleResponse';
 import { BranchService } from 'src/app/@core/services/branch/branch.service';
@@ -145,12 +144,10 @@ export class AddUserComponent {
   isSelect : boolean = false;
   selectedId : string = '';
   private destroy$ = new Subject<void>();
-  //priorities = ['Low', 'Medium', 'High'];
 
   constructor(
     private dialogService: DialogService,
     private service: ProductService,
-    private branchService: BranchService,
     private usrservice: UserService,
     private route: ActivatedRoute,
     private translate: TranslateService,

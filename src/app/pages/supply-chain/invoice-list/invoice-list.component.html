@@ -181,7 +181,7 @@
                   <da-col-item [daXs]="8" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                          <d-form-label > Location : Main Location</d-form-label>
+                          <d-form-label > Location : {{master.branch}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
@@ -315,7 +315,7 @@
                                 <td dTableCell [rowItem]="rowItem" [field]="'netTotal'"
                                     [beforeEditStart]="beforeEditStart"
                                     [beforeEditEnd]="beforeEditEnd">
-                                    <span style="margin-left: 6px">{{ rowItem.netTotal  }}</span>
+                                    <span style="margin-left: 6px">{{ master.netAmount  }}</span>
                                 </td>
 
                             </tr>
@@ -323,7 +323,7 @@
                     </tbody>
 
                 </d-data-table>
-                <!-- <d-data-table #dataTable [dataSource]="netPriceinfo" [scrollable]="true"
+                <d-data-table #dataTable [dataSource]="netPriceinfo" [scrollable]="true"
                     [tableWidthConfig]="tableWidthConfig">
                     
                     <tbody dTableBody>
@@ -337,13 +337,12 @@
                                 <td dTableCell [rowItem]="rowItem" [field]="'netPriceInText'"
                                     [beforeEditStart]="beforeEditStart"
                                     [beforeEditEnd]="beforeEditEnd">
-                                    <span style="margin-left: 6px">{{ rowItem.netPriceInText  }}</span>
+                                    <span style="margin-left: 6px">{{ master.netAmountText  }}</span>
                                 </td>
-
                             </tr>
                         </ng-template>
                     </tbody>
-                </d-data-table> -->
+                </d-data-table>
                 <div class="da-content-wrapper" style="margin-top: 8%;">
                 <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
                   <da-row-item>

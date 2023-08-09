@@ -347,6 +347,7 @@ export class InvoiceListComponent implements OnInit{
                  .subscribe((res:SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
         this.basicDataSource = data;
+        
         this.pager.total = res.totalCount;
       });
     }
@@ -357,6 +358,7 @@ export class InvoiceListComponent implements OnInit{
       this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
     }
     async viewRow(row: any, index: number) {
+      debugger
       this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetInvoiceDetails, row.id))
                   .subscribe((res:SalesInvoiceResponse) => {
         const data = JSON.parse(JSON.stringify(res.data));
@@ -370,11 +372,11 @@ export class InvoiceListComponent implements OnInit{
         const data = JSON.parse(JSON.stringify(res.data));
         this.discount = data;
       
-        this.discount.forEach(discount => {
-          this.netPriceinfo[0].netTotal  = discount.discountType =="Percent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountValue)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountValue));
-        });
-        debugger
-        this.netPriceinfo[0].netPriceInText = await this.comService.rkBDTkFormatWord(this.netPriceinfo[0].netTotal.toString())
+        // this.discount.forEach(discount => {
+        //   this.netPriceinfo[0].netTotal  = discount.discountType =="Percent" ? (this.netPriceinfo[0].netTotal - (this.netPriceinfo[0].netTotal * discount.discountValue)/100):(this.netPriceinfo[0].netTotal -  parseFloat(discount.discountValue));
+        // });
+        // debugger
+        // this.netPriceinfo[0].netPriceInText = await this.comService.rkBDTkFormatWord(this.netPriceinfo[0].netTotal.toString())
       });
       this.master = this.basicDataSource.find(x=>x.id==row.id);
       this.editRowIndex = index;
