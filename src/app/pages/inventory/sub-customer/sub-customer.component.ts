@@ -337,7 +337,7 @@ export class SubCustomerComponent {
     });
   }
   async getList() {
-    this.busy = (await this.service.getCustomers(ApiEndPoints.GetCustomers, this.pager)).subscribe((res:CustomerResponse) => {
+    this.busy = (await this.service.getCustomerDropdown(ApiEndPoints.GetCustomerDropDown)).subscribe((res:CustomerResponse) => {
       res.$expandConfig = { expand: false };
       this.listData = res.data;
       this.userDropdown = this.listData.map(item => ({ id: item.id, name: item.customerName }));
