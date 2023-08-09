@@ -13,7 +13,7 @@ import { DirectChallanComponent } from './direct-challan/direct-challan.componen
 import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
 import { InvoiceListComponent } from './invoice-list/invoice-list.component';
 import { InvoiceCreateDataListComponent } from './invoice-create-data-list/invoice-create-data-list.component';
-
+import { DatePipe } from 'ng-devui';
 
 @NgModule({
   declarations: [
@@ -37,6 +37,9 @@ import { InvoiceCreateDataListComponent } from './invoice-create-data-list/invoi
     SharedModule,
     TagsInputModule,
     ToastModule,
-  ]
+  ],
+  providers: [
+    DatePipe // Add DatePipe to the providers array
+  ],
 })
 export class SupplyChainModule { }

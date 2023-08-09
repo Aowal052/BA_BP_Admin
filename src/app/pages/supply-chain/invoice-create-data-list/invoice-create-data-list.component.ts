@@ -566,18 +566,11 @@ export class InvoiceCreateDataListComponent {
       formdata.append(`MasterId[${i}]`,this.retrievedItem[i].id.toString());
     }
       
-    this.busy = (await this.InvoiceService.getInvoiceMasterCreateById(ApiEndPoints.GetInvoiceMasterCreateById, formdata))
-                .subscribe((res: InvoiceResponse) => {
-      debugger
-      const data = res.data;
-      this.invoiceMaster = data;
-
-       this.invoiceMasterData.selectedCustomer = { id: res.data[0].customerId, label: res.data[0].customerName }
-       this.invoiceMasterData.challanNo  = res.data[0].challanNo;
-       this.invoiceMasterData.address  = res.data[0].address;
-       this.invoiceMasterData.defaultDiscount  = res.data[0].defaultDiscount;
-    });
-
+    this.invoiceMasterData.selectedCustomer.label = this.retrievedItem[0].customerName;
+    this.invoiceMasterData.challanNo = this.retrievedItem.map((item: { invoiceNo: any; }) => item.invoiceNo).join(', ');
+    this.invoiceMasterData.address = this.retrievedItem[0].customerAddress;
+    this.invoiceMasterData.defaultDiscount = this.retrievedItem[0].generalDiscount;
+    this.invoiceMasterData.selectedCustomer.id = this.retrievedItem[0].customerId;
     this.busy = (await this.InvoiceService.getInvoiceDetailCreateById(ApiEndPoints.GetInvoiceDetailCreateById, formdata))
                .subscribe(async (res: InvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
@@ -585,7 +578,7 @@ export class InvoiceCreateDataListComponent {
       this.listData = data;
       this.netPriceinfo[0].netTotal = this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
 
-       this.netPriceinfo[0].netTotal  = this.netPriceinfo[0].netTotal- (this.netPriceinfo[0].netTotal * this.invoiceMaster[0].defaultDiscount) / 100
+       this.netPriceinfo[0].netTotal  = this.netPriceinfo[0].netTotal- (this.netPriceinfo[0].netTotal * this.retrievedItem[0].generalDiscount) / 100
     });
   }
 }

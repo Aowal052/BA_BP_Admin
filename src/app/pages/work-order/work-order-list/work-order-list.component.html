@@ -185,8 +185,10 @@
                         <!-- <input dTextInput name="customerName" [(ngModel)]="masterData.selectedCustomer" /> -->
                         <d-select [options]="customerList"
                             name="CustomerId"
-                            [isSearch]="true" [filterKey]="'label'"
+                            [isSearch]="true" 
+                            [filterKey]="'label'"
                             placeholder="Select Customer"
+                            [searchFn]="onSelectObject"
                             [(ngModel)]="masterData.selectedCustomer"></d-select>
                       </d-form-control>
                     </d-form-item>

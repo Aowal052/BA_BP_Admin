@@ -321,7 +321,20 @@ export class SalesOrderComponent {
     this.masterData.netAmount = this.masterData.netAmount - (val/100)*this.masterData.netAmount;
     this.active = true;
   }
-
+  async getProductDropdown() {
+    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
+      this.dropdownProductList = res.data;
+      this.productList = res.data.map(({ id, productName,shortName }) => ({ id: id, label: productName,shortName:shortName??'test' }));
+    });
+  }
+  onSelectObject = (term: string) => {
+    debugger
+    return of(
+      this.productList
+        .map((option, index) => ({ id: index, option: option }))
+        .filter((item) => item.option.shortName.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+    );
+  };
   async placeOrder(master:any){
     const masterData = this.createFormData(master);
     const products = this.createFormData(this.listData);
@@ -458,12 +471,6 @@ export class SalesOrderComponent {
     });
   }
 
-  async getProductDropdown() {
-    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
-      this.dropdownProductList = res.data;
-      this.productList = res.data.map(({ id, productName }) => ({ id: id, label: productName }));
-    });
-  }
 
   updateFormConfigOptions() {
     debugger
@@ -485,6 +492,7 @@ export class SalesOrderComponent {
      this.discountRowData.discountType = this.discountInfo?.discountType ?? '';
      
   }
+
 
   genarateTotalPrice(productRowData:any){
     this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;

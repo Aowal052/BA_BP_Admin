@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { DatePipe, DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
@@ -289,6 +289,7 @@ export class InvoiceListComponent implements OnInit{
     private SaleInvservice:SalesInvoiceService,
     private dialogService: DialogService, 
     private cdr: ChangeDetectorRef,
+    private datePipe: DatePipe,
     private router: Router,) {}
 
     ngOnInit() {
@@ -379,6 +380,8 @@ export class InvoiceListComponent implements OnInit{
         // this.netPriceinfo[0].netPriceInText = await this.comService.rkBDTkFormatWord(this.netPriceinfo[0].netTotal.toString())
       });
       this.master = this.basicDataSource.find(x=>x.id==row.id);
+      const customer = this.customerDropdownList.find(x=>x.id == this.master.customerId);
+      this.masterData.genDiscount = customer.defaultDiscount;
       this.editRowIndex = index;
       this.formData = row;
       this.editForm = this.dialogService.open({
