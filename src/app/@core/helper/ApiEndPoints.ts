@@ -10,6 +10,7 @@ export class ApiEndPoints{
     static readonly DeleteCustomer: string = 'Customer/Delete';
     static readonly GetCustomers: string = 'Customer/Get';
     static readonly GetCustomerById: string = 'Customer/GetById';
+    static readonly GetCustomerDropDown: string = 'Customer/GetForDropdown';
     //#endregion
     
     //#region Sub Customer
