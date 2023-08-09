@@ -559,6 +559,16 @@ export class SupplyChainListComponent implements OnInit {
     for (let i = 0; i < this.items.length; i++) {
       debugger
       const item = this.items[i];
+      if((item.quantity-item.deliveryQuantity)<item.remainingQuantity){
+        this.msgs = [
+          {
+            severity: 'error',
+            summary: 'Exceed Quantity',
+            content: "You don't have remaining your provided amount of product",
+          },
+        ];
+        return;
+      }
       formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
       //formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
       formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());

@@ -24,8 +24,8 @@
                   <th dHeadCell>Product Name</th>
                   <th dHeadCell>Product Code</th>
                   <th dHeadCell>Category</th>
-                  <th dHeadCell>Description</th>
-                  <th dHeadCell>Price</th>
+                  <th dHeadCell>Piece Price</th>
+                  <th dHeadCell>Dozen Price</th>
                   <th dHeadCell>Actions</th>
                 </tr>
               </thead>
@@ -166,7 +166,7 @@
                       [editableTip]="editableTip"
                       [(editing)]="rowItem['assigneeEdit']"
                       [rowItem]="rowItem"
-                      [field]="'description'"
+                      [field]="'piecePrice'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
@@ -177,7 +177,7 @@
                           [height]="24"
                         ></d-avatar> -->
                         <span style="margin-left: 6px">{{
-                          rowItem.description
+                          rowItem.piecePrice
                         }}</span>
                       </span>
                       <div
@@ -187,7 +187,7 @@
                         <input
                           dTextInput
                           size="sm"
-                          [(ngModel)]="rowItem.description"
+                          [(ngModel)]="rowItem.piecePrice"
                         />
                       </div>
                     </td>
@@ -197,13 +197,13 @@
                       [editableTip]="editableTip"
                       [(editing)]="rowItem['priceEdit']"
                       [rowItem]="rowItem"
-                      [field]="'defaultPrice'"
+                      [field]="'dozenPrice'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
                       <span *ngIf="!rowItem['priceEdit']">
                         <span style="margin-left: 6px">{{
-                          rowItem.defaultPrice
+                          rowItem.dozenPrice
                         }}</span>
                       </span>
                       <div
@@ -213,7 +213,7 @@
                         <input
                           dTextInput
                           size="sm"
-                          [(ngModel)]="rowItem.defaultPrice"
+                          [(ngModel)]="rowItem.dozenPrice"
                         />
                       </div>
                     </td>

@@ -93,8 +93,17 @@ export class ListProductComponent implements OnInit{
         },
       },
       {
-        label: 'price',
-        prop: 'price',
+        label: 'Piece price',
+        prop: 'piecePrice',
+        type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true,type:number }],
+        },
+      },
+      {
+        label: 'Dozen price',
+        prop: 'dozenPrice',
         type: 'input',
         required: true,
         rule: {
@@ -114,6 +123,10 @@ export class ListProductComponent implements OnInit{
   };
   tableWidthConfig: TableWidthConfig[] = [
     {
+      field: 'id',
+      width: '80px',
+    },
+    {
       field: 'productName',
       width: '200px',
     },
@@ -123,7 +136,7 @@ export class ListProductComponent implements OnInit{
     },
     {
       field: 'category',
-      width: '100px',
+      width: '200px',
     },
     {
       field: 'description',
@@ -131,10 +144,6 @@ export class ListProductComponent implements OnInit{
     },
     {
       field: 'price',
-      width: '100px',
-    },
-    {
-      field: 'timeline',
       width: '100px',
     },
     {
@@ -323,7 +332,8 @@ export class ListProductComponent implements OnInit{
     const formData = new FormData();
       formData.append('ProductCode', e.productCode||'');
       formData.append('ProductName', e.productName||'');
-      formData.append('DefaultPrice', e.price||'');
+      formData.append('PiecePrice', e.piecePrice||'');
+      formData.append('DozenPrice', e.dozenPrice||'');
       formData.append('CategoryId', e.category.id||'');
       formData.append('Description', e.description || '');
       formData.append('ShortName', e.shortName || '');
@@ -348,7 +358,7 @@ export class ListProductComponent implements OnInit{
             {
               severity: 'error',
               summary: productPageNotification.productPage.createMessage.summary,
-              content: productPageNotification.productPage.createMessage.addFailed,
+              content: 'Invalid Product Info',
             },
           ];
         }
@@ -370,7 +380,7 @@ export class ListProductComponent implements OnInit{
       value:rowItem[field]
     }
     await this.updateproduct(data);
-    if (rowItem && rowItem[field].length < 3) {
+    if (rowItem && rowItem[field].length < 2) {
       return false;
     } else {
       return true;
