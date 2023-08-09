@@ -66,7 +66,7 @@ export default {
     user: {
       title: 'User',
       addusers: 'Add User',
-      center: 'User Center',
+      center: 'User Order List',
       settings: 'User Settings',
     },
     settings: {
