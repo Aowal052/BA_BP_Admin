@@ -23,6 +23,7 @@
                   <th dHeadCell>Id</th>
                   <th dHeadCell>Customer Name</th>
                   <th dHeadCell>Address</th>
+                  <th dHeadCell>Default Discount</th>
                   <th dHeadCell>Contact Person</th>
                   <th dHeadCell>CpMobile</th>
                   <th dHeadCell>Credit Limit</th>
@@ -127,15 +128,46 @@
                       [editableTip]="editableTip"
                       [(editing)]="rowItem['iterationEdit']"
                       [rowItem]="rowItem"
-                      [field]="'contactPerson'"
+                      [field]="'defaultDiscount'"
                       [beforeEditStart]="beforeEditStart"
                       [beforeEditEnd]="beforeEditEnd"
                     >
                       <span *ngIf="!rowItem['iterationEdit']">{{
-                        rowItem?.contactPerson
+                        rowItem?.defaultDiscount
                       }}</span>
                       <div
                         *ngIf="rowItem['iterationEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.defaultDiscount"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['assigneeEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'contactPerson'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['assigneeEdit']">
+                        <!-- <d-avatar
+                          [name]="rowItem.description"
+                          [width]="24"
+                          [height]="24"
+                        ></d-avatar> -->
+                        <span style="margin-left: 6px">{{
+                          rowItem.contactPerson
+                        }}</span>
+                      </span>
+                      <div
+                        *ngIf="rowItem['assigneeEdit']"
                         class="edit-padding-fix"
                       >
                         <input
@@ -172,7 +204,7 @@
                         <input
                           dTextInput
                           size="sm"
-                          [(ngModel)]="rowItem.cpMobile"
+                          [(ngModel)]="rowItem.contactPerson"
                         />
                       </div>
                     </td>

@@ -136,9 +136,13 @@ export class CustomerComponent implements OnInit{
        
       },
       {
-        label: 'OpeningAmount',
+        label: 'Opening Amount',
         prop: 'OpeningAmount',
         type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
         
       },
       {
@@ -151,18 +155,36 @@ export class CustomerComponent implements OnInit{
         label: 'CreditLimit',
         prop: 'CreditLimit',
         type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
+        
+      },
+      {
+        label: 'Default Discount',
+        prop: 'defaultDiscount',
+        type: 'input',
+        required: true,
+        rule: {
+          validators: [{ required: true }],
+        },
         
       },
     ],
   };
   tableWidthConfig: TableWidthConfig[] = [
     {
+      field: 'Id',
+      width: '60px',
+    },
+    {
       field: 'CustomerName',
-      width: '100px',
+      width: '200px',
     },
     {
       field: 'Address',
-      width: '100px',
+      width: '150px',
     },
     {
       field: 'ContactPerson',
@@ -181,9 +203,9 @@ export class CustomerComponent implements OnInit{
       width: '100px',
     },
     {
-      field: 'Actions',
+      field: 'OpeningAmount',
       width: '100px',
-    },
+    }
   ];
   
   defaultRowData = {
@@ -204,6 +226,7 @@ export class CustomerComponent implements OnInit{
     CustomerType: '',
     KeyAccountManager: '',
     CreditLimit: 0,
+    DefaultDiscount:0
   };
   language: string;
   selectedItem: string = '';
@@ -257,7 +280,8 @@ export class CustomerComponent implements OnInit{
   }
 
   onEditEnd(rowItem: any, field: any) {
-    if (rowItem && rowItem[field].length < 3) {
+    debugger
+    if (rowItem && rowItem[field].length < 0) {
       return false;
     } else {
       return true;
@@ -391,6 +415,7 @@ export class CustomerComponent implements OnInit{
       formData.append('OpeningAmount', e.OpeningAmount || '');
       formData.append('CustomerType', e.CustomerType || '');
       formData.append('CreditLimit', e.CreditLimit || '');
+      formData.append('DefaultDiscount', e.defaultDiscount || '');
       (await this.service.createCustomer(ApiEndPoints.CreateCustomer, formData)).subscribe({
         next: (res: CustomerResponse) => {
           this.res = res;
@@ -434,7 +459,7 @@ export class CustomerComponent implements OnInit{
       value:rowItem[field]
     }
     await this.updateCustomer(data);
-    if (rowItem && rowItem[field].length < 3) {
+    if (rowItem && rowItem[field].length < 1) {
       return false;
     } else {
       return true;

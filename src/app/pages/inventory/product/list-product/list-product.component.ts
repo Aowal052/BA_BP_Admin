@@ -79,6 +79,7 @@ export class ListProductComponent implements OnInit{
         label: 'Short Name',
         prop: 'shortName',
         type: 'input',
+        required: true,
         rule: {
           validators: [{ required: true }],
         },
@@ -158,6 +159,7 @@ export class ListProductComponent implements OnInit{
     productCode: '',
     category: '',
     description: '',
+    generaleDiscount: '',
     price: 0,
   };
   language: string;
@@ -369,6 +371,7 @@ export class ListProductComponent implements OnInit{
     this.headerNewForm = false;
   }
   beforeEditStart = (rowItem: any, field: any) => {
+    debugger
     return true;
   };
 
@@ -385,6 +388,7 @@ export class ListProductComponent implements OnInit{
     } else {
       return true;
     }
+    
   };
   
   breadItem: Array<MenuConfig> = [
@@ -409,9 +413,10 @@ export class ListProductComponent implements OnInit{
     debugger
     const formData = await this.arrayToFormData(item);
     (await this.service.updateProduct(ApiEndPoints.UpdateProduct, formData)).subscribe({
-      next: (res: ProductResponse) => {
+      next: async (res: ProductResponse) => {
         this.res = res;
         if (this.res.statusCode == HttpStatusCode.Ok) {
+      await this.getList();
           this.toastMessage = [
             {
               severity: 'success',

@@ -466,11 +466,14 @@ export class InvoiceListComponent implements OnInit{
         const PDF = new jsPDF('p', 'mm', 'a4');
         // Calculate the horizontal centering position
         const xPos = 10;//(PDF.internal.pageSize.getWidth() - fileWidth) / 2;
-
+        const now = new Date();
+        const formattedDate = now.toISOString().replace(/[-:.TZ]/g, '');
+    
+        const filename = `invoice_${formattedDate}.pdf`;
         // Calculate the vertical position (no top margin)
         const yPos =  10//(PDF.internal.pageSize.getHeight() - fileHeight) / 2;
         PDF.addImage(FILEURI, 'PNG', xPos, yPos, fileWidth, fileHeight);
-        PDF.save('angular-demo.pdf');
+        PDF.save(filename);
       });
     }
 }

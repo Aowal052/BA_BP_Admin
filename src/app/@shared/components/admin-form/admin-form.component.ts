@@ -59,6 +59,7 @@ export class AdminFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    debugger
     this.options = this.formConfig.items
     .filter((item: { type: string; }) => item.type === 'select') // Filter items of type 'select'
     .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item

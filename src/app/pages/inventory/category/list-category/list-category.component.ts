@@ -205,8 +205,14 @@ export class ListCategoryComponent {
   };
 
   beforeEditEnd = async (rowItem: any, field: any) => {
-    await this.updatecategory(rowItem);
-    if (rowItem && rowItem[field].length < 3) {
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
+    }
+    await this.updatecategory(data);
+    if (rowItem && rowItem[field].length < 2) {
       return false;
     } else {
       return true;

@@ -221,23 +221,23 @@ export class SubCategoryComponent {
     return true;
   };
 
-   beforeEditEnd = async (rowItem: any, field: any) => {
+  beforeEditEnd = async (rowItem: any, field: any) => {
     debugger
     var data = {
       id:rowItem.subCategoryId,
-      SubCategoryName:rowItem[field]
+      key:field,
+      value:rowItem[field]
     }
     await this.updateSubCategory(data);
-    if (rowItem && rowItem[field].length < 3) {
+    if (rowItem && rowItem[field].length < 2) {
       return false;
     } else {
       return true;
     }
   };
   async updateSubCategory(item:any){
-    const formData = new FormData();
-      formData.append('Id', item.id||'');
-      formData.append('SubCategoryName', item.SubCategoryName||'');
+    const formData = await this.conService.arrayToFormData(item);
+    debugger
     (await this.service.updateCategory(ApiEndPoints.UpdateSubCategory, formData)).subscribe({
       next: (res: CategoryResponse) => {
         this.res = res;
