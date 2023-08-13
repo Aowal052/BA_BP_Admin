@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
@@ -15,7 +15,6 @@ import { ProductService } from 'src/app/@core/services/product/product.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { DFormData } from 'src/app/@shared/components/dynamic-forms';
 import { orderPageNotification } from 'src/assets/i18n/en-US/order';
-import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
   selector: 'app-sales-order',
@@ -285,6 +284,7 @@ export class SalesOrderComponent {
   tabInput!: ElementRef;
   editableTip = EditableTip.btn;
   constructor(
+    private renderer: Renderer2,
     private dialogService: DialogService,
     private service: OrderService,
     private proService: ProductService,
@@ -304,11 +304,14 @@ export class SalesOrderComponent {
       options: this.selectOptions,
     };
   }
+
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
+     
     }
   }
 
@@ -580,37 +583,44 @@ export class SalesOrderComponent {
     this.listData.unshift(newData);
   }
 
-  async quickRowAddedDiscount(e: any) {
-    debugger;
-    e.discountName = e.discount.label;
-    e.discountType = e.discount.discountType;
-    e.discountAmnt = e.discount.discountAmnt;
-    e.discountId = e.discount.id;
+  // async quickRowAddedDiscount(e: any) {
+  //   debugger;
+  //   e.discountName = e.discount.label;
+  //   e.discountType = e.discount.discountType;
+  //   e.discountAmnt = e.discount.discountAmnt;
+  //   e.discountId = e.discount.id;
   
-    // Check if product.id already exists in this.listData
-    const discountExists = this.discountListData.some((item) => item.discountId === e.discountId);
+  //   // Check if product.id already exists in this.listData
+  //   const discountExists = this.discountListData.some((item) => item.discountId === e.discountId);
   
-    if (discountExists) {
-      this.showToast('error', 'Error', 'Your discount alredy is in the list.');
-      return;
-    }
+  //   if (discountExists) {
+  //     this.showToast('error', 'Error', 'Your discount alredy is in the list.');
+  //     return;
+  //   }
   
-    const newData = { ...e };
-    this.discountListData.unshift(newData);
-  }
+  //   const newData = { ...e };
+  //   this.discountListData.unshift(newData);
+  // }
 
   quickRowCancel() {
     this.headerNewForm = false;
   }
   beforeEditStart = (rowItem: any, field: any) => {
+    debugger
     return true;
   };
-
-   beforeEditEnd = async (rowItem: any, field: any) => {
-    //await this.updateproduct(rowItem);
-    if (rowItem && rowItem[field].length < 3) {
+  beforeEditEnd = async (rowItem: any, field: any) => {
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
+    }
+    //await this.updatecategory(data);
+    if (rowItem && rowItem[field].length < 1) {
       return false;
     } else {
+      rowItem.totalPrice = rowItem.quantity*rowItem.unitPrice;
       return true;
     }
   };
