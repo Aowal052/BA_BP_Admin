@@ -31,6 +31,7 @@ export interface Product {
     dozenPrice:string;
     defaultPrice?:string;
     description?:string;
+    reamingOpeningQuantity:string;
     showDescriptionInPurchase?:boolean;
     showDescriptionInSales?:boolean;
     categoryId?:string;

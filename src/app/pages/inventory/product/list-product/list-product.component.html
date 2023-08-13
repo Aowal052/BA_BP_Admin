@@ -6,10 +6,12 @@
         </d-breadcrumb-item>
       </d-breadcrumb>
 </div>
-
 <div class="da-content-wrapper">
     <d-toast [value]="toastMessage"></d-toast>
     <da-layout-row [daGutter]="[24, 24]">
+      <div class="da-list-header">
+        <d-search [placeholder]="'search'" [(ngModel)]="keyword" (searchFn)="getList()"></d-search>
+      </div>
       <da-col-item [daSpan]="24" [daXs]="24">
         <div class="da-advance-form" dLoading [loading]="busy">
           <div class="da-advace-form-content">

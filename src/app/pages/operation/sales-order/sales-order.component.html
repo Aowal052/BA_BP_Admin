@@ -36,7 +36,8 @@
                                                         size="sm" 
                                                         [searchPlaceholder]="'Selech By product short name'"
                                                         [searchFn]="onSelectObject"
-                                                        [(ngModel)]="productRowData.product"></d-select>
+                                                        [(ngModel)]="productRowData.product">
+                                                      </d-select>
                                               </d-form-control>
                                           </d-form-item>
                                       </div>
@@ -52,6 +53,7 @@
                                                    name="quantity"
                                                    (change)="genarateTotalPrice(productRowData)"
                                                    [(ngModel)]="productRowData.quantity"
+                                                   #tabInput
                                                      />
                                               </d-form-control>
                                           </d-form-item>

@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
@@ -281,6 +281,8 @@ export class SalesOrderComponent {
     pageSize: 10,
   };
 
+  @ViewChild('tabInput')
+  tabInput!: ElementRef;
   editableTip = EditableTip.btn;
   constructor(
     private dialogService: DialogService,
@@ -301,6 +303,13 @@ export class SalesOrderComponent {
       labelization: { enable: true, labelMaxWidth: '120px' },
       options: this.selectOptions,
     };
+  }
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.quickRowAdded(this.productRowData);
+    }
   }
 
   async newRow() {
@@ -324,7 +333,7 @@ export class SalesOrderComponent {
   async getProductDropdown() {
     this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
       this.dropdownProductList = res.data;
-      this.productList = res.data.map(({ id, productName,shortName }) => ({ id: id, label: productName,shortName:shortName??'test' }));
+      this.productList = res.data.map(({ id, productName,shortName,reamingOpeningQuantity }) => ({ id: id, label: productName + "("+reamingOpeningQuantity+")",shortName:shortName??'test' }));
     });
   }
   onSelectObject = (term: string) => {
@@ -550,6 +559,10 @@ export class SalesOrderComponent {
 
   async quickRowAdded(e: any) {
     debugger;
+    if(e.unit.id==0||e.product.id == 0||e.quantity==0){
+      this.showToast('error', 'Error', 'You must Select product with required Quantity.');
+      return;
+    }
     e.unitName = e.unit.label;
     e.productName = e.product.label;
     e.unitId = e.unit.id;

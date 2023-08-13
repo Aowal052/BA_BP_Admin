@@ -28,6 +28,7 @@ export class ListProductComponent implements OnInit{
   nameEditing !: boolean;
   busy !: Subscription;
   categoryDropdown: { id?: number, name?: string }[] = [];
+  unitDropdown: { id?: number, label?: string }[] = [];
 
   public category:Category[]=[];
   public res:any;
@@ -39,7 +40,16 @@ export class ListProductComponent implements OnInit{
     pageIndex: 1,
     pageSize: 10,
   };
-
+  selectUnits = [
+    {
+      id: 2,
+      name: 'Pcs',
+    },
+    {
+      id: 1,
+      name: 'Dzn',
+    }
+  ];
   listData : Product[] = [];
 
   headerNewForm = false;
@@ -57,6 +67,12 @@ export class ListProductComponent implements OnInit{
           validators: [{ required: true }],
         },
       },
+      // {
+      //   label: 'Default Unit',
+      //   prop: 'dUnit',
+      //   type: 'select',
+      //   option:this.selectUnits,
+      // },
       {
         label: 'category',
         prop: 'category',
@@ -158,6 +174,7 @@ export class ListProductComponent implements OnInit{
     productName: '',
     productCode: '',
     category: '',
+    defaultUnit: '',
     description: '',
     generaleDiscount: '',
     price: 0,
@@ -166,6 +183,7 @@ export class ListProductComponent implements OnInit{
   selectedItem: string = '';
   isSelect : boolean = false;
   selectedId : string = '';
+  keyword = '';
   private destroy$ = new Subject<void>();
   //priorities = ['Low', 'Medium', 'High'];
 
