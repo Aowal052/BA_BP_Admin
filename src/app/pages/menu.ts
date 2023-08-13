@@ -20,6 +20,33 @@ export default function (values: any) {
       menuIcon: 'icon icon-console',
     },
     {
+      title: values['basicdata']['title'],
+      menuIcon: 'icon icon-modify',
+      children: [
+        // {
+          
+        //       title: values.inventory.catgory['listCategory'],
+        //       link: '/pages/inventory/list-category'
+        // },
+        // {
+        //   title: values.inventory.sub_catgory['subCategory'],
+        //   link: '/pages/inventory/sub-category'
+        // },
+        // {
+        //       title: values.inventory.product['listProduct'],
+        //       link: '/pages/inventory/list-product'
+        // },
+        // {
+        //       title: values.inventory.customer['customer'],
+        //       link: '/pages/inventory/customer'
+        // },
+        // {
+        //   title: values.inventory.subCustomer['sub_customer'],
+        //   link: '/pages/inventory/sub-customer'
+        // },
+      ]
+    },
+    {
       title: values['inventory']['title'],
       menuIcon: 'icon icon-modify',
       children: [

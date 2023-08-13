@@ -6,8 +6,16 @@ export default {
       monitor: 'Monitor',
       workspace: 'Work Space',
     },
+    basicdata: {
+      title: 'Basic Data',
+      // catgory:{
+      //   title: 'Category',
+      //   addCategory: 'Add Category',
+      //   listCategory: 'Category',
+      // },
+    },
     inventory: {
-      title: 'inventory',
+      title: 'Inventory',
       catgory:{
         title: 'Category',
         addCategory: 'Add Category',
@@ -32,7 +40,7 @@ export default {
       }
     },
     operation: {
-      title: 'operation',
+      title: 'Operation',
       sales:{
         title: 'Sales',
         addCategory: 'Add Category',
