@@ -12,7 +12,8 @@ export class AdminFormComponent implements OnInit {
   @ViewChild('selectComponent', { static: true }) selectComponent!: SelectComponent;
   currentOption: any;
   currentIndex = 12;
-  options = [{ id: 48, name: 'আইটেম-৪৫' }];
+  category = [{ id: 48, name: 'আইটেম-৪৫' }];
+  defaultUnit = [{ id: 48, name: 'আইটেম-৪৫' }];
 
   private searchString: any;
 
@@ -20,14 +21,31 @@ export class AdminFormComponent implements OnInit {
     if (this.searchString === term) {
       debugger
       return of(
-        this.options
+        this.category
           .map((option, index) => ({ id: index, option: option }))
           .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
       );
     } else {
       this.searchString = term;
       return of(
-        this.options
+        this.category
+          .map((option, index) => ({ id: index, option: option }))
+          .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+      );
+    }
+  };
+  searchFnu = (term:any) => {
+    if (this.searchString === term) {
+      debugger
+      return of(
+        this.defaultUnit
+          .map((option, index) => ({ id: index, option: option }))
+          .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+      );
+    } else {
+      this.searchString = term;
+      return of(
+        this.defaultUnit
           .map((option, index) => ({ id: index, option: option }))
           .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
       );
@@ -39,16 +57,7 @@ export class AdminFormComponent implements OnInit {
     console.log('load more');
     this.selectComponent.forceSearchNext();
   }
-  selectUnits = [
-    {
-      id: 2,
-      name: 'Pcs',
-    },
-    {
-      id: 1,
-      name: 'Dzn',
-    }
-  ];
+  
   @Input() formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     labelSize: 'lg',
@@ -69,10 +78,16 @@ export class AdminFormComponent implements OnInit {
 
   ngOnInit() {
     debugger
-    this.options = this.formConfig.items
-    .filter((item: { type: string; }) => item.type === 'select') // Filter items of type 'select'
+    this.category = this.formConfig.items
+    .filter((item: { type: string; prop:string }) => item.type === 'select' && item.prop === 'category') // Filter items of type 'select'
     .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
     .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name })); // Map the options to the desired format
+    
+    this.defaultUnit = this.formConfig.items
+    .filter((item: { type: string; prop:string }) => item.type === 'select' && item.prop === 'dUnit') // Filter items of type 'select'
+    .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
+    .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name }));
+
     this.formConfig.items.prop = this.currentOption;
     console.log(this.formConfig.items);
     debugger

@@ -3,13 +3,26 @@
     <d-form-label [required]="item.required">{{ item.label }}：</d-form-label>
     <d-form-control [extraInfo]="item.extraInfo">
       <d-select
-        *ngIf="item.type === 'select'"
+        *ngIf="item.type === 'select' && item.prop === 'category'"
         [name]="item.prop"
         [appendToBody]="true"
         [placeholder]="item.placeholder??''"
         [filterKey]="'name'"
         [(ngModel)]="_formData[item.prop]"
-        [searchFn]="_formData[item.searchFn??'']"
+        [searchFn]="searchFn"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="false"
+      >
+      </d-select>
+      <d-select
+        *ngIf="item.type === 'select' && item.prop === 'dUnit'"
+        [name]="item.prop"
+        [appendToBody]="true"
+        [placeholder]="item.placeholder??''"
+        [filterKey]="'name'"
+        [(ngModel)]="_formData[item.prop]"
+        [searchFn]="searchFnu"
         [isSearch]="true"
         (change)="valueChange($event)"
         [enableLazyLoad]="false"

@@ -72,7 +72,7 @@ export class ListProductComponent implements OnInit{
         prop: 'dUnit',
         type: 'select',
         search:'searchFn',
-        option:this.selectUnits,
+        options:this.selectUnits,
       },
       {
         label: 'Category',
@@ -348,6 +348,7 @@ export class ListProductComponent implements OnInit{
   updateFormConfigOptions() {
     debugger
     this.formConfig.items.find((item: { prop: string; }) => item.prop === 'category').options = this.categoryDropdown;
+    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'dUnit').options = this.selectUnits;
   }
   async quickRowAdded(e: any) {
     const formData = new FormData();
