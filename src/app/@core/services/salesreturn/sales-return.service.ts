@@ -35,4 +35,16 @@ export class SalesReturnService {
         })
       );
     }
+    async getSalesReturnMasterList(endpoint:string,pager:any): Promise<Observable<any>> {
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.post<SalesReturnResponse>(environment.baseUrl + endpoint , pager, httpOptions).pipe(
+        catchError((error) => {
+          debugger
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
 }

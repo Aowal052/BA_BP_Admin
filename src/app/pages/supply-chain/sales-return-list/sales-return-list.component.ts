@@ -13,6 +13,7 @@ import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/de
 import { OrderService } from 'src/app/@core/services/order/order.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { SalesInvoiceService } from 'src/app/@core/services/salesinvoice/sales-invoice.service';
+import { SalesReturnService } from 'src/app/@core/services/salesreturn/sales-return.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 
 @Component({
@@ -106,53 +107,14 @@ export class SalesReturnListComponent {
     },
     {
       linkType: 'routerLink',
-      link: 'challan-list',
-      name: 'Delivery Challan List'
+      link: 'sales-return-list',
+      name: 'Sales Return List'
     }
   ];
 
   basicDataSource: any[] = [];
 
-  formConfig: FormConfig = {
-    layout: FormLayout.Horizontal,
-    items: [
-      {
-        label: 'orderCode',
-        prop: 'orderCode',
-        type: 'input',
-      },
-      {
-        label: 'customerName',
-        prop: 'customerName',
-        type: 'select',
-        options: ['Low', 'Medium', 'High'],
-      },
-      {
-        label: 'customerPhone',
-        prop: 'customerPhone',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'orderAmount',
-        prop: 'orderAmount',
-        type: 'input',
-      },
-      {
-        label: 'orderDate',
-        prop: 'orderDate',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-    ],
-    labelSize: '',
-  };
+ 
   labelList = [
     {
       id: 1,
@@ -203,16 +165,16 @@ export class SalesReturnListComponent {
   toastMessage:any;
   @ViewChild('EditorTemplate', { static: true })
   EditorTemplate!: TemplateRef<any>;
-  selectUnits = [
-    {
-      id: 1,
-      label: 'Pcs',
-    },
-    {
-      id: 2,
-      label: 'Dzn',
-    }
-  ];
+  // selectUnits = [
+  //   {
+  //     id: 1,
+  //     label: 'Pcs',
+  //   },
+  //   {
+  //     id: 2,
+  //     label: 'Dzn',
+  //   }
+  // ];
   masterData = {
     id:0,
     challanNo:0,
@@ -242,7 +204,7 @@ export class SalesReturnListComponent {
     pageSize: 10,
     fromDate: new Date(this.currentDate.getFullYear(),this.currentDate.getMonth()-1,this.currentDate.getDate()),
     toDate: new Date(),
-    challanNo:'',
+    returnNo:'',
     selectedCustomer:{id:0,label:''},
     selectedSubCustomer:{id:0,label:''},
   }
@@ -259,6 +221,7 @@ export class SalesReturnListComponent {
   StatusOptions = ['Approved', 'Rejected'];
   constructor(
     private service:OrderService,
+    private salesReturnService: SalesReturnService,
     private challanService: DeliveryChallanService,
     private SaleInvservice:SalesInvoiceService,
     private comService: CommonService,
@@ -269,33 +232,20 @@ export class SalesReturnListComponent {
     this.search(this.searchModel);
     this.getCustomerDropdown();
   }
-  async genarateSubInfo(data:any){
-    const customer = this.subCustomerDropdownList.find(x=>x.id == data.id);
-    debugger
-    await this.getSubCustomerDropdown(customer.id);
-    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
-  }
-  async getSubCustomerDropdown(id: any) {
-    this.searchModel.selectedSubCustomer = {id:0,label:''}
-     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
-       this.subCustomerDropdownList = res.data;
-       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
-     });
-   }
+ 
    async search(model:any) {
     var fromData = new FormData();
-    //this.searchModel.fromDate = new Date((await this.comService.dateConvertion(this.searchModel.fromDate.toDateString())).toString())
-    //this.searchModel.toDate = new Date((await this.comService.dateConvertion(this.searchModel.toDate.toDateString())).toString())
-    fromData.append("PageIndex",this.searchModel.pageIndex.toString());
+    fromData.append("PageNumber",this.searchModel.pageIndex.toString());
     fromData.append("PageSize",this.searchModel.pageSize.toString());
     fromData.append("FromDate", this.searchModel.fromDate.toLocaleDateString(undefined, this.comService.dateFormate));
     fromData.append("Todate",this.searchModel.toDate.toLocaleDateString(undefined, this.comService.dateFormate));
-    fromData.append("SubCustomerId",this.searchModel.selectedSubCustomer.id.toString());
     fromData.append("CustomerId",this.searchModel.selectedCustomer.id.toString());
-    fromData.append("challanNo",this.searchModel.challanNo.toString());
+    fromData.append("ReturnNo",this.searchModel.returnNo.toString());
     debugger
-    this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetChallanMasterList, fromData)).subscribe((res:OrderResponse) => {
+    this.busy = (await this.salesReturnService.getSalesReturnMasterList(ApiEndPoints.GetSalesReturnMasterList, fromData))
+                .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
+      debugger
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
     });
@@ -321,7 +271,7 @@ export class SalesReturnListComponent {
     var fromData = new FormData();
     fromData.append("PageIndex",this.searchModel.pageIndex.toString());
     fromData.append("PageSize",this.searchModel.pageSize.toString());
-    this.busy = (await this.SaleInvservice.getChallanMasterListDetails(ApiEndPoints.GetChallanMasterList, fromData))
+    this.busy = (await this.salesReturnService.getSalesReturnMasterList(ApiEndPoints.GetSalesReturnMasterList, fromData))
                .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
@@ -330,7 +280,7 @@ export class SalesReturnListComponent {
   }
   async genarateMasterInfo(data:any){
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
-    await this.getSubCustomerDropdown(customer.id);
+    //await this.getSubCustomerDropdown(customer.id);
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
 
