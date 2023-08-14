@@ -1,28 +1,25 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
-import { Observable, Subscription, delay, map, of } from 'rxjs';
+import { MenuConfig, TableWidthConfig, FormLayout, EditableTip, DialogService } from 'ng-devui';
+import { Subscription, Observable, of, delay, map } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
+import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
-import { Discount, DiscountResponse } from 'src/app/@core/model/DiscontResponse';
-import { OrderResponse } from 'src/app/@core/model/OrderResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
-import { CommonService } from 'src/app/@core/services/CommonService';
-import { CustomerService } from 'src/app/@core/services/customer/customer.service';
-import { OrderService } from 'src/app/@core/services/order/order.service';
+import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
+import { DeliveryChallanService } from 'src/app/@core/services/deliveryhallan/delivery-challan.service';
 import { ProductService } from 'src/app/@core/services/product/product.service';
-import { FormConfig } from 'src/app/@shared/components/admin-form';
+import { SalesReturnService } from 'src/app/@core/services/salesreturn/sales-return.service';
 import { DFormData } from 'src/app/@shared/components/dynamic-forms';
 import { orderPageNotification } from 'src/assets/i18n/en-US/order';
 
 @Component({
-  selector: 'app-sales-order',
-  templateUrl: './sales-order.component.html',
-  styleUrls: ['./sales-order.component.scss']
+  selector: 'app-sales-return',
+  templateUrl: './sales-return.component.html',
+  styleUrls: ['./sales-return.component.scss']
 })
-export class SalesOrderComponent {
-
+export class SalesReturnComponent implements OnInit{
   projectFormData = {
     projectName: '',
     projectOwner: null,
@@ -41,22 +38,15 @@ export class SalesOrderComponent {
     {
       linkType: 'routerLink',
       link: './home',
-      name: 'Operation'
+      name: 'Supply Chain'
     },
     {
       linkType: 'routerLink',
-      link: 'create-sales',
-      name: 'Create Order'
+      link: 'sales-return',
+      name: 'Sales Return'
     }
   ];
 
-  DiscountOptions = [
-    { id: '1', name: 'Online Discount' },
-    { id: '2', name: 'Depot Maintanence' },
-    { id: '3', name: 'Special Cost' },
-    { id: '4', name: 'Eid Offer' },
-    { id: '5', name: 'Promotional Offer' },
-  ];
   labelList = [
     {
       id: 1,
@@ -165,54 +155,56 @@ export class SalesOrderComponent {
       width: '150px',
     },
   ];
-  formConfig: FormConfig = {
-    layout: FormLayout.Horizontal,
-    labelSize: 'sm',
-    items: [
-      {
-        label: 'product Name',
-        prop: 'productName',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'product Code',
-        prop: 'productCode',
-        type: 'input',
-      },
-      {
-        label: 'description',
-        prop: 'description',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-      {
-        label: 'price',
-        prop: 'price',
-        type: 'input',
-        required: true,
-        rule: {
-          validators: [{ required: true }],
-        },
-      },
-    ],
-  };
+  // formConfig: FormConfig = {
+  //   layout: FormLayout.Horizontal,
+  //   labelSize: 'sm',
+  //   items: [
+  //     // {
+  //     //   label: 'product Name',
+  //     //   prop: 'productName',
+  //     //   type: 'input',
+  //     //   required: true,
+  //     //   rule: {
+  //     //     validators: [{ required: true }],
+  //     //   },
+  //     // },
+  //     // {
+  //     //   label: 'product Code',
+  //     //   prop: 'productCode',
+  //     //   type: 'input',
+  //     // },
+  //     // {
+  //     //   label: 'description',
+  //     //   prop: 'description',
+  //     //   type: 'input',
+  //     //   required: true,
+  //     //   rule: {
+  //     //     validators: [{ required: true }],
+  //     //   },
+  //     // },
+  //     // {
+  //     //   label: 'price',
+  //     //   prop: 'price',
+  //     //   type: 'input',
+  //     //   required: true,
+  //     //   rule: {
+  //     //     validators: [{ required: true }],
+  //     //   },
+  //     // },
+  //   ],
+  // };
   formData = {
     selectValue: this.selectOptions[1],
     multipleSelectValue: [],
     radioValue: {},
   };
+
+  //Customer Master Data
   masterData = {
-    orderDate:new Date,
-    estimatedDeliveryDate: new Date,
+    challanDate:new Date,
     selectedCustomer:{},
-    selectedDiscount:{},
+    customerDeliveryAddress:'',
+    selectedBranch:{},
     totalPrice: 0,
     pdc:true,
     genDiscount:0,
@@ -223,19 +215,14 @@ export class SalesOrderComponent {
     deliveryAddress:'',
     remarks:''
   }
+
+  //Product Detail Data
   productRowData = {
     product: '',
     quantity: 0,
-    unit: {id:0,label:''},
+    unit: {},
     unitPrice: 0,
     totalPrice: 0,
-
-  };
-
-  discountRowData = {
-    discount: '',
-    discountType: '',
-    discountAmnt: 0,
   };
 
   dateConfig = {
@@ -252,49 +239,45 @@ export class SalesOrderComponent {
   headerNewForm = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   msgs: Array<Object> = [];
-  //discountTypes = ['Online Discount', 'Eid Discount', 'Special Discount'];
   formItems: DFormData = {};
   selectedDate2 = new Date;
   toastMessage:any;
   busy !: Subscription;
   data:any;
 
-  discountListData : any[] = [];
-  discountInfo?:Discount;
-  dropdownDiscountList:any[] = [];
-  discountList: any[] = [];
 
+  /// Product Data
   listData : any[] = [];
   productInfo?:Product;
   productList: any[] = [];
+  dropdownProductList:any[] = [];
+
+
+  /// Coustomer Data
   customerInfo!:Customer;
   customerList: any[] = [];
-  dropdownProductList:any[] = [];
   customerDropdownList:any[] = [];
-  startDate = new Date();
-  datePicker2: any;
-  endDate = null;
-  pager = {
-    total: 0,
-    pageIndex: 1,
-    pageSize: 10,
-  };
 
-  @ViewChild('tabInput')
-  tabInput!: ElementRef;
+
+  /// Branch Data
+  branchInfo!:Branch;
+  branchList: any[] = [];
+  branchDropdownList:any[] = [];
+
   editableTip = EditableTip.btn;
+
+
   constructor(
-    private renderer: Renderer2,
     private dialogService: DialogService,
-    private service: OrderService,
     private proService: ProductService,
-    private custService: CustomerService,
-    private router: Router,
-    private comService:CommonService){}
+    private salerReturnService: SalesReturnService,
+    private challanService: DeliveryChallanService,
+    private router: Router){}
+
   async ngOnInit() {
     await this.getProductDropdown();
-    await this.getDiscountDropdown();
     await this.getCustomerDropdown();
+    await this.getBranchDropdown();
     this.multipleSelectConfig = {
       key: 'multipleSelect',
       label: 'Options(Multiple selection with delete)',
@@ -305,20 +288,11 @@ export class SalesOrderComponent {
     };
   }
 
-
-  @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.quickRowAdded(this.productRowData);
-     
-    }
-  }
-
   async newRow() {
     this.headerNewForm = true;
     this.updateFormConfigOptions();
   }
+
   async changeGenDisVal(event:boolean){
     if(!event){
       this.masterData.genDiscount = 8;
@@ -329,54 +303,50 @@ export class SalesOrderComponent {
       await this.genarateMasterInfo(this.customerList);
     }
   }
+
   addOtherDiscount(val:number){
     this.masterData.netAmount = this.masterData.netAmount - (val/100)*this.masterData.netAmount;
     this.active = true;
   }
-  async getProductDropdown() {
-    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
-      this.dropdownProductList = res.data;
-      this.productList = res.data.map(({ id, productName,shortName,reamingOpeningQuantity }) => ({ id: id, label: productName + "("+reamingOpeningQuantity+")",shortName:shortName??'test' }));
+
+  async getCustomerDropdown() {
+    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
+      this.customerDropdownList = res.data;
+      
+      debugger
+      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
     });
   }
-  onSelectObject = (term: string) => {
-    debugger
-    return of(
-      this.productList
-        .map((option, index) => ({ id: index, option: option }))
-        .filter((item) => item.option.shortName.toLowerCase().indexOf(term.toLowerCase()) !== -1)
-    );
-  };
+  
+
+  async getBranchDropdown() {
+     this.busy = (await this.challanService.getBranchDropdown(ApiEndPoints.GetBranchList)).subscribe((res:BranchResponse) => {
+       this.branchDropdownList = res.data;
+       debugger
+       this.branchList = res.data.map(({ id, branchName }) => ({ id: id, label: branchName }));
+     });
+   }
   async placeOrder(master:any){
-    const masterData = this.createFormData(master);
-    const products = this.createFormData(this.listData);
     debugger
     // Append master data
     const formData = new FormData();
-      formData.append('salesOrderMasterDto.customerId', master.selectedCustomer.id.toString());
-      formData.append('salesOrderMasterDto.deliveryAddress', master.deliveryAddress);
-      formData.append('salesOrderMasterDto.deliveryInstruction', master.deliveryInstruction);
-      formData.append('salesOrderMasterDto.orderDate', master.orderDate.toISOString());
-      formData.append('salesOrderMasterDto.netAmount', master.netAmount.toString());
-      formData.append('salesOrderMasterDto.GeneralDiscount', master.genDiscount.toString());
-      //formData.append('salesOrderMasterDto.OrderAmountDiscount', master.orderAmDiscount.toString());
-      //formData.append('salesOrderMasterDto.DiscountTypes', master.selectedDiscount.name.toString());
-      //formData.append('salesOrderMasterDto.OtherDiscount', master.otherDiscount.toString());
-      formData.append('salesOrderMasterDto.estimatedDeliveryDate', master.estimatedDeliveryDate.toISOString());
-      formData.append('salesOrderMasterDto.remarks', master.remarks);
+      formData.append('ReturnMasterDto.ReturnDate', master.challanDate.toISOString());
+      formData.append('ReturnMasterDto.CustomerId', master.selectedCustomer.id.toString());
+      formData.append('ReturnMasterDto.BranchId', master.selectedBranch.id.toString());
+      formData.append('ReturnMasterDto.deliveryAddress', master.customerDeliveryAddress??'');
+      formData.append('ReturnMasterDto.deliveryInstruction', master.deliveryInstruction??'');
+      formData.append('ReturnMasterDto.remarks', master.remarks??'');
 
       // Append list data
       for (let i = 0; i < this.listData.length; i++) {
         const item = this.listData[i];
-        formData.append(`salesOrderDetailsDto[${i}].productId`, item.productId.toString());
-        formData.append(`salesOrderDetailsDto[${i}].productDescription`, item.productDescription);
-        formData.append(`salesOrderDetailsDto[${i}].quantity`, item.quantity.toString());
-        formData.append(`salesOrderDetailsDto[${i}].unitId`, item.unitId.toString());
-        formData.append(`salesOrderDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
-        formData.append(`salesOrderDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
+        formData.append(`ReturnDetailsDtos[${i}].productId`, item.productId.toString());
+        formData.append(`ReturnDetailsDtos[${i}].returnQuantity`, item.quantity.toString());
+        formData.append(`ReturnDetailsDtos[${i}].unitId`, item.unitId.toString());
+        formData.append(`ReturnDetailsDtos[${i}].unitPrice`, item.unitPrice.toString());
       }
-      (await this.service.createOrder(ApiEndPoints.CreateSales, formData)).subscribe({
-        next: (res: OrderResponse) => {
+      (await this.salerReturnService.createSalesReturn(ApiEndPoints.CreateSalesReturn, formData)).subscribe({
+        next: (res: SalesInvoiceResponse) => {
           debugger
           this.data = res;
           if (this.data.statusCode == HttpStatusCode.Ok) {
@@ -387,8 +357,8 @@ export class SalesOrderComponent {
                 summary: orderPageNotification.orderPage.createMessage.summary,
                 content: orderPageNotification.orderPage.createMessage.addSuccess,
               },
-            ];
-            this.router.navigate(['/pages', 'user', 'center']);
+            ];         
+            this.router.navigate(['/pages', 'supplychain', 'sales-return-list']);
           }
         },
         error: (error) => {
@@ -448,41 +418,19 @@ export class SalesOrderComponent {
     return formData;
   }
   
-
+  
   async genarateMasterInfo(data:any){
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
-    const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-    this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
-    this.masterData.totalPrice = totalPrice;
-    this.busy = (await this.custService.getCustomerById(ApiEndPoints.GetCustomerById,data.id)).subscribe((res:CustomerResponse) => {
-      this.customerInfo = res.data[0];
-      
-      const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-      this.masterData.netAmount =totalPrice - (this.customerInfo.defaultDiscount / 100)* totalPrice;
-      this.masterData.totalPrice = totalPrice;
-      this.masterData.genDiscount = this.customerInfo.defaultDiscount;
-      //var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
-      //this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
-      //this.masterData.orderAmDiscount = discount;
-    });
-
-  }
-  async getCustomerDropdown() {
-    this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res:CustomerResponse) => {
-      this.customerDropdownList = res.data;
-      debugger
-      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
-    });
+    this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
 
-  async getDiscountDropdown() {
-    this.busy = (await this.proService.getDiscountDropdown(ApiEndPoints.GetDiscountList)).subscribe((res:DiscountResponse) => {
-      this.dropdownDiscountList = res.data;
-      debugger
-      this.discountList = res.data.map(({ id, discountName }) => ({ id: id, label: discountName }));
+
+  async getProductDropdown() {
+    this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
+      this.dropdownProductList = res.data;
+      this.productList = res.data.map(({ id, productName }) => ({ id: id, label: productName }));
     });
   }
-
 
   updateFormConfigOptions() {
     debugger
@@ -490,21 +438,14 @@ export class SalesOrderComponent {
   }
 
   changeProduct(product:any){
+    debugger;
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
     this.productRowData.quantity = 1;
-    this.productRowData.unit = {id:1,label:'Dzn'};
-    this.productRowData.unitPrice = this.productRowData.unit.id==1?Number(this.productInfo?.dozenPrice):Number(this.productInfo?.piecePrice)
-    //this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
+    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+    this.productRowData.unit = this.selectUnits.find(x=>x.id == 2)??{};
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 
-  changeDiscount(discount:any){
-     this.discountInfo = this.dropdownDiscountList.find( x=>x.id == discount.id);
-     this.discountRowData.discountAmnt = 1;
-     debugger;
-     this.discountRowData.discountType = this.discountInfo?.discountType ?? '';
-     
-  }
 
 
   genarateTotalPrice(productRowData:any){
@@ -513,15 +454,15 @@ export class SalesOrderComponent {
   }
 
   modifyTotalPrice(event:any,productRow:any){
-    debugger
+    debugger;
     if(event.id===1 && productRow.unit.id != 1)
     {
-      this.productRowData.unitPrice = Number(this.productInfo?.dozenPrice)??0;
-      this.productRowData.totalPrice = Number(Number(this.productInfo?.dozenPrice) * this.productRowData.quantity)??0;
+      this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
+      this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
     }
     else if(event.id === 2){
-      this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
-      this.productRowData.totalPrice = Number(Number(this.productInfo?.piecePrice) * this.productRowData.quantity??(Number(this.productInfo?.defaultPrice) * Number(this.productInfo?.piecePrice)))??0;
+      this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+      this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
     }
   }
 
@@ -544,7 +485,7 @@ export class SalesOrderComponent {
     if (valid) {
       of(this.formItems)
         .pipe(
-          map((val) => 'success'),
+          map(() => 'success'),
           delay(500)
         )
         .subscribe((res) => {
@@ -562,10 +503,6 @@ export class SalesOrderComponent {
 
   async quickRowAdded(e: any) {
     debugger;
-    if(e.unit.id==0||e.product.id == 0||e.quantity==0){
-      this.showToast('error', 'Error', 'You must Select product with required Quantity.');
-      return;
-    }
     e.unitName = e.unit.label;
     e.productName = e.product.label;
     e.unitId = e.unit.id;
@@ -583,44 +520,20 @@ export class SalesOrderComponent {
     this.listData.unshift(newData);
   }
 
-  // async quickRowAddedDiscount(e: any) {
-  //   debugger;
-  //   e.discountName = e.discount.label;
-  //   e.discountType = e.discount.discountType;
-  //   e.discountAmnt = e.discount.discountAmnt;
-  //   e.discountId = e.discount.id;
-  
-  //   // Check if product.id already exists in this.listData
-  //   const discountExists = this.discountListData.some((item) => item.discountId === e.discountId);
-  
-  //   if (discountExists) {
-  //     this.showToast('error', 'Error', 'Your discount alredy is in the list.');
-  //     return;
-  //   }
-  
-  //   const newData = { ...e };
-  //   this.discountListData.unshift(newData);
-  // }
+
 
   quickRowCancel() {
     this.headerNewForm = false;
   }
-  beforeEditStart = (rowItem: any, field: any) => {
-    debugger
+  beforeEditStart = () => {
     return true;
   };
-  beforeEditEnd = async (rowItem: any, field: any) => {
-    debugger
-    var data = {
-      id:rowItem.id,
-      key:field,
-      value:rowItem[field]
-    }
-    //await this.updatecategory(data);
-    if (rowItem && rowItem[field].length < 1) {
+
+   beforeEditEnd = async (rowItem: any, field: any) => {
+    //await this.updateproduct(rowItem);
+    if (rowItem && rowItem[field].length < 3) {
       return false;
     } else {
-      rowItem.totalPrice = rowItem.quantity*rowItem.unitPrice;
       return true;
     }
   };
@@ -696,7 +609,8 @@ export class SalesOrderComponent {
       ],
     });
   }
-
+startDate:any;
+  
   getDay(num: number, str = '-') {
     const day = new Date();
     const nowTime = day.getTime();

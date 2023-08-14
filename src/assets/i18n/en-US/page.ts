@@ -96,7 +96,9 @@ export default {
       challanlists: 'Challan List',
       gatepasscreate: 'Gate Pass Create',
       createinvoice: 'Invoice Create',
-      invoicelist: 'Invoice List'
+      invoicelist: 'Invoice List',
+      salesReturn: 'Sales Return',
+      salesReturnList: 'Sales Return List'
       
     },
   },

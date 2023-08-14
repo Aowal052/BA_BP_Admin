@@ -11,10 +11,10 @@
     <da-col-item [daSpan]="24" [daXs]="24">
       <d-toast [value]="msgs"></d-toast>
       <div class="da-dynamic-form">
-        <form dForm [layout]="columnsLayout" autocomplete="off">
+        <form #Form="ngForm" dForm [layout]="columnsLayout" autocomplete="off">
 
           <div class="da-content-title da-form-card-title">
-            Order Master Info
+            Retuen Sales Master Information
           </div>
           <div class="da-content-wrapper">
             <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
@@ -23,31 +23,13 @@
                   <da-col-item [daXs]="6" [daMs]="24">
                     <div class="u-1-3">
                       <d-form-item>
-                        <d-form-label [required]="true">Order Date</d-form-label>
+                        <d-form-label [required]="true">Challan Date</d-form-label>
                         <d-form-control class="form-control-width">
                           <input class="devui-input devui-form-control" placeholder="y/MM/dd" name="dp"
-                            [(ngModel)]="masterData.orderDate" (click)="datePicker1.toggle()" autocomplete="off"
+                            [(ngModel)]="masterData.challanDate" (click)="datePicker1.toggle()" autocomplete="off"
                             dDatepicker appendToBody #datePicker1="datepicker" (selectedDateChange)="getValue($event)"
                             [customViewTemplate]="orderDate" />
                           <ng-template #orderDate let-chooseDate="chooseDate" let-datePicker>
-                            <div class="box">
-                              <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
-                            </div>
-                          </ng-template>
-                        </d-form-control>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="6" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
-                        <d-form-label [required]="true">Estimated Delivery Date</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <input class="devui-input devui-form-control" placeholder="y/MM/dd" name="dp"
-                            [(ngModel)]="masterData.estimatedDeliveryDate" (click)="datePicker2.toggle()"
-                            autocomplete="off" dDatepicker appendToBody #datePicker2="datepicker"
-                            (selectedDateChange)="getValue($event)" [customViewTemplate]="estimatedDeliveryDate" />
-                          <ng-template #estimatedDeliveryDate let-chooseDate="chooseDate" let-datePicker>
                             <div class="box">
                               <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
                             </div>
@@ -71,42 +53,10 @@
                   <da-col-item [daXs]="6" [daMs]="24">
                     <div class="u-1-3">
                       <d-form-item>
-                        <d-form-label [required]="true">Total Price</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <input dTextInput readonly name="totalPrice" [(ngModel)]="masterData.totalPrice" />
-                           
-                        </d-form-control>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="6" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
-                        <d-form-label [required]="true">Gen. Discount(%)</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <input dTextInput readonly name="genDiscount" [(ngModel)]="masterData.genDiscount" />
-                        </d-form-control>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-
-                  <da-col-item [daXs]="6" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
-                        <d-form-label [required]="true">NetAmount</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <input dTextInput name="netAmount" [(ngModel)]="masterData.netAmount" />
-                        </d-form-control>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="6" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
                         <d-form-label [required]="true">Delivery Address</d-form-label>
                         <d-form-control class="form-control-width">
                           <textarea dTextarea resize="vertical" autocomplete="off" name="deliveryAddress"
-                            placeholder="Delivery Address" [(ngModel)]="masterData.deliveryAddress"
+                            placeholder="Delivery Address" [(ngModel)]="masterData.customerDeliveryAddress"
                             [dValidateRules]="[{ maxlength: 500 }]"></textarea>
                         </d-form-control>
                       </d-form-item>
@@ -127,6 +77,17 @@
                   <da-col-item [daXs]="6" [daMs]="24">
                     <div class="u-1-3">
                       <d-form-item>
+                        <d-form-label [required]="true">Location</d-form-label>
+                        <d-form-control class="form-control-width">
+                          <d-select [options]="branchList" name="BranchId" [isSearch]="true" [filterKey]="'label'"
+                            placeholder="Select Customer" [(ngModel)]="masterData.selectedBranch"></d-select>
+                        </d-form-control>
+                      </d-form-item>
+                    </div>
+                  </da-col-item>
+                  <da-col-item [daXs]="6" [daMs]="24">
+                    <div class="u-1-3">
+                      <d-form-item>
                         <d-form-label [required]="true">Remarks</d-form-label>
                         <d-form-control class="form-control-width">
                           <textarea dTextarea resize="vertical" autocomplete="off" name="remarks" placeholder="Remarks"
@@ -140,7 +101,7 @@
             </da-layout-col>
           </div>
           <div class="da-content-title da-form-card-title">
-            <d-card-title>Order Product Info</d-card-title>
+            <d-card-title>Sales Return Product Info</d-card-title>
           </div>
           <div class="grid">
             <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
@@ -151,11 +112,9 @@
                       <d-form-item>
                         <d-form-label [required]="true">Product Name</d-form-label>
                         <d-form-control class="form-control-width">
-                          <d-select [isSearch]="true" [filterKey]="'label'" [options]="productList"
-                            [placeholder]="'Select a Product'" (ngModelChange)="changeProduct($event)"
-                             name="productName" size="sm" [searchPlaceholder]="'Selech By product short name'"
-                            [searchFn]="onSelectObject" [(ngModel)]="productRowData.product">
-                          </d-select>
+                          <d-select [options]="productList" name="Product" [isSearch]="true" [filterKey]="'label'"
+                            [placeholder]="'Select Product Name'" (ngModelChange)="changeProduct($event)"
+                            [(ngModel)]="productRowData.product"></d-select>
                         </d-form-control>
                       </d-form-item>
                     </div>
@@ -165,8 +124,8 @@
                       <d-form-item>
                         <d-form-label [required]="true">Quantity</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input dTextInput type="number" name="quantity" (change)="genarateTotalPrice(productRowData)"
-                            [(ngModel)]="productRowData.quantity" #tabInput />
+                          <input dTextInput name="quantity" (change)="genarateTotalPrice(productRowData)"
+                            [(ngModel)]="productRowData.quantity" />
                         </d-form-control>
                       </d-form-item>
                     </div>
@@ -237,8 +196,9 @@
                     <tbody dTableBody>
                       <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                         <tr dTableRow>
-                          <td dTableCell [editableTip]="editableTip" [(editing)]="rowItem['idEdit']" [rowItem]="rowItem"
-                            [field]="'id'" [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+                          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
+                            [rowItem]="rowItem" [field]="'id'" [beforeEditStart]="beforeEditStart"
+                            [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
                             <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
                               <input class="devui-form-control" name="id" [(ngModel)]="rowItem.id"
@@ -248,44 +208,39 @@
                           <td dTableCell [editableTip]="editableTip" [(editing)]="rowItem['titleEdit']"
                             [rowItem]="rowItem" [field]="'productName'" [beforeEditStart]="beforeEditStart"
                             [beforeEditEnd]="beforeEditEnd">
-                            <span *ngIf="!rowItem['titleEdit']">
-                              <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
-                              {{ rowItem?.productName }}</span>
+                            <span *ngIf="!rowItem['titleEdit']">{{ rowItem?.productName }}</span>
                             <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
                               <input class="devui-form-control" name="productName" [(ngModel)]="rowItem.productName"
                                 [attr.maxlength]="200" [attr.minlength]="50" />
                             </div>
                           </td>
                           <td dTableCell [editable]="true" [editableTip]="editableTip"
-                            [(editing)]="rowItem['quantityEdit']" [rowItem]="rowItem" [field]="'quantity'"
+                            [(editing)]="rowItem['iterationEdit']" [rowItem]="rowItem" [field]="'quantity'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                            <span *ngIf="!rowItem['quantityEdit']">
-                              {{ rowItem?.quantity }}</span>
-                            <div *ngIf="rowItem['quantityEdit']" class="edit-padding-fix">
-                              <input class="devui-form-control" name="quantity" [(ngModel)]="rowItem.quantity" />
+                            <span *ngIf="!rowItem['iterationEdit']">{{ rowItem?.quantity }}</span>
+                            <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
+                              <input dTextInput size="sm" [(ngModel)]="rowItem.quantity" />
                             </div>
                           </td>
-                          <td dTableCell [editable]="false" [editableTip]="editableTip"
-                            [(editing)]="rowItem['unitNameEdit']" [rowItem]="rowItem" [field]="'unitName'"
+                          <td dTableCell [editable]="true" [editableTip]="editableTip"
+                            [(editing)]="rowItem['assigneeEdit']" [rowItem]="rowItem" [field]="'unitName'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                            <span *ngIf="!rowItem['unitNameEdit']">
-                              <span style="margin-left: 6px">{{
-                                rowItem.unitName
-                                }}</span>
+
+                            <span *ngIf="!rowItem['assigneeEdit']">
+
+                              <span style="margin-left: 6px">{{rowItem.unitName }}</span>
                             </span>
-                            <div *ngIf="rowItem['unitNameEdit']" class="edit-padding-fix">
+                            <div *ngIf="rowItem['assigneeEdit']" class="edit-padding-fix">
                               <input dTextInput size="sm" [(ngModel)]="rowItem.unitName" />
                             </div>
                           </td>
-                          <td dTableCell [editable]="false" [editableTip]="editableTip"
-                            [(editing)]="rowItem['totalPriceEdit']" [rowItem]="rowItem" [field]="'totalPrice'"
+                          <td dTableCell [editable]="true" [editableTip]="editableTip"
+                            [(editing)]="rowItem['assigneeEdit']" [rowItem]="rowItem" [field]="'totalPrice'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                            <span *ngIf="!rowItem['totalPriceEdit']">
-                              <span style="margin-left: 6px">{{
-                                rowItem.totalPrice
-                                }}</span>
+                            <span *ngIf="!rowItem['assigneeEdit']">
+                              <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
                             </span>
-                            <div *ngIf="rowItem['totalPriceEdit']" class="edit-padding-fix">
+                            <div *ngIf="rowItem['assigneeEdit']" class="edit-padding-fix">
                               <input dTextInput size="sm" [(ngModel)]="rowItem.totalPrice" />
                             </div>
                           </td>
@@ -303,11 +258,10 @@
           </da-layout-row>
           <!-- end selected product list -->
 
-
-
+          <!-- Form.resetForm() -->
           <d-form-operation>
             <d-button bsStyle="primary" class="mr-element-spacing" circled="true" style="margin-right: 4px !important"
-              (btnClick)="placeOrder(masterData)">Submit</d-button>
+              (btnClick)="placeOrder(masterData); ">Submit</d-button>
             <d-button bsStyle="common" circled="true">Cancel</d-button>
           </d-form-operation>
         </form>

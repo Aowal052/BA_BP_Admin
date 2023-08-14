@@ -14,6 +14,8 @@ import { CreateInvoiceComponent } from './create-invoice/create-invoice.componen
 import { InvoiceListComponent } from './invoice-list/invoice-list.component';
 import { InvoiceCreateDataListComponent } from './invoice-create-data-list/invoice-create-data-list.component';
 import { DatePipe } from 'ng-devui';
+import { SalesReturnComponent } from './sales-return/sales-return.component';
+import { SalesReturnListComponent } from './sales-return-list/sales-return-list.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { DatePipe } from 'ng-devui';
     DirectChallanComponent,
     CreateInvoiceComponent,
     InvoiceListComponent,
-    InvoiceCreateDataListComponent
+    InvoiceCreateDataListComponent,
+    SalesReturnComponent,
+    SalesReturnListComponent
   ],
   imports: [
     CommonModule,

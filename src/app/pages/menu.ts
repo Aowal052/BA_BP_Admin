@@ -192,6 +192,8 @@ export default function (values: any) {
         { title: values['supplychains']['gatepasscreate'], link: '/pages/supplychain/gate-pass-create' },
         { title: values['supplychains']['createinvoice'], link: '/pages/supplychain/create-invoice' },
         { title: values['supplychains']['invoicelist'], link: '/pages/supplychain/invoice-list' },
+        { title: values['supplychains']['salesReturn'], link: '/pages/supplychain/sales-return' },
+        { title: values['supplychains']['salesReturnList'], link: '/pages/supplychain/sales-return-list' },
         
       ],
       link: '/pages/supplychains',
