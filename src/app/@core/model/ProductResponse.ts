@@ -35,7 +35,7 @@ export interface Product {
     showDescriptionInPurchase?:boolean;
     showDescriptionInSales?:boolean;
     categoryId?:string;
-    brand?:string;
+    activeUnitId?:number;
     subCategory?:string;
     $expandConfig?: any;
   }

@@ -352,6 +352,7 @@ export class ListProductComponent implements OnInit{
   }
   async quickRowAdded(e: any) {
     const formData = new FormData();
+    debugger
       formData.append('ProductCode', e.productCode||'');
       formData.append('ProductName', e.productName||'');
       formData.append('PiecePrice', e.piecePrice||'');
@@ -359,6 +360,7 @@ export class ListProductComponent implements OnInit{
       formData.append('CategoryId', e.category.id||'');
       formData.append('Description', e.description || '');
       formData.append('ShortName', e.shortName || '');
+      formData.append('ActiveUnitId', e.dUnit.id || '');
       (await this.service.updateProduct(ApiEndPoints.AddProduct, formData)).subscribe({
         next: (res: ProductResponse) => {
           this.res = res;

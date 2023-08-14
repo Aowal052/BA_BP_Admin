@@ -151,7 +151,9 @@
                       <d-form-item>
                         <d-form-label [required]="true">Product Name</d-form-label>
                         <d-form-control class="form-control-width">
-                          <d-select [isSearch]="true" [filterKey]="'label'" [options]="productList"
+                          <d-select 
+                          #productNameDropdown
+                          [isSearch]="true" [filterKey]="'label'" [options]="productList"
                             [placeholder]="'Select a Product'" (ngModelChange)="changeProduct($event)"
                              name="productName" size="sm" [searchPlaceholder]="'Selech By product short name'"
                             [searchFn]="onSelectObject" [(ngModel)]="productRowData.product">
