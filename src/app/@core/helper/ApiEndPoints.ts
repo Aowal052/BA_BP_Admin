@@ -93,6 +93,11 @@ export class ApiEndPoints{
     static readonly DeleteVehicle: string = 'Vehicle/Delete';
     //#endregion
 
+    //#region SalesReturn
+    static readonly CreateSalesReturn: string = 'v1/CRM/CreateSalesReturn';
+    static readonly GetSalesReturn: string = 'Vehicle/Get';
+    //#endregion
+
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation

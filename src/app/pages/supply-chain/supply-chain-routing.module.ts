@@ -8,6 +8,8 @@ import { DirectChallanComponent } from './direct-challan/direct-challan.componen
 import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
 import { InvoiceListComponent } from './invoice-list/invoice-list.component';
 import { InvoiceCreateDataListComponent } from './invoice-create-data-list/invoice-create-data-list.component';
+import { SalesReturnComponent } from './sales-return/sales-return.component';
+import { SalesReturnListComponent } from './sales-return-list/sales-return-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -20,6 +22,8 @@ const routes: Routes = [{
     { path: 'create-invoice', component: CreateInvoiceComponent },
     { path: 'invoice-list', component: InvoiceListComponent },
     { path: 'invoice-create-data-list', component: InvoiceCreateDataListComponent },
+    { path: 'sales-return', component: SalesReturnComponent },
+    { path: 'sales-return-list', component: SalesReturnListComponent },
     
   ],
 }];
