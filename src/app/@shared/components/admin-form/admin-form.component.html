@@ -9,7 +9,7 @@
         [placeholder]="item.placeholder??''"
         [filterKey]="'name'"
         [(ngModel)]="_formData[item.prop]"
-        [searchFn]="searchFn"
+        [searchFn]="_formData[item.searchFn??'']"
         [isSearch]="true"
         (change)="valueChange($event)"
         [enableLazyLoad]="false"

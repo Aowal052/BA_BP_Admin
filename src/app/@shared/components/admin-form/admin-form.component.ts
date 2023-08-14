@@ -39,7 +39,16 @@ export class AdminFormComponent implements OnInit {
     console.log('load more');
     this.selectComponent.forceSearchNext();
   }
-  
+  selectUnits = [
+    {
+      id: 2,
+      name: 'Pcs',
+    },
+    {
+      id: 1,
+      name: 'Dzn',
+    }
+  ];
   @Input() formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     labelSize: 'lg',

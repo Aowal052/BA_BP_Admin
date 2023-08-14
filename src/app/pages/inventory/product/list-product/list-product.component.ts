@@ -67,14 +67,15 @@ export class ListProductComponent implements OnInit{
           validators: [{ required: true }],
         },
       },
-      // {
-      //   label: 'Default Unit',
-      //   prop: 'dUnit',
-      //   type: 'select',
-      //   option:this.selectUnits,
-      // },
       {
-        label: 'category',
+        label: 'Default Unit',
+        prop: 'dUnit',
+        type: 'select',
+        search:'searchFn',
+        option:this.selectUnits,
+      },
+      {
+        label: 'Category',
         prop: 'category',
         type: 'select',
         options:  this.categoryDropdown,
