@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, MenuConfig, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
@@ -328,6 +328,7 @@ export class DirectChallanComponent implements OnInit{
     this.headerNewForm = true;
     this.updateFormConfigOptions();
   }
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
 
   async changeGenDisVal(event:boolean){
     if(!event){
@@ -598,7 +599,7 @@ export class DirectChallanComponent implements OnInit{
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
-     
+      this.productNameDropdown.toggle();
     }
   }
 

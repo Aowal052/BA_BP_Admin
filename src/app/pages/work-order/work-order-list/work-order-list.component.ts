@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { ChangeDetectorRef, Component, HostListener, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription, of } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
@@ -256,6 +256,7 @@ export class WorkOrderListComponent {
     }
   };
   appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
   constructor(
     private listDataService: ListDataService, 
     private service:OrderService,
@@ -299,7 +300,6 @@ export class WorkOrderListComponent {
       this.searchModel.total = res.totalCount;
     });
   }
-  
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
   };
@@ -426,7 +426,7 @@ export class WorkOrderListComponent {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
-      //this.focusProductNameDropdown();
+      this.productNameDropdown.toggle();
     }
   }
   async quickRowAdded(e: any) {

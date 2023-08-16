@@ -31,6 +31,7 @@ export class ApiEndPoints{
     static readonly GetCategoryById: string = 'ProductCategory/GetById';
     static readonly UpdateCategory: string = 'ProductCategory/Update';
     static readonly AddProduct: string = 'v1/Product/Create';
+    static readonly SearchProduct: string = 'v1/Product/Search';
     static readonly CreateSales:string = 'SalesOrder/Create';
     static readonly UpdateSales:string = 'SalesOrder/Update';
     static readonly UpdateStatusAsync:string = 'v1/CRM/UpdateStatusAsync';
