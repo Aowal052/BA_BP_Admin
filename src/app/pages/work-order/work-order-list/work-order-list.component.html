@@ -1,555 +1,458 @@
 <div class="da-list-wrap">
-    <div class="da-content-banner">
-        <d-breadcrumb>
-            <d-breadcrumb-item><a routerLink="/">{{ 'list.breadcrumb.home' | translate }}</a></d-breadcrumb-item>
-            <d-breadcrumb-item>{{ 'list.breadcrumb.formPage' | translate }}</d-breadcrumb-item>
-            <d-breadcrumb-item>{{ 'list.breadcrumb.basicList' | translate }}</d-breadcrumb-item>
-        </d-breadcrumb>
-        <div class="da-content-banner-title">
-            {{ 'list.basicList.title' | translate }}
-        </div>
-        <div>{{ 'list.basicList.description' | translate }}</div>
+  <div class="da-content-banner">
+    <d-breadcrumb>
+      <d-breadcrumb-item><a routerLink="/">{{ 'list.breadcrumb.home' | translate }}</a></d-breadcrumb-item>
+      <d-breadcrumb-item>{{ 'list.breadcrumb.formPage' | translate }}</d-breadcrumb-item>
+      <d-breadcrumb-item>{{ 'list.breadcrumb.basicList' | translate }}</d-breadcrumb-item>
+    </d-breadcrumb>
+    <div class="da-content-banner-title">
+      {{ 'list.basicList.title' | translate }}
     </div>
-    <div class="da-content-wrapper">
-        <d-toast [value]="msgs"></d-toast>
-        <da-layout-row [daGutter]="[24, 24]">
-            <da-col-item [daSpan]="24" [daXs]="24">
-                <div class="da-list-container">
-                  <div class="da-list-header">
-                    <div class="da-header-left">
-                      <div class="da-header-item">
-                        <div class="da-header-item-label">From Date :</div>
-                        <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
-                          <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()" name="dp"
-                            [(ngModel)]="searchModel.fromDate" autocomplete="off" dDatepicker #datePicker1="datepicker"
-                            (selectedDateChange)="getValue($event)" appendToBody [appendToBodyDirections]="appendToBodyDirections" />
-                          <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll()">
-                            <i class="icon icon-close"></i>
-                          </div>
-                          <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
-                            <i class="icons icon-calendar"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="da-header-item">
-                        <div class="da-header-item-label">To Date :</div>
-                        <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
-                          <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker2.toggle()" name="dp"
-                            [(ngModel)]="searchModel.toDate" 
-                            autocomplete="off" 
-                            dDatepicker #datePicker2="datepicker"
-                            (selectedDateChange)="getValue($event)" 
-                            appendToBody [appendToBodyDirections]="appendToBodyDirections" />
-                          <div *ngIf="selectedDate2" class="devui-input-group-addon close-icon-wrapper" (click)="datePicker2.clearAll()">
-                            <i class="icon icon-close"></i>
-                          </div>
-                          <div class="devui-input-group-addon" (click)="datePicker2.toggle()">
-                            <i class="icon icon-calendar"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="da-header-item">
-                        <div class="da-header-item-label">Status :</div>
-                        <d-select [placeholder]="'change table layout'" [options]="StatusOptions" [(ngModel)]="searchModel.status"></d-select>
-                      </div>
-                      <div class="da-header-item">
-                        <div class="da-header-item-label" style="width: 70px;">Order Id :</div>
-                        <input dTextInput [placeholder]="'Order Id'" [(ngModel)]="searchModel.orderId" />
-                      </div>
-                      
-                    </div>
-                    <div class="da-header-item">
-                      <d-button (click)="search(searchModel)">Search</d-button>
-                    </div>
+    <div>{{ 'list.basicList.description' | translate }}</div>
+  </div>
+  <div class="da-content-wrapper">
+    <d-toast [value]="msgs"></d-toast>
+    <da-layout-row [daGutter]="[24, 24]">
+      <da-col-item [daSpan]="24" [daXs]="24">
+        <div class="da-list-container">
+          <div class="da-list-header">
+            <div class="da-header-left">
+              <div class="da-header-item">
+                <div class="da-header-item-label">From Date :</div>
+                <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
+                  <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker1.toggle()"
+                    name="dp" [(ngModel)]="searchModel.fromDate" autocomplete="off" dDatepicker
+                    #datePicker1="datepicker" (selectedDateChange)="getValue($event)" appendToBody
+                    [appendToBodyDirections]="appendToBodyDirections" />
+                  <div *ngIf="selectedDate1" class="devui-input-group-addon close-icon-wrapper"
+                    (click)="datePicker1.clearAll()">
+                    <i class="icon icon-close"></i>
                   </div>
-                    <div class="list-content" dLoading [loading]="busy">
-                        <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
-                            [size]="searchForm.size" [scrollable]="true">
-                            <d-column field="orderCode" header="Order Code" [width]="'100px'">
-                                <d-cell>
-                                  <ng-template let-cellItem="cellItem">
-                                    {{ cellItem }}
-                                  </ng-template>
-                                </d-cell>
-                              </d-column>
-                              <d-column field="customerName" header="Customer Name" [width]="'100px'">
-                                <d-cell>
-                                  <ng-template let-cellItem="cellItem">
-                                    <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
-                                      {{ cellItem }}
-                                    </span>
-                                  </ng-template>
-                                </d-cell>
-                              </d-column>
-                              <d-column field="customerPhone" header="Customer Phone" [width]="'100px'">
-                                <d-cell>
-                                  <ng-template let-cellItem="cellItem">
-                                    <d-tag [tag]="cellItem" [labelStyle]="cellItem"></d-tag>
-                                  </ng-template>
-                                </d-cell>
-                              </d-column>
-                              <d-column field="orderAmount" header="Order Amount" [width]="'100px'">
-                                <d-cell>
-                                  <ng-template let-cellItem="cellItem">
-                                    {{ cellItem }} BDT
-                                  </ng-template>
-                                </d-cell>
-                              </d-column>
-                              <d-column field="orderDate" header="Order Date" [width]="'100px'">
-                                <d-cell>
-                                  <ng-template let-cellItem="cellItem">
-                                    <div class="over-flow-ellipsis">
-                                      <span style="margin-left: 6px">{{ cellItem }}</span>
-                                    </div>
-                                  </ng-template>
-                                </d-cell>
-                              </d-column>
-                              <d-column field="status" header="PMG Approval Status" [width]="'100px'">
-                                <d-cell>
-                                    <ng-template let-cellItem="cellItem">
-                                      <span [ngClass]="cellItem=='Approved'?'Done':cellItem=='Rejected'?'Stuck':''">{{ cellItem }}</span>
-                                    </ng-template>
-                                  </d-cell>
-                              </d-column>
-                            <d-column field="Actions" header="Actions" [width]="'150px'">
-                                <d-cell>
-                                    <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
-                                        <div class="btn-group over-flow-ellipsis" *ngIf="rowItem.status == 'Approved' || rowItem.status == 'Rejected'; else elseBlock">
-                                            N/A
-                                        </div>
-                                        <ng-template #elseBlock>
-                                            <d-button icon="icon-edit" bsStyle="text-dark" title="edit"
-                                                (click)="editRow(rowItem, rowIndex)"></d-button>
-                                            <d-button icon="icon-right" bsStyle="text-dark" title="Approve"
-                                                (click)="approveOrder(rowItem)"></d-button>
-                                            <d-button icon="icon-error" bsStyle="text-dark" title="Rejet"
-                                                (click)="rejectOrder(rowItem)"></d-button>
-                                        </ng-template>
-                                    </ng-template>
-                                </d-cell>
-                            </d-column>
-                        </d-data-table>
-                    </div>
-                    <div class="da-list-footer">
-                      <d-pagination
-                      [size]="'sm'"
-                      [total]="pager.total"
-                      [(pageSize)]="pager.pageSize"
-                      [(pageIndex)]="pager.pageIndex"
-                      [canViewTotal]="true"
-                      [canChangePageSize]="true"
-                      [canJumpPage]="true"
-                      [maxItems]="5"
-                      (pageIndexChange)="onPageChange($event)"
-                      (pageSizeChange)="onSizeChange($event)"
-                    >
-                    </d-pagination>
-                    </div>
+                  <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                    <i class="icons icon-calendar"></i>
+                  </div>
                 </div>
-            </da-col-item>
-        </da-layout-row>
-    </div>
+              </div>
+              <div class="da-header-item">
+                <div class="da-header-item-label">To Date :</div>
+                <div class="devui-input-group devui-dropdown-origin" dActiveFormControl>
+                  <input class="devui-input devui-form-control" placeholder="y/MM/dd" (click)="datePicker2.toggle()"
+                    name="dp" [(ngModel)]="searchModel.toDate" autocomplete="off" dDatepicker #datePicker2="datepicker"
+                    (selectedDateChange)="getValue($event)" appendToBody
+                    [appendToBodyDirections]="appendToBodyDirections" />
+                  <div *ngIf="selectedDate2" class="devui-input-group-addon close-icon-wrapper"
+                    (click)="datePicker2.clearAll()">
+                    <i class="icon icon-close"></i>
+                  </div>
+                  <div class="devui-input-group-addon" (click)="datePicker2.toggle()">
+                    <i class="icon icon-calendar"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="da-header-item">
+                <div class="da-header-item-label">Status :</div>
+                <d-select [placeholder]="'change table layout'" [options]="StatusOptions"
+                  [(ngModel)]="searchModel.status"></d-select>
+              </div>
+              <div class="da-header-item">
+                <div class="da-header-item-label" style="width: 70px;">Order Id :</div>
+                <input dTextInput [placeholder]="'Order Id'" [(ngModel)]="searchModel.orderId" />
+              </div>
+
+            </div>
+            <div class="da-header-item">
+              <d-button (click)="search(searchModel)">Search</d-button>
+            </div>
+          </div>
+          <div class="list-content" dLoading [loading]="busy">
+            <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
+              [size]="searchForm.size" [scrollable]="true">
+              <d-column field="orderCode" header="Order Code" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    {{ cellItem }}
+                  </ng-template>
+                </d-cell>
+              </d-column>
+              <d-column field="customerName" header="Customer Name" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
+                      {{ cellItem }}
+                    </span>
+                  </ng-template>
+                </d-cell>
+              </d-column>
+              <d-column field="customerPhone" header="Customer Phone" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    <d-tag [tag]="cellItem" [labelStyle]="cellItem"></d-tag>
+                  </ng-template>
+                </d-cell>
+              </d-column>
+              <d-column field="orderAmount" header="Order Amount" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    {{ cellItem }} BDT
+                  </ng-template>
+                </d-cell>
+              </d-column>
+              <d-column field="orderDate" header="Order Date" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    <div class="over-flow-ellipsis">
+                      <span style="margin-left: 6px">{{ cellItem }}</span>
+                    </div>
+                  </ng-template>
+                </d-cell>
+              </d-column>
+              <d-column field="status" header="PMG Approval Status" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    <span [ngClass]="cellItem=='Approved'?'Done':cellItem=='Rejected'?'Stuck':''">{{ cellItem }}</span>
+                  </ng-template>
+                </d-cell>
+              </d-column>
+              <d-column field="Actions" header="Actions" [width]="'150px'">
+                <d-cell>
+                  <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+
+                    <div class="btn-group over-flow-ellipsis"
+                      *ngIf="rowItem.status == 'Approved' || rowItem.status == 'Rejected';  else elseBlock">
+                      <div *ngIf="retrievedUserRole.userRole == 'admin'; else elseBlock">
+                        <d-button icon="icon-undo" bsStyle="danger" title="Undo"
+                          (click)="deleteOrder(rowItem)"></d-button>
+                      </div>
+                      <ng-template #elseBlock>
+                        N/A
+                      </ng-template>
+                    </div>
+                    <ng-template #elseBlock>
+                      <d-button icon="icon-edit" bsStyle="text-dark" title="edit"
+                        (click)="editRow(rowItem, rowIndex)"></d-button>
+                      <d-button icon="icon-right" bsStyle="text-dark" title="Approve"
+                        (click)="approveOrder(rowItem)"></d-button>
+                      <d-button icon="icon-error" bsStyle="text-dark" title="Rejet"
+                        (click)="rejectOrder(rowItem)"></d-button>
+                    </ng-template>
+                  </ng-template>
+                </d-cell>
+              </d-column>
+            </d-data-table>
+          </div>
+          <div class="da-list-footer">
+            <d-pagination [size]="'sm'" [total]="pager.total" [(pageSize)]="pager.pageSize"
+              [(pageIndex)]="pager.pageIndex" [canViewTotal]="true" [canChangePageSize]="true" [canJumpPage]="true"
+              [maxItems]="5" (pageIndexChange)="onPageChange($event)" (pageSizeChange)="onSizeChange($event)">
+            </d-pagination>
+          </div>
+        </div>
+      </da-col-item>
+    </da-layout-row>
+  </div>
 </div>
 
 <ng-template #EditorTemplate>
-    <h3>Master Info</h3>
-        <div class="grid">
-          <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
-            <da-row-item>
-              <da-layout-row [daGutter]="[0, 0]">
-                <da-col-item [daXs]="8" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
-                        <d-form-label [required]="true">Order Number</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <input dTextInput readonly name="orderDate" [(ngModel)]="masterData.orderNumber" />
-                        </d-form-control>
-                      </d-form-item>
-                    </div>
-                </da-col-item>
-                <da-col-item [daXs]="8" [daMs]="24">
-                    <div class="u-1-3">
-                      <d-form-item>
-                        <d-form-label [required]="true">Order Date</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <input dTextInput readonly name="orderDate" [(ngModel)]="masterData.orderDate" />
-                        </d-form-control>
-                      </d-form-item>
-                    </div>
-                </da-col-item>
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                      <d-form-label [required]="true">Customer Name</d-form-label>
-                      <d-form-control class="form-control-width">
-                        <!-- <input dTextInput name="customerName" [(ngModel)]="masterData.selectedCustomer" /> -->
-                        <d-select [options]="customerList"
-                            name="CustomerId"
-                            [isSearch]="true" 
-                            [filterKey]="'label'"
-                            placeholder="Select Customer"
-                            [searchFn]="onSelectObject"
-                            [(ngModel)]="masterData.selectedCustomer"></d-select>
-                      </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                      <d-form-label [required]="true">Total Price</d-form-label>
-                      <d-form-control class="form-control-width">
-                        <input dTextInput name="userName" [(ngModel)]="masterData.totalPrice" />
-                      </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-                
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                      <d-form-label [required]="true">Genarale Discount</d-form-label>
-                      <d-form-control class="form-control-width">
-                        <input dTextInput name="genDiscount" [(ngModel)]="masterData.genDiscount" />
-                      </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                      <d-form-label [required]="true">Net Amount</d-form-label>
-                      <d-form-control class="form-control-width">
-                        <input dTextInput name="discAmount" [(ngModel)]="masterData.netAmount" />
-                      </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-              </da-layout-row>
-            </da-row-item>
-      
-            <da-row-item>
-              <da-layout-row [daGutter]="[0, 0]">
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                      <d-form-label [required]="true">Delivery Address</d-form-label>
-                      <d-form-control class="form-control-width">
-                        <textarea
-                            dTextarea
-                            resize="vertical"
-                            autocomplete="off"
-                            name="deliveryAddress"
-                            placeholder="Delivery Address"
-                            [(ngModel)]="masterData.deliveryAddress"
-                            [dValidateRules]="[{ maxlength: 500 }]"
-                        ></textarea>
-                      </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                        <d-form-label [required]="true">Delivery Instruction</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <textarea
-                          dTextarea
-                          resize="vertical"
-                          autocomplete="off"
-                          name="DeliveryInstruction"
-                          placeholder="Delivery Instruction"
-                          [(ngModel)]="masterData.deliveryInstruction"
-                          [dValidateRules]="[{ maxlength: 500 }]"
-                        ></textarea>
-                        </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-                <da-col-item [daXs]="8" [daMs]="24">
-                  <div class="u-1-3">
-                    <d-form-item>
-                        <d-form-label [required]="true">Remarks</d-form-label>
-                        <d-form-control class="form-control-width">
-                          <textarea
-                          dTextarea
-                          resize="vertical"
-                          autocomplete="off"
-                          name="remarks"
-                          placeholder="Remarks"
-                          [(ngModel)]="masterData.remarks"
-                          [dValidateRules]="[{ maxlength: 500 }]"
-                        ></textarea>
-                        </d-form-control>
-                    </d-form-item>
-                  </div>
-                </da-col-item>
-              </da-layout-row>
-            </da-row-item>
-      
-          </da-layout-col>
-        </div>
-        <h3>Add new Product</h3>
-        <div class="grid">
-            <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
-                <da-row-item>
-                    <da-layout-row [daGutter]="[0, 0]">
-                        <da-col-item [daXs]="6" [daMs]="24">
-                            <div class="u-1-3">
-                                <d-form-item>
-                                    <d-form-label [required]="true">Product Name</d-form-label>
-                                    <d-form-control class="form-control-width">
-                                        <d-select #productNameDropdown [options]="productList" name="Product"
-                                            [isSearch]="true" 
-                                            [filterKey]="'label'" 
-                                            [placeholder]="'Select Product Name'"
-                                            (ngModelChange)="changeProduct($event)"
-                                            [(ngModel)]="productRowData.product"></d-select>
-                                    </d-form-control>
-                                </d-form-item>
-                            </div>
-                        </da-col-item>
-                        <da-col-item [daXs]="6" [daMs]="24">
-                            <div class="u-1-3">
-                                <d-form-item>
-                                    <d-form-label [required]="true">Quantity</d-form-label>
-                                    <d-form-control class="form-control-width">
-                                        <input
-                                         dTextInput
-                                         name="quantity"
-                                         (change)="genarateTotalPrice(productRowData)"
-                                         [(ngModel)]="productRowData.quantity"
-                                           />
-                                    </d-form-control>
-                                </d-form-item>
-                            </div>
-                        </da-col-item>
-                        <da-col-item [daXs]="6" [daMs]="24">
-                            <div class="u-1-3">
-                                <d-form-item>
-                                    <d-form-label [required]="true">Unit</d-form-label>
-                                    <d-form-control class="form-control-width">
-                                        <d-select [options]="selectUnits" name="UnitId" [isSearch]="true"
-                                            [filterKey]="'label'"
-                                            placeholder="Select Unit"
-                                            (ngModelChange)="modifyTotalPrice($event,productRowData)"
-                                            [(ngModel)]="productRowData.unit"></d-select>
-                                    </d-form-control>
-                                </d-form-item>
-                            </div>
-                        </da-col-item>
-                        <da-col-item [daXs]="6" [daMs]="24">
-                            <div class="u-1-3">
-                                <d-form-item>
-                                    <d-form-label [required]="true">Unit Price</d-form-label>
-                                    <d-form-control class="form-control-width">
-                                        <input
-                                         dTextInput
-                                         (change)="genarateTotalPrice(productRowData)"
-                                         name="unitPrice"
-                                         [(ngModel)]="productRowData.unitPrice"
-                                          />
-                                    </d-form-control>
-                                </d-form-item>
-                            </div>
-                        </da-col-item>
-                        <da-col-item [daXs]="6" [daMs]="24">
-                            <div class="u-1-3">
-                                <d-form-item>
-                                    <d-form-label [required]="true">Total Price</d-form-label>
-                                    <d-form-control class="form-control-width">
-                                        <input
-                                         dTextInput
-                                         name="totalPrice"
-                                         [(ngModel)]="productRowData.totalPrice"
-                                          />
-                                    </d-form-control>
-                                </d-form-item>
-                            </div>
-                        </da-col-item>
-                        <da-col-item [daXs]="4" [daMs]="24">
-                            <div class="u-1-3" style="margin: 12% 0;">
-                                <d-form-operation>
-                                    <d-button bsStyle="primary" class="mr-element-spacing" (click)="quickRowAdded(productRowData)" circled="true">Add</d-button>
-                                </d-form-operation>
-                            </div>
-                        </da-col-item>
-                    </da-layout-row>
-                </da-row-item>
-            </da-layout-col>
-        </div>
-    <h3>Product Details Info</h3>
-    <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
-        <thead dTableHead>
-          <tr dTableRow>
-            <th dHeadCell>Id</th>
-            <th dHeadCell>Product Name</th>
-            <th dHeadCell>Quantity</th>
-            <th dHeadCell>Unit</th>
-            <th dHeadCell>Total Price</th>
-            <th dHeadCell>Actions</th>
-          </tr>
-        </thead>
-        <tbody dTableBody>
-          <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
-            <tr dTableRow>
-              <td
-                dTableCell
-                [editable]="true"
-                [editableTip]="editableTip"
-                [(editing)]="rowItem['idEdit']"
-                [rowItem]="rowItem"
-                [field]="'id'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-              >
-                <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
-                <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
-                  <input
-                    class="devui-form-control"
-                    name="id"
-                    [(ngModel)]="rowItem.id"
-                    [attr.maxlength]="100"
-                    [attr.minlength]="3"
-                  />
-                </div>
-              </td>
-              <td
-                dTableCell
-                [editable]="true"
-                [editableTip]="editableTip"
-                [(editing)]="rowItem['titleEdit']"
-                [rowItem]="rowItem"
-                [field]="'productName'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-              >
-                <span *ngIf="!rowItem['titleEdit']"
-                  >
-                  <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
-                  {{ rowItem?.productName }}</span
-                >
-                <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
-                    <select class="devui-form-control" [(ngModel)]="rowItem.productId" name="productId" (change)="valueChange($event)">
-                        <option [ngValue]="rowItem.productId" disabled>{{rowItem.productName}}</option>
-                        <option *ngFor="let obj of dropdownProductList" [ngValue]="obj.id" [selected]="obj.id == rowItem.productId"> {{obj.productName}} </option>
-                    </select>
-                  <!-- <input
+  <h3>Master Info</h3>
+  <div class="grid">
+    <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+      <da-row-item>
+        <da-layout-row [daGutter]="[0, 0]">
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Order Number</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput readonly name="orderDate" [(ngModel)]="masterData.orderNumber" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Order Date</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput readonly name="orderDate" [(ngModel)]="masterData.orderDate" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Customer Name</d-form-label>
+                <d-form-control class="form-control-width">
+                  <!-- <input dTextInput name="customerName" [(ngModel)]="masterData.selectedCustomer" /> -->
+                  <d-select [options]="customerList" name="CustomerId" [isSearch]="true" [filterKey]="'label'"
+                    placeholder="Select Customer" [searchFn]="onSelectObject"
+                    [(ngModel)]="masterData.selectedCustomer"></d-select>
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Total Price</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput name="userName" [(ngModel)]="masterData.totalPrice" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Genarale Discount</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput name="genDiscount" [(ngModel)]="masterData.genDiscount" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Net Amount</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput name="discAmount" [(ngModel)]="masterData.netAmount" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+        </da-layout-row>
+      </da-row-item>
+
+      <da-row-item>
+        <da-layout-row [daGutter]="[0, 0]">
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Delivery Address</d-form-label>
+                <d-form-control class="form-control-width">
+                  <textarea dTextarea resize="vertical" autocomplete="off" name="deliveryAddress"
+                    placeholder="Delivery Address" [(ngModel)]="masterData.deliveryAddress"
+                    [dValidateRules]="[{ maxlength: 500 }]"></textarea>
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Delivery Instruction</d-form-label>
+                <d-form-control class="form-control-width">
+                  <textarea dTextarea resize="vertical" autocomplete="off" name="DeliveryInstruction"
+                    placeholder="Delivery Instruction" [(ngModel)]="masterData.deliveryInstruction"
+                    [dValidateRules]="[{ maxlength: 500 }]"></textarea>
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="8" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Remarks</d-form-label>
+                <d-form-control class="form-control-width">
+                  <textarea dTextarea resize="vertical" autocomplete="off" name="remarks" placeholder="Remarks"
+                    [(ngModel)]="masterData.remarks" [dValidateRules]="[{ maxlength: 500 }]"></textarea>
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+        </da-layout-row>
+      </da-row-item>
+
+    </da-layout-col>
+  </div>
+  <h3>Add new Product</h3>
+  <div class="grid">
+    <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+      <da-row-item>
+        <da-layout-row [daGutter]="[0, 0]">
+          <da-col-item [daXs]="6" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Product Name</d-form-label>
+                <d-form-control class="form-control-width">
+                  <d-select #productNameDropdown [options]="productList" name="Product" [isSearch]="true"
+                    [filterKey]="'label'" [placeholder]="'Select Product Name'" (ngModelChange)="changeProduct($event)"
+                    [(ngModel)]="productRowData.product"></d-select>
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="6" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Quantity</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput name="quantity" (change)="genarateTotalPrice(productRowData)"
+                    [(ngModel)]="productRowData.quantity" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="6" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Unit</d-form-label>
+                <d-form-control class="form-control-width">
+                  <d-select [options]="selectUnits" name="UnitId" [isSearch]="true" [filterKey]="'label'"
+                    placeholder="Select Unit" (ngModelChange)="modifyTotalPrice($event,productRowData)"
+                    [(ngModel)]="productRowData.unit"></d-select>
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="6" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Unit Price</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput (change)="genarateTotalPrice(productRowData)" name="unitPrice"
+                    [(ngModel)]="productRowData.unitPrice" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="6" [daMs]="24">
+            <div class="u-1-3">
+              <d-form-item>
+                <d-form-label [required]="true">Total Price</d-form-label>
+                <d-form-control class="form-control-width">
+                  <input dTextInput name="totalPrice" [(ngModel)]="productRowData.totalPrice" />
+                </d-form-control>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="4" [daMs]="24">
+            <div class="u-1-3" style="margin: 12% 0;">
+              <d-form-operation>
+                <d-button bsStyle="primary" class="mr-element-spacing" (click)="quickRowAdded(productRowData)"
+                  circled="true">Add</d-button>
+              </d-form-operation>
+            </div>
+          </da-col-item>
+        </da-layout-row>
+      </da-row-item>
+    </da-layout-col>
+  </div>
+  <h3>Product Details Info</h3>
+  <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
+    <thead dTableHead>
+      <tr dTableRow>
+        <th dHeadCell>Id</th>
+        <th dHeadCell>Product Name</th>
+        <th dHeadCell>Quantity</th>
+        <th dHeadCell>Unit</th>
+        <th dHeadCell>Total Price</th>
+        <th dHeadCell>Actions</th>
+      </tr>
+    </thead>
+    <tbody dTableBody>
+      <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+        <tr dTableRow>
+          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
+            [rowItem]="rowItem" [field]="'id'" [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
+            <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
+              <input class="devui-form-control" name="id" [(ngModel)]="rowItem.id" [attr.maxlength]="100"
+                [attr.minlength]="3" />
+            </div>
+          </td>
+          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['titleEdit']"
+            [rowItem]="rowItem" [field]="'productName'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['titleEdit']">
+              <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
+              {{ rowItem?.productName }}</span>
+            <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
+              <select class="devui-form-control" [(ngModel)]="rowItem.productId" name="productId"
+                (change)="valueChange($event)">
+                <option [ngValue]="rowItem.productId" disabled>{{rowItem.productName}}</option>
+                <option *ngFor="let obj of dropdownProductList" [ngValue]="obj.id"
+                  [selected]="obj.id == rowItem.productId"> {{obj.productName}} </option>
+              </select>
+              <!-- <input
                     class="devui-form-control"
                     name="productName"
                     [(ngModel)]="rowItem.productName"
                     [attr.maxlength]="200"
                     [attr.minlength]="50"
                   /> -->
-                </div>
-              </td>
-              <td
-                dTableCell
-                [editable]="true"
-                [editableTip]="editableTip"
-                [(editing)]="rowItem['quantityEdit']"
-                [rowItem]="rowItem"
-                [field]="'quantity'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-              >
-                <span *ngIf="!rowItem['quantityEdit']">{{
-                  rowItem?.quantity
-                }}</span>
-                <div
-                  *ngIf="rowItem['quantityEdit']"
-                  class="edit-padding-fix"
-                >
-                  <input
-                    dTextInput
-                    size="sm"
-                    [(ngModel)]="rowItem.quantity"
-                  />
-                </div>
-              </td>
-              <td
-                dTableCell
-                [editable]="true"
-                [editableTip]="editableTip"
-                [(editing)]="rowItem['assigneeEdit']"
-                [rowItem]="rowItem"
-                [field]="'unitName'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-              >
-                <span *ngIf="!rowItem['assigneeEdit']">
-                  <!-- <d-avatar
+            </div>
+          </td>
+          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['quantityEdit']"
+            [rowItem]="rowItem" [field]="'quantity'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['quantityEdit']">{{
+              rowItem?.quantity
+              }}</span>
+            <div *ngIf="rowItem['quantityEdit']" class="edit-padding-fix">
+              <input dTextInput size="sm" [(ngModel)]="rowItem.quantity" />
+            </div>
+          </td>
+          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['assigneeEdit']"
+            [rowItem]="rowItem" [field]="'unitName'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['assigneeEdit']">
+              <!-- <d-avatar
                     [name]="rowItem.description"
                     [width]="24"
                     [height]="24"
                   ></d-avatar> -->
-                  <span style="margin-left: 6px">{{
-                    rowItem.unitName
-                  }}</span>
-                </span>
-                <div
-                  *ngIf="rowItem['assigneeEdit']"
-                  class="edit-padding-fix"
-                >
-                <select class="devui-form-control" [(ngModel)]="rowItem.unitId" name="unitId" (change)="valueChange($event)">
-                    <option [ngValue]="rowItem.unitId" disabled>{{rowItem.unitName}}</option>
-                    <option *ngFor="let obj of selectUnits" [ngValue]="obj.id" [selected]="obj.id == rowItem.unitId"> {{obj.label}} </option>
-                  </select>
-                  <!-- <input
+              <span style="margin-left: 6px">{{
+                rowItem.unitName
+                }}</span>
+            </span>
+            <div *ngIf="rowItem['assigneeEdit']" class="edit-padding-fix">
+              <select class="devui-form-control" [(ngModel)]="rowItem.unitId" name="unitId"
+                (change)="valueChange($event)">
+                <option [ngValue]="rowItem.unitId" disabled>{{rowItem.unitName}}</option>
+                <option *ngFor="let obj of selectUnits" [ngValue]="obj.id" [selected]="obj.id == rowItem.unitId">
+                  {{obj.label}} </option>
+              </select>
+              <!-- <input
                     dTextInput
                     size="sm"
                     [(ngModel)]="rowItem.unitName"
                   /> -->
-                </div>
-              </td>
-              <td
-                dTableCell
-                [editable]="true"
-                [editableTip]="editableTip"
-                [(editing)]="rowItem['totalPriceEdit']"
-                [rowItem]="rowItem"
-                [field]="'totalPrice'"
-                [beforeEditStart]="beforeEditStart"
-                [beforeEditEnd]="beforeEditEnd"
-              >
-                <span *ngIf="!rowItem['totalPriceEdit']">
-                  <!-- <d-avatar
+            </div>
+          </td>
+          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['totalPriceEdit']"
+            [rowItem]="rowItem" [field]="'totalPrice'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['totalPriceEdit']">
+              <!-- <d-avatar
                     [name]="rowItem.description"
                     [width]="24"
                     [height]="24"
                   ></d-avatar> -->
-                  <span style="margin-left: 6px">{{
-                    rowItem.totalPrice
-                  }}</span>
-                </span>
-                <div
-                  *ngIf="rowItem['totalPriceEdit']"
-                  class="edit-padding-fix"
-                >
-                  <input
-                    dTextInput
-                    size="sm"
-                    [(ngModel)]="rowItem.totalPrice"
-                  />
-                </div>
-              </td>
-              <td>
-                <d-button
-                  icon="icon-delete"
-                  bsStyle="text-dark"
-                  title="delete"
-                  (click)="deleteItem(rowIndex,rowItem)"
-                ></d-button>
-              </td>
-            </tr>
-          </ng-template>
-        </tbody>
-      </d-data-table>
+              <span style="margin-left: 6px">{{
+                rowItem.totalPrice
+                }}</span>
+            </span>
+            <div *ngIf="rowItem['totalPriceEdit']" class="edit-padding-fix">
+              <input dTextInput size="sm" [(ngModel)]="rowItem.totalPrice" />
+            </div>
+          </td>
+          <td>
+            <d-button icon="icon-delete" bsStyle="text-dark" title="delete"
+              (click)="deleteItem(rowIndex,rowItem)"></d-button>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </d-data-table>
 
-        <div>
-            <d-form-operation>
-                <d-button bsStyle="primary" class="mr-element-spacing" circled="true" (btnClick)="placeOrder(masterData)">Submit</d-button>
-                <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
-              </d-form-operation>
-        </div>
+  <div>
+    <d-form-operation>
+      <d-button bsStyle="primary" class="mr-element-spacing" circled="true"
+        (btnClick)="placeOrder(masterData)">Submit</d-button>
+      <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
+    </d-form-operation>
+  </div>
 </ng-template>

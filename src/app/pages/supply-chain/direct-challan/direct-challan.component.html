@@ -58,7 +58,7 @@
                         <d-form-control class="form-control-width">
                           <d-select [options]="subCustomerList" name="SubCustomerId" [isSearch]="true"
                             [filterKey]="'label'" placeholder="Select Sub Customer"
-                            (ngModelChange)="genarateSubInfo($event)"
+                            (ngModelChange)="genarateSubInfo($event) "
                             [(ngModel)]="masterData.selectedSubCustomer"></d-select>
                         </d-form-control>
                       </d-form-item>
