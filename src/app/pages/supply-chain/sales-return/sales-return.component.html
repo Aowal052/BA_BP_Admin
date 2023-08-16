@@ -196,7 +196,7 @@
                     <tbody dTableBody>
                       <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                         <tr dTableRow>
-                          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
+                          <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
                             [rowItem]="rowItem" [field]="'id'" [beforeEditStart]="beforeEditStart"
                             [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
@@ -215,14 +215,15 @@
                             </div>
                           </td>
                           <td dTableCell [editable]="true" [editableTip]="editableTip"
-                            [(editing)]="rowItem['iterationEdit']" [rowItem]="rowItem" [field]="'quantity'"
+                            [(editing)]="rowItem['quantityEdit']" [rowItem]="rowItem" [field]="'quantity'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
-                            <span *ngIf="!rowItem['iterationEdit']">{{ rowItem?.quantity }}</span>
-                            <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
-                              <input dTextInput size="sm" [(ngModel)]="rowItem.quantity" />
+                            <span *ngIf="!rowItem['quantityEdit']">
+                              {{ rowItem?.quantity }}</span>
+                            <div *ngIf="rowItem['quantityEdit']" class="edit-padding-fix">
+                              <input class="devui-form-control" name="quantity" [(ngModel)]="rowItem.quantity" />
                             </div>
                           </td>
-                          <td dTableCell [editable]="true" [editableTip]="editableTip"
+                          <td dTableCell [editable]="false" [editableTip]="editableTip"
                             [(editing)]="rowItem['assigneeEdit']" [rowItem]="rowItem" [field]="'unitName'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
 
@@ -234,7 +235,7 @@
                               <input dTextInput size="sm" [(ngModel)]="rowItem.unitName" />
                             </div>
                           </td>
-                          <td dTableCell [editable]="true" [editableTip]="editableTip"
+                          <td dTableCell [editable]="false" [editableTip]="editableTip"
                             [(editing)]="rowItem['assigneeEdit']" [rowItem]="rowItem" [field]="'totalPrice'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['assigneeEdit']">

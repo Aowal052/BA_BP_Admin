@@ -25,24 +25,15 @@
                       <d-form-item>
                         <d-form-label [required]="true">Challan Date</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input
-                              class="devui-input devui-form-control"
-                              placeholder="y/MM/dd"
-                              name="dp"
-                              [(ngModel)]="masterData.challanDate"
-                              (click)="datePicker1.toggle()"
-                              autocomplete="off"
-                              dDatepicker
-                              appendToBody
-                              #datePicker1="datepicker"
-                              (selectedDateChange)="getValue($event)"
-                              [customViewTemplate]="orderDate"
-                            />
-                            <ng-template #orderDate let-chooseDate="chooseDate" let-datePicker>
-                              <div class="box">
-                                <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
-                              </div>
-                            </ng-template>
+                          <input class="devui-input devui-form-control" placeholder="y/MM/dd" name="dp"
+                            [(ngModel)]="masterData.challanDate" (click)="datePicker1.toggle()" autocomplete="off"
+                            dDatepicker appendToBody #datePicker1="datepicker" (selectedDateChange)="getValue($event)"
+                            [customViewTemplate]="orderDate" />
+                          <ng-template #orderDate let-chooseDate="chooseDate" let-datePicker>
+                            <div class="box">
+                              <a class="date-link" (click)="chooseDate(getDay(0))">select today</a>
+                            </div>
+                          </ng-template>
                         </d-form-control>
                       </d-form-item>
                     </div>
@@ -219,7 +210,7 @@
                     <tbody dTableBody>
                       <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                         <tr dTableRow>
-                          <td dTableCell [editable]="true" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
+                          <td dTableCell [editable]="false" [editableTip]="editableTip" [(editing)]="rowItem['idEdit']"
                             [rowItem]="rowItem" [field]="'id'" [beforeEditStart]="beforeEditStart"
                             [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
@@ -228,57 +219,39 @@
                                 [attr.maxlength]="100" [attr.minlength]="3" />
                             </div>
                           </td>
-                          <td 
-                          dTableCell 
-                          [editableTip]="editableTip" 
-                          [(editing)]="rowItem['titleEdit']"
-                          [rowItem]="rowItem" 
-                          [field]="'productName'" 
-                          [beforeEditStart]="beforeEditStart"
-                          [beforeEditEnd]="beforeEditEnd">
+                          <td dTableCell [editableTip]="editableTip" [(editing)]="rowItem['titleEdit']"
+                            [rowItem]="rowItem" [field]="'productName'" [beforeEditStart]="beforeEditStart"
+                            [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['titleEdit']">{{ rowItem?.productName }}</span>
                             <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
                               <input class="devui-form-control" name="productName" [(ngModel)]="rowItem.productName"
                                 [attr.maxlength]="200" [attr.minlength]="50" />
                             </div>
                           </td>
-                          <td dTableCell 
-                          [editable]="true" 
-                          [editableTip]="editableTip"
-                          [(editing)]="rowItem['iterationEdit']" 
-                          [rowItem]="rowItem" [field]="'quantity'"
-                          [beforeEditStart]="beforeEditStart" 
-                          [beforeEditEnd]="beforeEditEnd">
-                            <span *ngIf="!rowItem['iterationEdit']">{{ rowItem?.quantity }}</span>
-                            <div *ngIf="rowItem['iterationEdit']" class="edit-padding-fix">
-                              <input dTextInput size="sm" [(ngModel)]="rowItem.quantity" />
+                          <td dTableCell [editable]="true" [editableTip]="editableTip"
+                            [(editing)]="rowItem['quantityEdit']" [rowItem]="rowItem" [field]="'quantity'"
+                            [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+                            <span *ngIf="!rowItem['quantityEdit']">
+                              {{ rowItem?.quantity }}</span>
+                            <div *ngIf="rowItem['quantityEdit']" class="edit-padding-fix">
+                              <input class="devui-form-control" name="quantity" [(ngModel)]="rowItem.quantity" />
                             </div>
                           </td>
-                          <td 
-                          dTableCell 
-                          [editable]="true" 
-                          [editableTip]="editableTip"
-                          [(editing)]="rowItem['assigneeEdit']" 
-                          [rowItem]="rowItem" [field]="'unitName'"
-                          [beforeEditStart]="beforeEditStart" 
-                          [beforeEditEnd]="beforeEditEnd">
-                            
+                          <td dTableCell [editable]="false" [editableTip]="editableTip"
+                            [(editing)]="rowItem['assigneeEdit']" [rowItem]="rowItem" [field]="'unitName'"
+                            [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+
                             <span *ngIf="!rowItem['assigneeEdit']">
-                              
+
                               <span style="margin-left: 6px">{{rowItem.unitName }}</span>
                             </span>
                             <div *ngIf="rowItem['assigneeEdit']" class="edit-padding-fix">
                               <input dTextInput size="sm" [(ngModel)]="rowItem.unitName" />
                             </div>
                           </td>
-                          <td 
-                          dTableCell 
-                          [editable]="true" 
-                          [editableTip]="editableTip"
-                          [(editing)]="rowItem['assigneeEdit']" 
-                          [rowItem]="rowItem" [field]="'totalPrice'"
-                          [beforeEditStart]="beforeEditStart" 
-                          [beforeEditEnd]="beforeEditEnd">
+                          <td dTableCell [editable]="false" [editableTip]="editableTip"
+                            [(editing)]="rowItem['assigneeEdit']" [rowItem]="rowItem" [field]="'totalPrice'"
+                            [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['assigneeEdit']">
                               <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
                             </span>
@@ -303,7 +276,7 @@
           <!-- Form.resetForm() -->
           <d-form-operation>
             <d-button bsStyle="primary" class="mr-element-spacing" circled="true" style="margin-right: 4px !important"
-              (btnClick)="placeOrder(masterData); " >Submit</d-button>
+              (btnClick)="placeOrder(masterData); ">Submit</d-button>
             <d-button bsStyle="common" circled="true">Cancel</d-button>
           </d-form-operation>
         </form>

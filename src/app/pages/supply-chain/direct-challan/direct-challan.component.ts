@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
@@ -591,15 +591,34 @@ export class DirectChallanComponent implements OnInit{
   quickRowCancel() {
     this.headerNewForm = false;
   }
+
+  // Key press enter
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.quickRowAdded(this.productRowData);
+     
+    }
+  }
+
   beforeEditStart = (rowItem: any, field: any) => {
+    debugger
     return true;
   };
 
-   beforeEditEnd = async (rowItem: any, field: any) => {
-    //await this.updateproduct(rowItem);
-    if (rowItem && rowItem[field].length < 3) {
+  beforeEditEnd = async (rowItem: any, field: any) => {
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
+    }
+    //await this.updatecategory(data);
+    if (rowItem && rowItem[field].length < 1) {
       return false;
     } else {
+      rowItem.totalPrice = rowItem.quantity*rowItem.unitPrice;
       return true;
     }
   };

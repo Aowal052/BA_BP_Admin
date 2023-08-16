@@ -95,7 +95,7 @@ export class ApiEndPoints{
 
     //#region SalesReturn
     static readonly CreateSalesReturn: string = 'v1/CRM/CreateSalesReturn';
-    static readonly GetSalesReturn: string = 'Vehicle/Get';
+    static readonly GetSalesReturnMasterList:string = 'v1/CRM/GetSalesReturnMasterAsync';
     //#endregion
 
     // Additional static messages can be added here

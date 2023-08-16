@@ -44,7 +44,7 @@
                             </div>
                           </div>
                           <div class="da-header-item">
-                            <d-form-label [required]="true">Customer: </d-form-label>
+                            <d-form-label [required]="true">Customer : </d-form-label>
                             <d-form-item>
                               <d-form-control class="form-control-width">
                                 <d-select [options]="customerList" name="CustomerId" [isSearch]="true" [filterKey]="'label'"
@@ -53,20 +53,10 @@
                               </d-form-control>
                             </d-form-item>
                           </div>
+                          
                           <div class="da-header-item">
-                            <d-form-label [required]="true">Sub Customer: </d-form-label>
-                            <d-form-item>
-                              <d-form-control class="form-control-width">
-                                <d-select [options]="subCustomerList" name="SubCustomerId" [isSearch]="true"
-                                  [filterKey]="'label'" placeholder="Select Sub Customer"
-                                  (ngModelChange)="genarateSubInfo($event)"
-                                  [(ngModel)]="searchModel.selectedSubCustomer"></d-select>
-                              </d-form-control>
-                            </d-form-item>
-                          </div>
-                          <div class="da-header-item">
-                            <div class="da-header-item-label" style="width: 100px;">Challan No :</div>
-                            <input dTextInput [placeholder]="'Challan No'" [(ngModel)]="searchModel.challanNo" />
+                            <div class="da-header-item-label" style="width: 100px;">Return No :</div>
+                            <input dTextInput [placeholder]="'Sales Return No'" [(ngModel)]="searchModel.returnNo" />
                           </div>
                           
                         </div>
@@ -78,27 +68,21 @@
                         
                           <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
                               [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true" >
-                                <d-column field="invoiceNo" header="Challan No" [width]="'100px'" >
+                                <d-column field="invoiceNo" header="Sales Return No" [width]="'100px'" >
                                     <d-cell>
                                     <ng-template let-cellItem="cellItem">
                                         {{ cellItem }}
                                     </ng-template>
                                     </d-cell>
                                 </d-column>
-                                  <d-column field="invoiceDate" header="Challan Date" [width]="'100px'" >
+                                  <d-column field="invoiceDate" header="Return Date" [width]="'100px'" >
                                     <d-cell>
                                       <ng-template let-cellItem="cellItem">
                                         {{ cellItem }}
                                       </ng-template>
                                     </d-cell>
                                   </d-column>
-                                  <d-column field="orderNo" header="Order No" [width]="'100px'" >
-                                    <d-cell>
-                                      <ng-template let-cellItem="cellItem">
-                                        {{ cellItem }}
-                                      </ng-template>
-                                    </d-cell>
-                                  </d-column>
+                                 
                                   <d-column field="customerName" header="Customer Name" [width]="'100px'">
                                     <d-cell>
                                       <ng-template let-cellItem="cellItem">
@@ -108,15 +92,7 @@
                                       </ng-template>
                                     </d-cell>
                                   </d-column>
-                                  <d-column field="gatePassNo" header="GatePass NO" [width]="'100px'">
-                                    <d-cell>
-                                      <ng-template let-cellItem="cellItem">
-                                        <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
-                                          {{ cellItem }}
-                                        </span>
-                                      </ng-template>
-                                    </d-cell>
-                                  </d-column>
+                                 
                                   <d-column field="Actions" header="Actions" [width]="'150px'">
                                     <d-cell>
                                         <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">

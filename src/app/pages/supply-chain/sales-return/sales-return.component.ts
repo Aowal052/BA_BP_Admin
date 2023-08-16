@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuConfig, TableWidthConfig, FormLayout, EditableTip, DialogService } from 'ng-devui';
 import { Subscription, Observable, of, delay, map } from 'rxjs';
@@ -155,44 +155,6 @@ export class SalesReturnComponent implements OnInit{
       width: '150px',
     },
   ];
-  // formConfig: FormConfig = {
-  //   layout: FormLayout.Horizontal,
-  //   labelSize: 'sm',
-  //   items: [
-  //     // {
-  //     //   label: 'product Name',
-  //     //   prop: 'productName',
-  //     //   type: 'input',
-  //     //   required: true,
-  //     //   rule: {
-  //     //     validators: [{ required: true }],
-  //     //   },
-  //     // },
-  //     // {
-  //     //   label: 'product Code',
-  //     //   prop: 'productCode',
-  //     //   type: 'input',
-  //     // },
-  //     // {
-  //     //   label: 'description',
-  //     //   prop: 'description',
-  //     //   type: 'input',
-  //     //   required: true,
-  //     //   rule: {
-  //     //     validators: [{ required: true }],
-  //     //   },
-  //     // },
-  //     // {
-  //     //   label: 'price',
-  //     //   prop: 'price',
-  //     //   type: 'input',
-  //     //   required: true,
-  //     //   rule: {
-  //     //     validators: [{ required: true }],
-  //     //   },
-  //     // },
-  //   ],
-  // };
   formData = {
     selectValue: this.selectOptions[1],
     multipleSelectValue: [],
@@ -309,6 +271,15 @@ export class SalesReturnComponent implements OnInit{
     this.active = true;
   }
 
+  // Key press enter
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.quickRowAdded(this.productRowData);
+     
+    }
+  }
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
       this.customerDropdownList = res.data;
@@ -526,15 +497,23 @@ export class SalesReturnComponent implements OnInit{
   quickRowCancel() {
     this.headerNewForm = false;
   }
-  beforeEditStart = () => {
+  beforeEditStart = (rowItem: any, field: any) => {
+    debugger
     return true;
   };
 
-   beforeEditEnd = async (rowItem: any, field: any) => {
-    //await this.updateproduct(rowItem);
-    if (rowItem && rowItem[field].length < 3) {
+  beforeEditEnd = async (rowItem: any, field: any) => {
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
+    }
+    //await this.updatecategory(data);
+    if (rowItem && rowItem[field].length < 1) {
       return false;
     } else {
+      rowItem.totalPrice = rowItem.quantity*rowItem.unitPrice;
       return true;
     }
   };
