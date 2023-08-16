@@ -373,7 +373,10 @@ export class SupplyChainListComponent implements OnInit {
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res: CustomerResponse) => {
       this.customerDropdownList = res.data;
-      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+      this.customerList = [
+        { id: 0, label: 'Select Customer' }, // Add the default option
+        ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
+      ];
     });
   }
   genarateTotalPrice(productRowData:any,index:number){
@@ -391,7 +394,10 @@ export class SupplyChainListComponent implements OnInit {
     this.searchModel.selectedSubCustomer = {id:0,label:''}
      this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
        this.subCustomerDropdownList = res.data;
-       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+       this.subCustomerList = [
+        { id: 0, label: 'Select Customer' }, // Add the default option
+        ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
+      ];
      });
    }
   async genarateMasterInfo(data:any){

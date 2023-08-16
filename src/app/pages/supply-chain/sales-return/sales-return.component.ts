@@ -182,7 +182,7 @@ export class SalesReturnComponent implements OnInit{
   productRowData = {
     product: '',
     quantity: 0,
-    unit: {},
+    unit: {id:0,label:''},
     unitPrice: 0,
     totalPrice: 0,
   };
@@ -210,7 +210,7 @@ export class SalesReturnComponent implements OnInit{
 
   /// Product Data
   listData : any[] = [];
-  productInfo?:Product;
+  productInfo!:Product;
   productList: any[] = [];
   dropdownProductList:any[] = [];
 
@@ -411,9 +411,10 @@ export class SalesReturnComponent implements OnInit{
   changeProduct(product:any){
     debugger;
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
+    const unit = this.selectUnits.find(x=>x.id==this.productInfo.activeUnitId);
     this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-    this.productRowData.unit = this.selectUnits.find(x=>x.id == 2)??{};
+    this.productRowData.unit = {id:Number(unit?.id),label:unit?.label??''};
+    this.productRowData.unitPrice = this.productRowData.unit.id==1?Number(this.productInfo?.dozenPrice):Number(this.productInfo?.piecePrice)
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 

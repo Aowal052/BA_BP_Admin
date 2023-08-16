@@ -209,7 +209,7 @@ export class DaLayoutComponent implements OnDestroy {
   @HostBinding('class.da-layout') default = true;
   private destroy$ = new Subject<void>();
 
-  @Input() config: DaLayoutConfig;
+  @Input() config!: DaLayoutConfig;
 
   getSidebarWidth(): string {
     let width = 0;

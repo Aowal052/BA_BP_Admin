@@ -299,7 +299,7 @@
                                 <d-form-item>
                                     <d-form-label [required]="true">Product Name</d-form-label>
                                     <d-form-control class="form-control-width">
-                                        <d-select [options]="productList" name="Product"
+                                        <d-select #productNameDropdown [options]="productList" name="Product"
                                             [isSearch]="true" 
                                             [filterKey]="'label'" 
                                             [placeholder]="'Select Product Name'"

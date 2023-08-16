@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { ChangeDetectorRef, Component, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { AppendToBodyDirection } from 'ng-devui/utils';
 import { Subscription, of } from 'rxjs';
 import { Item } from 'src/app/@core/data/listData';
@@ -174,12 +174,12 @@ export class WorkOrderListComponent {
   productRowData = {
     product: '',
     quantity: 0,
-    unit: {},
+    unit: {id:0,label:''},
     unitPrice: 0,
     totalPrice: 0,
 
   };
-  productInfo?:Product;
+  productInfo!:Product;
   dropdownProductList:any[] = [];
   productList: any[] = [];
   busy!: Subscription;
@@ -256,6 +256,7 @@ export class WorkOrderListComponent {
     }
   };
   appendToBodyDirections: AppendToBodyDirection[] = ['centerDown', 'centerUp'];
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
   constructor(
     private listDataService: ListDataService, 
     private service:OrderService,
@@ -270,10 +271,12 @@ export class WorkOrderListComponent {
     this.getProductList();
   }
   changeProduct(product:any){
+    debugger
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
+    const unit = this.selectUnits.find(x=>x.id==this.productInfo.activeUnitId);
     this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-    this.productRowData.unit = this.selectUnits.find(x=>x.id == 1)??{};
+    this.productRowData.unit = {id:Number(unit?.id),label:unit?.label??''};
+    this.productRowData.unitPrice = this.productRowData.unit.id==1?Number(this.productInfo?.dozenPrice):Number(this.productInfo?.piecePrice)
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
   getValue(value:any) {
@@ -297,7 +300,6 @@ export class WorkOrderListComponent {
       this.searchModel.total = res.totalCount;
     });
   }
-  
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
   };
@@ -418,6 +420,14 @@ export class WorkOrderListComponent {
   }
   showToast(type: any, title: string, msg: string) {
     this.msgs = [{ severity: type, summary: title, detail: msg }];
+  }
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.quickRowAdded(this.productRowData);
+      this.productNameDropdown.toggle();
+    }
   }
   async quickRowAdded(e: any) {
     e.unitName = e.unit.label;

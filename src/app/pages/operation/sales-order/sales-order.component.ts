@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, MenuConfig, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
@@ -265,7 +265,7 @@ export class SalesOrderComponent {
   discountList: any[] = [];
 
   listData : any[] = [];
-  productInfo?:Product;
+  productInfo!:Product;
   productList: any[] = [];
   customerInfo!:Customer;
   customerList: any[] = [];
@@ -306,15 +306,17 @@ export class SalesOrderComponent {
   }
 
 
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
+
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
-     
+      this.productNameDropdown.toggle();
     }
   }
-
   async newRow() {
     this.headerNewForm = true;
     this.updateFormConfigOptions();
@@ -404,7 +406,6 @@ export class SalesOrderComponent {
       });
       
   }
-
   convertObjectKeysToCamelCase(obj: any): any {
     if (typeof obj !== 'object' || obj === null) {
       return obj;
@@ -491,10 +492,10 @@ export class SalesOrderComponent {
 
   changeProduct(product:any){
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
+    const unit = this.selectUnits.find(x=>x.id==this.productInfo.activeUnitId);
     this.productRowData.quantity = 1;
-    this.productRowData.unit = {id:1,label:'Dzn'};
+    this.productRowData.unit = {id:Number(unit?.id),label:unit?.label??''};
     this.productRowData.unitPrice = this.productRowData.unit.id==1?Number(this.productInfo?.dozenPrice):Number(this.productInfo?.piecePrice)
-    //this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 

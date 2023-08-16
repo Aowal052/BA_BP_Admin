@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, MenuConfig, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
@@ -244,7 +244,7 @@ export class DirectChallanComponent implements OnInit{
   productRowData = {
     product: '',
     quantity: 0,
-    unit: {},
+    unit: {id:0,label:''},
     unitPrice: 0,
     totalPrice: 0,
   };
@@ -278,7 +278,7 @@ export class DirectChallanComponent implements OnInit{
 
   /// Product Data
   listData : any[] = [];
-  productInfo?:Product;
+  productInfo!:Product;
   productList: any[] = [];
   dropdownProductList:any[] = [];
 
@@ -328,6 +328,7 @@ export class DirectChallanComponent implements OnInit{
     this.headerNewForm = true;
     this.updateFormConfigOptions();
   }
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
 
   async changeGenDisVal(event:boolean){
     if(!event){
@@ -350,7 +351,10 @@ export class DirectChallanComponent implements OnInit{
       this.customerDropdownList = res.data;
       
       debugger
-      this.customerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+      this.customerList = [
+        { id: 0, label: 'Select Customer' }, // Add the default option
+        ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
+      ];
     });
   }
   async getSubCustomerDropdown(id: any) {
@@ -358,7 +362,10 @@ export class DirectChallanComponent implements OnInit{
     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
       this.subCustomerDropdownList = res.data;
      // debugger
-      this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+      this.subCustomerList = [
+        { id: 0, label: 'Select Customer' }, // Add the default option
+        ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
+      ];
     });
   }
 
@@ -499,9 +506,10 @@ export class DirectChallanComponent implements OnInit{
   changeProduct(product:any){
     debugger;
     this.productInfo = this.dropdownProductList.find(x=>x.id==product.id);
+    const unit = this.selectUnits.find(x=>x.id==this.productInfo.activeUnitId);
     this.productRowData.quantity = 1;
-    this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-    this.productRowData.unit = this.selectUnits.find(x=>x.id == 2)??{};
+    this.productRowData.unit = {id:Number(unit?.id),label:unit?.label??''};
+    this.productRowData.unitPrice = this.productRowData.unit.id==1?Number(this.productInfo?.dozenPrice):Number(this.productInfo?.piecePrice)
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 
@@ -591,7 +599,7 @@ export class DirectChallanComponent implements OnInit{
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
-     
+      this.productNameDropdown.toggle();
     }
   }
 

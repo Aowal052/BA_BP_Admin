@@ -344,6 +344,30 @@ export class ListProductComponent implements OnInit{
     this.headerNewForm = true;
     this.updateFormConfigOptions();
   }
+  async onSearch(e:any){
+    debugger
+    const formData = new FormData();
+    formData.append('Keyword', e||'');
+    formData.append('PageNumber', this.pager.pageIndex.toString());
+    formData.append('PageSize', this.pager.pageSize.toString());
+    this.busy = (await this.service.updateProduct(ApiEndPoints.SearchProduct, formData)).subscribe({
+      next: (res: ProductResponse) => {
+        res.$expandConfig = { expand: false };
+        this.listData = res.data;
+        this.pager.total = res.totalCount;
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.createMessage.summary,
+            content: 'Invalid Product Info',
+          },
+        ];
+      }
+    });
+  }
 
   updateFormConfigOptions() {
     debugger
@@ -359,6 +383,7 @@ export class ListProductComponent implements OnInit{
       formData.append('CategoryId', e.category.id||'');
       formData.append('Description', e.description || '');
       formData.append('ShortName', e.shortName || '');
+      formData.append('ActiveUnitId', e.dUnit.id || '');
       (await this.service.updateProduct(ApiEndPoints.AddProduct, formData)).subscribe({
         next: (res: ProductResponse) => {
           this.res = res;

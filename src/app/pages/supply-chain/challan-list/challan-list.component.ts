@@ -282,7 +282,10 @@ export class ChallanListComponent implements OnInit{
     this.searchModel.selectedSubCustomer = {id:0,label:''}
      this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
        this.subCustomerDropdownList = res.data;
-       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+       this.subCustomerList = [
+        { id: 0, label: 'Select Customer' }, // Add the default option
+        ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
+      ];
      });
    }
    async search(model:any) {

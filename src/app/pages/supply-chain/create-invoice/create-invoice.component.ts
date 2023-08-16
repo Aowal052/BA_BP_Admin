@@ -316,7 +316,10 @@ export class CreateInvoiceComponent implements OnInit{
      this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
        debugger
       this.subCustomerDropdownList = res.data;
-       this.subCustomerList = res.data.map(({ id, customerName }) => ({ id: id, label: customerName }));
+       this.subCustomerList = [
+        { id: 0, label: 'Select Customer' }, // Add the default option
+        ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
+      ];
      });
    }
   async genarateMasterInfo(data:any){
