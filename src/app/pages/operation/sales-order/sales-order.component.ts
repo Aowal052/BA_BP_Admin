@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
 import { Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService, EditableTip, FormLayout, MenuConfig, TableWidthConfig } from 'ng-devui';
+import { DialogService, EditableTip, FormLayout, MenuConfig, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
@@ -306,21 +306,15 @@ export class SalesOrderComponent {
   }
 
 
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
+
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
-      //this.focusProductNameDropdown();
-    }
-  }
-  expandProductNameDropdown() {
-    const dropdownElement = this.productNameDropdown.nativeElement;
-    if (dropdownElement) {
-      const dropdownToggle = dropdownElement.querySelector('.dropdown-toggle');
-      if (dropdownToggle) {
-        dropdownToggle.click(); // Simulate a click event
-      }
+      this.productNameDropdown.toggle();
     }
   }
   async newRow() {
@@ -411,12 +405,6 @@ export class SalesOrderComponent {
         }
       });
       
-  }
-  @ViewChild('productNameDropdown', { static: false })
-  productNameDropdown!: ElementRef;
-
-  focusProductNameDropdown() {
-    this.renderer.selectRootElement(this.productNameDropdown.nativeElement).click();
   }
   convertObjectKeysToCamelCase(obj: any): any {
     if (typeof obj !== 'object' || obj === null) {
