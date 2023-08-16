@@ -68,17 +68,17 @@
                         
                           <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
                               [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true" >
-                                <d-column field="invoiceNo" header="Sales Return No" [width]="'100px'" >
+                                <d-column field="returnNo" header="Sales Return No" [width]="'100px'" >
                                     <d-cell>
                                     <ng-template let-cellItem="cellItem">
                                         {{ cellItem }}
                                     </ng-template>
                                     </d-cell>
                                 </d-column>
-                                  <d-column field="invoiceDate" header="Return Date" [width]="'100px'" >
+                                  <d-column field="returnDate" header="Return Date" [width]="'100px'" >
                                     <d-cell>
                                       <ng-template let-cellItem="cellItem">
-                                        {{ cellItem }}
+                                        {{ cellItem | date:'MM/dd/yyyy'}}
                                       </ng-template>
                                     </d-cell>
                                   </d-column>
@@ -127,14 +127,14 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label>Invoice No : {{master.invoiceNo}}</d-form-label>
+                        <d-form-label>Return No : {{master.returnNo}}</d-form-label>
                       </d-form-item>
                     </div>
                 </da-col-item>
                 <da-col-item [daXs]="12" [daMs]="24">
                   <div class="u-1-2">
                     <d-form-item>
-                      <d-form-label>Invoice Date : {{master.invoiceDate}}</d-form-label>
+                      <d-form-label>Return Date : {{master.returnDate | date:'MM/dd/yyyy'}}</d-form-label>
                     </d-form-item>
                   </div>
               </da-col-item>
@@ -148,36 +148,14 @@
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label>Gate Pass No : {{master.gatePassNo}}</d-form-label>
+                          <d-form-label > Location :{{master.branchName}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
                   <da-col-item [daXs]="12" [daMs]="24">
                     <div class="u-1-2">
                       <d-form-item>
-                        <d-form-label>Customer Address : {{ master.customerAddress}}</d-form-label>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                 
-                  <da-col-item [daXs]="12" [daMs]="24">
-                      <div class="u-1-2">
-                        <d-form-item>
-                          <d-form-label>Ref No : {{master.orderNo}}</d-form-label>
-                        </d-form-item>
-                      </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-2">
-                      <!-- <d-form-item>
-                          <d-form-label > Location : Main Location</d-form-label>
-                      </d-form-item> -->
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-2">
-                      <d-form-item>
-                        <d-form-label>Order Date : {{master.orderDate}}</d-form-label>
+                        <d-form-label>Customer Address : {{ master.address}}</d-form-label>
                       </d-form-item>
                     </div>
                   </da-col-item>
@@ -190,27 +168,9 @@
                     <div class="u-1-2">
                     </div>
                   </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-2">
-                      <d-form-item>
-                          <d-form-label > Location : Main Location</d-form-label>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-2">
-                      <d-form-item>
-                        <d-form-label >Despatch Thru : </d-form-label>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
-                  <da-col-item [daXs]="12" [daMs]="24">
-                    <div class="u-1-2">
-                      <d-form-item>
-                        <d-form-label >Destination : {{master.deliveryAddress}}</d-form-label>
-                      </d-form-item>
-                    </div>
-                  </da-col-item>
+                  
+                  
+                  
                 </da-layout-row>
               </da-row-item>
         
@@ -224,8 +184,9 @@
             <tr dTableRow>
               <th dHeadCell>Id</th>
               <th dHeadCell>Product Name</th>
-              <th dHeadCell>Delivery Qnty</th>
-              <!-- <th dHeadCell>Total Price</th> -->
+              <th dHeadCell>Return Qnty</th>
+              <th dHeadCell>Unit Price</th> 
+              <th dHeadCell>Total Price</th> 
               <!-- <th dHeadCell>Actions</th> -->
             </tr>
           </thead>
@@ -256,11 +217,31 @@
                 <td
                   dTableCell
                   [rowItem]="rowItem"
-                  [field]="'deliveryQuantity'"
+                  [field]="'unitName'"
                   [beforeEditStart]="beforeEditStart"
                   [beforeEditEnd]="beforeEditEnd"
                 >
                 <span style="margin-left: 6px">{{ rowItem.deliveryQuantity +" "+ rowItem.unitName }}</span>
+                  
+                </td>
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'unitPrice'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                <span style="margin-left: 6px">{{ rowItem.unitPrice  }}</span>
+                  
+                </td>
+                <td
+                  dTableCell
+                  [rowItem]="rowItem"
+                  [field]="'totalPrice'"
+                  [beforeEditStart]="beforeEditStart"
+                  [beforeEditEnd]="beforeEditEnd"
+                >
+                <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
                   
                 </td>
                 

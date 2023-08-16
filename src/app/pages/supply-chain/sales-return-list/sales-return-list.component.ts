@@ -165,16 +165,6 @@ export class SalesReturnListComponent {
   toastMessage:any;
   @ViewChild('EditorTemplate', { static: true })
   EditorTemplate!: TemplateRef<any>;
-  // selectUnits = [
-  //   {
-  //     id: 1,
-  //     label: 'Pcs',
-  //   },
-  //   {
-  //     id: 2,
-  //     label: 'Dzn',
-  //   }
-  // ];
   masterData = {
     id:0,
     challanNo:0,
@@ -285,7 +275,7 @@ export class SalesReturnListComponent {
   }
 
   async viewRow(row: any, index: number) {
-    this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id))
+    this.busy = (await this.salesReturnService.GetSalesReturnDetailsList(ApiEndPoints.GetSalesReturnDetailsList, row.id))
                 .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
       debugger
