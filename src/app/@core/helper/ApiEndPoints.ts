@@ -67,7 +67,7 @@ export class ApiEndPoints{
     //#region Challan Master And  Detail
     static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
     static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
-    static readonly UpdateChallanDetail:string = 'v1/CRM/v1/CRM/ChallanUpdate';
+    static readonly UpdateChallanDetail:string = 'v1/CRM/ChallanUpdate';
     //#endregion
 
     //#region Branch

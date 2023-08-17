@@ -502,15 +502,14 @@ export class ChallanListComponent implements OnInit {
   }
 
   async placeOrder(master: any) {
-    const masterData = await this.comService.createFormData(master);
+    const masterData = this.master;
     const products = await this.comService.createFormData(this.listData);
     // Append master data
 
     const formData = new FormData();
     debugger
-    var orderDate = new Date(master.orderDate);
-    formData.append('ChallanMasterDto.id', master.id.toString());
-
+    formData.append('ChallanMasterDto.id', masterData.id.toString());
+    formData.append('ChallanMasterDto.CustomerId', masterData.customerId.toString());
     // Append list data
     for (let i = 0; i < this.listData.length; i++) {
       const item = this.listData[i];
@@ -519,8 +518,10 @@ export class ChallanListComponent implements OnInit {
       formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.deliveryQuantity.toString());
       formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
     }
+    debugger
     (await this.challanService.updateChallanDetails(ApiEndPoints.UpdateChallanDetail, formData)).subscribe({
-      next: (res: OrderResponse) => {
+      
+      next: (res: DeliveryChallanResponse) => {
         this.data = res;
         if (res.statusCode == HttpStatusCode.Ok) {
           this.msgs = [
@@ -533,6 +534,7 @@ export class ChallanListComponent implements OnInit {
         }
         this.editForm.modalInstance.hide();
       },
+  
       error: (error) => {
         this.msgs = [
           {
