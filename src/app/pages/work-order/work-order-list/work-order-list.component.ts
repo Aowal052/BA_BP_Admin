@@ -611,7 +611,7 @@ export class WorkOrderListComponent {
     const formData = new FormData();
     formData.append('OrderId', item.orderCode.toString());
     formData.append('Status', StringHelper.Rejected.toString());
-    (await this.service.UpdateStatus(ApiEndPoints.UpdateStatusAsync, formData)).subscribe({
+    (await this.service.UpdateStatus(ApiEndPoints.RevertStatusAsync, formData)).subscribe({
       next: (res: OrderResponse) => {
         this.data = res;
         if (res.statusCode == HttpStatusCode.Ok) {

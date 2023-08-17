@@ -38,6 +38,7 @@ export class ApiEndPoints{
     static readonly CreateSales:string = 'SalesOrder/Create';
     static readonly UpdateSales:string = 'SalesOrder/Update';
     static readonly UpdateStatusAsync:string = 'v1/CRM/UpdateStatusAsync';
+    static readonly RevertStatusAsync:string = 'v1/CRM/RevertStatusAsync';
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
     static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';

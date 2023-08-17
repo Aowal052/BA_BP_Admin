@@ -364,6 +364,7 @@ export class ListProductComponent implements OnInit{
     formData.append('Keyword', e||'');
     formData.append('PageNumber', this.pager.pageIndex.toString());
     formData.append('PageSize', this.pager.pageSize.toString());
+    debugger
     this.busy = (await this.service.updateProduct(ApiEndPoints.SearchProduct, formData)).subscribe({
       next: (res: ProductResponse) => {
         res.$expandConfig = { expand: false };
