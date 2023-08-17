@@ -11,6 +11,9 @@
   <d-toast [value]="toastMessage"></d-toast>
     <da-layout-row [daGutter]="[24, 24]">
       <da-col-item [daSpan]="24" [daXs]="24">
+        <div class="da-list-header">
+        <d-search class="da-header-search" [iconPosition]="'left'" [noBorder]="false" (searchFn)="onSearch($event)"></d-search>
+      </div>
         <div class="da-advance-form" dLoading [loading]="busy">
           <div class="da-advace-form-content">
             <d-data-table #dataTable [dataSource]="category" [scrollable]="true" [tableWidthConfig]="tableWidthConfig">
@@ -18,6 +21,7 @@
                 <tr dTableRow>
                   <th dHeadCell>Id</th>
                   <th dHeadCell>Category Name</th>
+                  <th dHeadCell>Status</th>
                   <th dHeadCell>Actions</th>
                 </tr>
               </thead>
@@ -91,8 +95,24 @@
                         />
                       </div>
                     </td>
+                    
+                    <td
+                      dTableCell
+                      [editable]="false"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['statusEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'status'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd">
+                      <span [ngClass]="rowItem.isActive==true?'Done':'Stuck'">{{ rowItem.isActive==true?'Active':'Inactive' }}</span>
+                      <!-- <span style="margin-left: 6px">{{
+                        rowItem.status
+                      }}</span> -->
+                    </td>
                     <td>
-                      <d-button
+                      <d-toggle (ngModelChange)="changeStatus(rowItem,'IsActive')" [(ngModel)]="rowItem.isActive"></d-toggle>
+                      ||<d-button
                         icon="icon-delete"
                         bsStyle="text-dark"
                         title="delete"

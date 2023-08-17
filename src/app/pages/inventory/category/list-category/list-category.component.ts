@@ -11,6 +11,7 @@ import { CategoryService } from 'src/app/@core/services/category/CategoryService
 import { ProductService } from 'src/app/@core/services/product/product.service';
 import { FormConfig } from 'src/app/@shared/components/admin-form';
 import { categoryNotification } from 'src/assets/i18n/en-US/category';
+import { productPageNotification } from 'src/assets/i18n/en-US/product';
 
 @Component({
   selector: 'app-list-category',
@@ -38,11 +39,15 @@ export class ListCategoryComponent {
   tableWidthConfig: TableWidthConfig[] = [
     {
       field: 'name',
-      width: '300px',
+      width: '200px',
+    },
+    {
+      field: 'status',
+      width: '200px',
     },
     {
       field: 'Actions',
-      width: '400px',
+      width: '200px',
     },
   ];
   formConfig: FormConfig = {
@@ -77,6 +82,44 @@ export class ListCategoryComponent {
     await this.getCategory()
   }
 
+  async onSearch(e:any){
+    if(e=='' || e==null){
+      this.getCategory();
+    }
+    const formData = new FormData();
+    formData.append('Keyword', e||'');
+    formData.append('PageNumber', this.pager.pageIndex.toString());
+    formData.append('PageSize', this.pager.pageSize.toString());
+    this.busy = (await this.catservice.updateCategory(ApiEndPoints.SearchCategory, formData)).subscribe({
+      next: (res: CategoryResponse) => {
+        debugger
+        this.res = res;
+        if(this.res.statusCode == HttpStatusCode.Ok){
+          this.category = this.res.data;
+          this.pager.total = this.res.totalCount;
+        }
+        },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.createMessage.summary,
+            content: 'Invalid Product Info',
+          },
+        ];
+      }
+    });
+  }
+  async changeStatus(rowItem:any,field:string){
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:!rowItem.isActive
+    }
+    await this.updatecategory(data);
+  }
   onEditEnd(rowItem: any, field: any) {
     rowItem[field] = false;
   }
@@ -145,6 +188,7 @@ export class ListCategoryComponent {
     (await this.catservice.getCategory(ApiEndPoints.GetForPagination, this.pager)).subscribe((response:CategoryResponse) => {
       this.res = response;
       if(this.res.statusCode == HttpStatusCode.Ok){
+        debugger
         this.category = this.res.data;
         this.pager.total = this.res.totalCount;
       }
@@ -222,7 +266,7 @@ export class ListCategoryComponent {
   async updatecategory(item:any){
     const formData = await this.arrayToFormData(item);
     (await this.catservice.updateCategory(ApiEndPoints.UpdateCategory, formData)).subscribe({
-      next: (res: CategoryResponse) => {
+      next: async (res: CategoryResponse) => {
         this.res = res;
         if (this.res.statusCode == HttpStatusCode.Ok) {
           this.toastMessage = [
@@ -233,6 +277,7 @@ export class ListCategoryComponent {
             },
           ];
         }
+        await this.getCategory()
       },
       error: (error) => {
         debugger
@@ -244,6 +289,7 @@ export class ListCategoryComponent {
           },
         ];
       }
+      
     });
   }
   async arrayToFormData(array:any) {

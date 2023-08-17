@@ -34,7 +34,8 @@ import { SubCustomerComponent } from './sub-customer/sub-customer.component';
         DatepickerModule,
         PaginationModule,
         TagsInputModule,
-        ToastModule
+        ToastModule,
+        SharedModule,
     ]
 })
 export class InventoryModule { }

@@ -154,7 +154,7 @@ export class ListProductComponent implements OnInit{
     },
     {
       field: 'category',
-      width: '200px',
+      width: '150px',
     },
     {
       field: 'description',
@@ -165,8 +165,12 @@ export class ListProductComponent implements OnInit{
       width: '100px',
     },
     {
-      field: 'Actions',
+      field: 'Status',
       width: '100px',
+    },
+    {
+      field: 'Actions',
+      width: '200px',
     },
   ];
   
@@ -186,7 +190,7 @@ export class ListProductComponent implements OnInit{
   selectedId : string = '';
   keyword = '';
   private destroy$ = new Subject<void>();
-  //priorities = ['Low', 'Medium', 'High'];
+  animate = true;
 
   constructor(
     private breadCrumbService: BreadCrumbService,
@@ -232,7 +236,15 @@ export class ListProductComponent implements OnInit{
     this.getList();
     await this.getCategory()
   }
-
+  async changeStatus(rowItem:any,field:string){
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem.status=="Active"?false:true
+    }
+    await this.updateproduct(data);
+  }
   onEditEnd(rowItem: any, field: any) {
     if (rowItem && rowItem[field].length < 3) {
       return false;
@@ -345,7 +357,9 @@ export class ListProductComponent implements OnInit{
     this.updateFormConfigOptions();
   }
   async onSearch(e:any){
-    debugger
+    if(e=='' || e==null){
+      this.getList();
+    }
     const formData = new FormData();
     formData.append('Keyword', e||'');
     formData.append('PageNumber', this.pager.pageIndex.toString());

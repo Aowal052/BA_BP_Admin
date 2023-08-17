@@ -11,7 +11,6 @@
     <da-layout-row [daGutter]="[24, 24]">
       <da-col-item [daSpan]="24" [daXs]="24">
         <div class="da-list-header">
-          <!-- <d-search [placeholder]="'search'" [(ngModel)]="keyword" (searchFn)="getList()"></d-search> -->
           <d-search class="da-header-search" [iconPosition]="'left'" [noBorder]="false" (searchFn)="onSearch($event)"></d-search>
         </div>
         <div class="da-advance-form" dLoading [loading]="busy">
@@ -220,20 +219,27 @@
                         />
                       </div>
                     </td>
-                    <td>
-                      <d-button
-                        icon="icon-delete"
-                        bsStyle="text-dark"
-                        title="delete"
-                        (click)="deleteRow(rowItem.id)"
-                      ></d-button>
+                    <td
+                      dTableCell
+                      [editable]="false"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['statusEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'status'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd">
+                      <span [ngClass]="rowItem.status=='Active'?'Done':'Stuck'">{{ rowItem.status }}</span>
+                      <!-- <span style="margin-left: 6px">{{
+                        rowItem.status
+                      }}</span> -->
                     </td>
                     <td>
-                      <d-button
+                      <d-toggle (ngModelChange)="changeStatus(rowItem,'IsActive')" [(ngModel)]="rowItem.isActive"></d-toggle>
+                      ||<d-button
                         icon="icon-delete"
                         bsStyle="text-dark"
                         title="delete"
-                        (click)="deleteRow(rowItem.id)"
+                        (click)="deleteRow(rowItem.subCategoryId)"
                       ></d-button>
                     </td>
                   </tr>

@@ -155,6 +155,10 @@ export class SubCustomerComponent {
       field: 'Actions',
       width: '100px',
     },
+    {
+      field: 'OpeningAmount',
+      width: '100px',
+    },
   ];
   
   defaultRowData = {
@@ -227,7 +231,22 @@ export class SubCustomerComponent {
     await this.getList();
     await this.getSubCustomer();
   }
-
+  async onSearch(e:any){
+    if(e=='' || e==null){
+      this.getSubCustomer();
+    }
+    const formData = new FormData();
+    formData.append('Keyword', e||'');
+    formData.append('PageNumber', this.pager.pageIndex.toString());
+    formData.append('PageSize', this.pager.pageSize.toString());
+    this.busy = (await this.service.updateCustomer(ApiEndPoints.SearchSubCustomer, formData)).subscribe({
+      next: (res: any) => {
+        this.subCustomer = res.data;
+        this.pager.total = res.totalCount;
+        debugger
+      }
+    });
+  }
   async onEditEnd(rowItem: any, field: any) {
     debugger
     var data = {
@@ -241,6 +260,15 @@ export class SubCustomerComponent {
     } else {
       return true;
     }
+  }
+  async changeStatus(rowItem:any,field:string){
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:!rowItem.isActive
+    }
+    await this.UpdateSubCustomer(data);
   }
   async UpdateSubCustomer(item:any){
     debugger
@@ -257,6 +285,7 @@ export class SubCustomerComponent {
             },
           ];
         }
+        this.getSubCustomer();
       },
       error: (error) => {
         debugger

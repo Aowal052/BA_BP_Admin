@@ -1,27 +1,121 @@
+@import "ng-devui/styles-var/devui-var.scss";
 @import "src/app/@shared/styles/common.scss";
 
-.input-block {
-  display: inline-flex;
-  width: 12%;
-  margin: 12px 12px 12px 0;
+.da-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .da-header-right {
+    margin-bottom: 12px;
+  }
+}
+.devui-input-group-addon {
+  vertical-align: middle;
 }
 
-.tips-icon {
+.devui-input-group {
+  width: 160px;
+}
+
+.devui-input-group-addon:hover {
+  color: $devui-brand-active;
+}
+
+.close-icon-wrapper {
+  padding: 0;
+}
+.Stuck{
+  color: hsl(340, 70%, 42%);
+    font-weight: 600;
+}
+.Done{
+  color: var(--devui-success, #50d4ab);
+    font-weight: 600;
+}
+.icon-close {
+  border-right: 1px solid $devui-dividing-line;
+  padding-right: 10px;
   cursor: pointer;
 }
 
-:host::ng-deep {
-  .devui-form-item {
-    display: inline-flex !important;
-    width: 260px;
-    margin: 12px 24px 12px 0 !important;
-
-    .devui-form-label {
-      flex-basis: 100px !important;
+.two-date-wrapper {
+    width: 320px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .two-date-wrapper > .devui-input-group:not(:last-child) {
+    margin-right: 10px;
+  }
+  
+  .devui-input-group-addon {
+    vertical-align: middle;
+  }
+  
+  .devui-input-group {
+    width: 160px;
+  }
+  
+  .devui-input-group-addon:hover {
+    color: $devui-brand-active;
+  }
+  
+  .close-icon-wrapper {
+    padding: 0;
+  }
+  
+  .icon-close {
+    border-right: 1px solid $devui-dividing-line;
+    padding-right: 10px;
+    cursor: pointer;
+  }
+  
+  .custom-css-class {
+    font-weight: bold;
+  }
+  .da-form-card {
+    padding-bottom: 24px;
+    height: 100%;
+  
+    .da-form-card-title {
+      margin-bottom: 24px;
     }
   }
-  .devui-form-operation {
-    display: inline-flex !important;
-    margin-left: 0 !important;
+  
+  form {
+    margin: 0 auto;
+    max-width: 65%;
   }
-}
+  
+  @media only screen and (max-width: 1023px) {
+    form {
+      max-width: 80%;
+    }
+  }
+  
+  .single-checkbox {
+    display: block;
+    margin-right: 8px;
+  }
+  
+  .single-checkbox:not(:last-child) {
+    margin-bottom: 8px;
+  }
+  
+  .form-control-width {
+    width: 100%;
+  }
+  .u-1-3 {
+    width: 90%;
+  }
+  
+  .devui-form-horizontal .devui-form-label {
+    flex: 0 0 120px;
+  }
+  .mr-element-spacing{
+    margin-right: 4px !important;
+    margin-top: 5px;
+  }
+  

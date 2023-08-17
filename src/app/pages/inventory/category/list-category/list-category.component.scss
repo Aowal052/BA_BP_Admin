@@ -9,7 +9,14 @@
 .tips-icon {
   cursor: pointer;
 }
-
+.Stuck{
+  color: hsl(340, 70%, 42%);
+    font-weight: 600;
+}
+.Done{
+  color: var(--devui-success, #50d4ab);
+    font-weight: 600;
+}
 :host::ng-deep {
   .devui-form-item {
     display: inline-flex !important;

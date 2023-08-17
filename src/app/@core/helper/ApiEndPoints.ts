@@ -18,14 +18,17 @@ export class ApiEndPoints{
     static readonly UpdateSubCustomer: string = 'SubCustomer/Update';
     static readonly DeleteSubCustomer: string = 'SubCustomer/Delete';
     static readonly GetSubCustomers: string = 'SubCustomer/Get';
+    static readonly SearchSubCustomer: string = 'SubCustomer/Search';
     static readonly GetSubCustomerById: string = 'SubCustomer/GetById';
     //#endregion
 
     static readonly GetCategory: string = 'ProductCategory/Get';
     static readonly GetSalesReport: string = 'SalesOrder/Get';
     static readonly GetCategoryDroppdown: string = 'ProductCategory/GetForDropdown';
+    static readonly SearchCategory: string = 'ProductCategory/Search';
     static readonly GetForPagination: string = 'ProductCategory/GetForPagination';
     static readonly GetSubCategory: string = 'ProductSubCategory/GetSubCatery';
+    static readonly SearchSubCategory: string = 'ProductSubCategory/Search';
     static readonly UpdateSubCategory: string = 'ProductSubCategory/Update';
     static readonly DeleteSubCategory: string = 'ProductSubCategory/Delete';
     static readonly GetCategoryById: string = 'ProductCategory/GetById';
@@ -38,6 +41,7 @@ export class ApiEndPoints{
     static readonly GetProducts: string = 'v1/Product/GetForPagination';
     static readonly GetProductForDropdown: string = 'v1/Product/GetForDropdown';
     static readonly GetCustomerFoDropdown: string = 'Customer/GetForDropdown';
+    static readonly SearchCustomer: string = 'Customer/Search';
     static readonly GetSuCustomerFoDropdown: string = 'Customer/GetSubCustomerForDropdown';
     static readonly DeleteProducts: string = 'v1/Product/Delete';
     static readonly UpdateProduct: string = 'v1/Product/Update';

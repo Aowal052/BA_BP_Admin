@@ -87,15 +87,19 @@ export class SubCategoryComponent {
     },
     {
       field: 'categoryName',
-      width: '400px',
+      width: '300px',
     },
     {
       field: 'subCategoryName',
-      width: '400px',
+      width: '200px',
+    },
+    {
+      field: 'subCategoryName',
+      width: '200px',
     },
     {
       field: 'Actions',
-      width: '100px',
+      width: '200px',
     },
   ];
   
@@ -111,7 +115,7 @@ export class SubCategoryComponent {
   i18nValues: any;
 
 
-  public subCategory:any[]=[];
+  public subCategory!:Category[];
   public category:Category[]=[];
   public res:any;
   private destroy$ = new Subject<void>();
@@ -153,6 +157,40 @@ export class SubCategoryComponent {
     });
     await this.getSubCategory();
     await this.getCategory()
+  }
+  async changeStatus(rowItem:any,field:string){
+    debugger
+    var data = {
+      id:rowItem.subCategoryId,
+      key:field,
+      value:!rowItem.isActive
+    }
+    await this.updateSubCategory(data);
+  }
+  async onSearch(e:any){
+    if(e=='' || e==null){
+      this.getSubCategory();
+    }
+    const formData = new FormData();
+    formData.append('Keyword', e||'');
+    formData.append('PageNumber', this.pager.pageIndex.toString());
+    formData.append('PageSize', this.pager.pageSize.toString());
+    this.busy = (await this.service.updateCategory(ApiEndPoints.SearchSubCategory, formData)).subscribe({
+      next: (res: CategoryResponse) => {
+        this.subCategory = res.data??[];
+        this.pager.total = res.totalCount;
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.createMessage.summary,
+            content: 'Invalid Product Info',
+          },
+        ];
+      }
+    });
   }
   async getSubCategory(){
     (await this.catservice.getCategory(ApiEndPoints.GetSubCategory,this.pager)).subscribe((response:CategoryResponse) => {
@@ -239,7 +277,7 @@ export class SubCategoryComponent {
     const formData = await this.conService.arrayToFormData(item);
     debugger
     (await this.service.updateCategory(ApiEndPoints.UpdateSubCategory, formData)).subscribe({
-      next: (res: CategoryResponse) => {
+      next: async (res: CategoryResponse) => {
         this.res = res;
         if (this.res.statusCode == HttpStatusCode.Ok) {
           this.toastMessage = [
@@ -250,6 +288,7 @@ export class SubCategoryComponent {
             },
           ];
         }
+        await this.getSubCategory();
       },
       error: (error) => {
         debugger

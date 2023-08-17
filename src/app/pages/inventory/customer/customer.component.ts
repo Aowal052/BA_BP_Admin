@@ -205,6 +205,14 @@ export class CustomerComponent implements OnInit{
     {
       field: 'OpeningAmount',
       width: '100px',
+    },
+    {
+      field: 'OpeningAmount',
+      width: '100px',
+    },
+    {
+      field: 'OpeningAmount',
+      width: '200px',
     }
   ];
   
@@ -278,7 +286,15 @@ export class CustomerComponent implements OnInit{
     this.getList();
     await this.getCategory()
   }
-
+  async changeStatus(rowItem:any,field:string){
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:!rowItem.isActive
+    }
+    await this.updateCustomer(data);
+  }
   onEditEnd(rowItem: any, field: any) {
     debugger
     if (rowItem && rowItem[field].length < 0) {
@@ -443,7 +459,33 @@ export class CustomerComponent implements OnInit{
         }
       });
   }
-
+  async onSearch(e:any){
+    debugger
+    if(e=='' || e==null){
+      this.getList();
+    }
+    const formData = new FormData();
+    formData.append('Keyword', e||'');
+    formData.append('PageNumber', this.pager.pageIndex.toString());
+    formData.append('PageSize', this.pager.pageSize.toString());
+    this.busy = (await this.service.updateCustomer(ApiEndPoints.SearchCustomer, formData)).subscribe({
+      next: (res: CustomerResponse) => {
+        res.$expandConfig = { expand: false };
+        this.listData = res.data;
+        this.pager.total = res.totalCount;
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.createMessage.summary,
+            content: 'Invalid Product Info',
+          },
+        ];
+      }
+    });
+  }
   quickRowCancel() {
     this.headerNewForm = false;
   }
