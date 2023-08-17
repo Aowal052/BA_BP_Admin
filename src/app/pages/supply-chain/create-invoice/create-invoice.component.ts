@@ -425,7 +425,7 @@ export class CreateInvoiceComponent implements OnInit{
   async placeOrder(){
     debugger;
   
-      localStorage.setItem('myData', JSON.stringify(this.items));
+      localStorage.setItem('CustomerList', JSON.stringify(this.items));
     //
     this.router.navigate(['/pages', 'supplychain', 'invoice-create-data-list']); 
    

@@ -350,7 +350,10 @@ export class WorkOrderListComponent {
     this.selectedItem = event.target.options[event.target.selectedIndex].text;
     //this.selected = event.target.value;
   }
+  retrievedUserRole: any;
   async getList() {
+    this.retrievedUserRole = JSON.parse(localStorage.getItem('userinfo')??'');
+    debugger;
     var fromData = new FormData();
     fromData.append("PageIndex",this.searchModel.pageIndex.toString());
     fromData.append("PageSize",this.searchModel.pageSize.toString());
@@ -574,6 +577,37 @@ export class WorkOrderListComponent {
     });
   }
   async rejectOrder(item:any){
+    const formData = new FormData();
+    formData.append('OrderId', item.orderCode.toString());
+    formData.append('Status', StringHelper.Rejected.toString());
+    (await this.service.UpdateStatus(ApiEndPoints.UpdateStatusAsync, formData)).subscribe({
+      next: (res: OrderResponse) => {
+        this.data = res;
+        if (res.statusCode == HttpStatusCode.Ok) {
+          this.msgs = [
+            {
+              severity: 'success',
+              summary: orderPageNotification.orderPage.createMessage.summary,
+              content: orderPageNotification.orderPage.createMessage.updateSuccess,
+            },
+          ];
+        }
+        this.getList();
+        this.editForm.modalInstance.hide();
+      },
+      error: (error) => {
+        this.msgs = [
+          {
+            severity: 'error',
+            summary: orderPageNotification.orderPage.createMessage.summary,
+            content: error.error.error,
+          },
+        ];
+      }
+      });
+    }
+  async deleteOrder(item:any){
+    debugger;
     const formData = new FormData();
     formData.append('OrderId', item.orderCode.toString());
     formData.append('Status', StringHelper.Rejected.toString());

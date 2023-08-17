@@ -222,7 +222,7 @@ export class DirectChallanComponent implements OnInit{
   //Customer Master Data
   masterData = {
     challanDate:new Date,
-    selectedCustomer:{},
+    selectedCustomer:{id:'', label:''},
     customerDeliveryAddress:'',
     selectedDiscount:{},
     selectedSubCustomer:{},
@@ -361,7 +361,7 @@ export class DirectChallanComponent implements OnInit{
    // const customer = this.customerDropdownList.find(x=>x.id == data.id);
     this.busy = (await this.challanService.getChallanSubCustomerDropdown(ApiEndPoints.GetSuCustomerFoDropdown,id)).subscribe((res:SubCustomerResponse) => {
       this.subCustomerDropdownList = res.data;
-     // debugger
+      debugger
       this.subCustomerList = [
         { id: 0, label: 'Select Customer' }, // Add the default option
         ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
@@ -478,17 +478,26 @@ export class DirectChallanComponent implements OnInit{
   }
   
   
-
-  async genarateSubInfo(data:any){
-    const subCoustomer = this.subCustomerDropdownList.find(x=>x.id == data.id);
-    this.masterData.customerDeliveryAddress = subCoustomer?.deliveryAddress??'';
-  }
-  
   async genarateMasterInfo(data:any){
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    debugger
     await this.getSubCustomerDropdown(customer.id);
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
+  async genarateSubInfo(data:any){
+    
+    if(data.id)
+    {
+      const subCoustomer = this.subCustomerDropdownList.find(x=>x.id == data.id);
+      debugger
+      this.masterData.customerDeliveryAddress = subCoustomer?.deliveryAddress??'';
+    }
+    else{
+      await this.genarateMasterInfo(this.masterData.selectedCustomer)
+    }
+  }
+  
+ 
 
 
   async getProductDropdown() {

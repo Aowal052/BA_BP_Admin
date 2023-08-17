@@ -35,6 +35,18 @@ export class SalesReturnService {
         })
       );
     }
+    async GetSalesReturnDetailsList(endpoint:string,id:number): Promise<Observable<SalesReturnResponse>> {
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.get<SalesReturnResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(
+        catchError((error) => {
+          debugger
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
     async getSalesReturnMasterList(endpoint:string,pager:any): Promise<Observable<any>> {
       const httpOptions = await this.service.getHttpOptions();
       return this.http.post<SalesReturnResponse>(environment.baseUrl + endpoint , pager, httpOptions).pipe(

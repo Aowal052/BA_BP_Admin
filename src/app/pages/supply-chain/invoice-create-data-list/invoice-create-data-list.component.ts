@@ -559,7 +559,7 @@ export class InvoiceCreateDataListComponent {
   async viewRow() {
     
    debugger;
-    this.retrievedItem = JSON.parse(localStorage.getItem('myData')??'');
+    this.retrievedItem = JSON.parse(localStorage.getItem('CustomerList')??'');
     
     var formdata = new FormData();
     for(var i=0;i<=this.retrievedItem .length-1;i++){
