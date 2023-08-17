@@ -76,6 +76,8 @@ export class SalesInvoiceService {
       );
     }
 
+    
+
     async GetChallanDetailsList(endpoint:string,id:number): Promise<Observable<SalesInvoiceResponse>> {
       const httpOptions = await this.service.getHttpOptions();
       return this.http.get<SalesInvoiceResponse>(environment.baseUrl + endpoint + '?id=' + id, httpOptions).pipe(

@@ -55,14 +55,17 @@ export class ApiEndPoints{
     static readonly DeleteCategory: string = 'ProductCategory/Delete';
     static readonly GetSalesInvoiceById: string = 'SalesInvoice/GetById';
     static readonly AddDeliveryChallan:string = 'v1/CRM/ChallanCreate';
-    static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
-    static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
     static readonly GetApprovedSalesOrder:string = 'v1/CRM/GetApprovedSalesOrder';
     static readonly GetInvoiceMaster:string = 'v1/CRM/GetInvoiceMaster';
     static readonly GetInvoiceDetails:string = 'v1/CRM/GetInvoiceDetails';
     static readonly GetVehicleDropdown:string = 'v1/CRM/GetVehicles';
     static readonly GetDiscountByInvoiceId:string = 'v1/CRM/GetDiscountByInvoiceId';
-    
+    //#region Challan Master And  Detail
+    static readonly GetChallanMasterList:string = 'v1/CRM/GetChallanMasterAsync';
+    static readonly GetChallanDetailsList:string = 'v1/CRM/GetChallanDetailsById';
+    static readonly UpdateChallanDetail:string = 'v1/CRM/v1/CRM/ChallanUpdate';
+    //#endregion
+
     //#region Branch
     static readonly GetBranchList:string = 'Branch/GetForDropdown';
     static readonly CreateBranch:string = 'Branch/Create';

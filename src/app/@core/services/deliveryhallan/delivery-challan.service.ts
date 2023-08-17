@@ -41,7 +41,18 @@ export class DeliveryChallanService {
         })
       );
     }
-
+   
+    async updateChallanDetails(endpoint:string,param:any):Promise<Observable<DeliveryChallanResponse>>{
+      const httpOptions = await this.service.getHttpOptions();
+      return this.http.post<DeliveryChallanResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+        catchError((error) => {
+          if (error.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['login']);
+          }
+          return throwError(error);
+        })
+      );
+    }
 
     async getBranchDropdown(endpoint:string):Promise<Observable<BranchResponse>>{
       const httpOptions = await this.service.getHttpOptions();

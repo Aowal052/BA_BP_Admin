@@ -607,6 +607,7 @@ export class WorkOrderListComponent {
       });
     }
   async deleteOrder(item:any){
+    debugger;
     const formData = new FormData();
     formData.append('OrderId', item.orderCode.toString());
     formData.append('Status', StringHelper.Rejected.toString());
