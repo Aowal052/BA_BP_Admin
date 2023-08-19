@@ -77,7 +77,7 @@
 
             <d-data-table #datatable [dataSource]="basicDataSource" [borderType]="searchForm.borderType"
               [size]="searchForm.size" [tableLayout]="searchForm.layout" [scrollable]="true">
-              <d-column field="invoiceNo" header="Challan No" [width]="'100px'">
+              <d-column field="challanNo" header="Challan No" [width]="'100px'">
                 <d-cell>
                   <ng-template let-cellItem="cellItem">
                     {{ cellItem }}
@@ -116,11 +116,22 @@
                   </ng-template>
                 </d-cell>
               </d-column>
+              <d-column field="invoiceNo" header="Invoice No" [width]="'100px'">
+                <d-cell>
+                  <ng-template let-cellItem="cellItem">
+                    <span [title]="cellItem" class="over-flow-ellipsis" [style.width]="'100px'">
+                      {{ cellItem }}
+                    </span>
+                  </ng-template>
+                </d-cell>
+              </d-column>
               <d-column field="Actions" header="Actions" [width]="'150px'">
                 <d-cell>
                   <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                     <div class="btn-group over-flow-ellipsis">
-                      <d-button icon="icon-edit" bsStyle="text-dark" title="Edit"
+                      <d-button icon="icon-preview" bsStyle="text-dark" title="View"
+                        (click)="viewRow(rowItem, rowIndex, true)"></d-button>
+                        <d-button icon="icon-edit" bsStyle="text-dark" title="Edit"
                         (click)="viewRow(rowItem, rowIndex, true)"></d-button>
                     </div>
                   </ng-template>
@@ -279,7 +290,7 @@
               </d-form-item>
             </div>
           </da-col-item>
-          <!-- <da-col-item [daXs]="6" [daMs]="24">
+          <da-col-item [daXs]="6" [daMs]="24">
             <div class="u-1-3">
               <d-form-item>
                 <d-form-label [required]="true">Unit Price</d-form-label>
@@ -289,8 +300,8 @@
                 </d-form-control>
               </d-form-item>
             </div>
-          </da-col-item> -->
-          <!-- <da-col-item [daXs]="6" [daMs]="24">
+          </da-col-item>
+          <da-col-item [daXs]="6" [daMs]="24">
             <div class="u-1-3">
               <d-form-item>
                 <d-form-label [required]="true">Total Price</d-form-label>
@@ -299,7 +310,7 @@
                 </d-form-control>
               </d-form-item>
             </div>
-          </da-col-item> -->
+          </da-col-item>
           <da-col-item [daXs]="4" [daMs]="24">
             <div class="u-1-3" style="margin: 12% 0;">
               <d-form-operation>
@@ -318,8 +329,10 @@
       <tr dTableRow>
         <th dHeadCell>Id</th>
         <th dHeadCell>Product Name</th>
-        <th dHeadCell>Unit</th>
         <th dHeadCell>Delivery Qnty</th>
+        <th dHeadCell>Unit</th>
+        <th dHeadCell>Unit Price</th>
+        <th dHeadCell>Total Price</th>
         <th dHeadCell>Actions </th>
       </tr>
     </thead>
@@ -335,11 +348,6 @@
             [beforeEditEnd]="beforeEditEnd">
             <span> {{ rowItem?.productName }}</span>
           </td>
-          <td dTableCell [rowItem]="rowItem" [field]="'unitName'" [beforeEditStart]="beforeEditStart"
-            [beforeEditEnd]="beforeEditEnd">
-            <span style="margin-left: 6px">{{ rowItem.unitName }}</span>
-
-          </td>
           <td dTableCell [editable]="isActive" [editableTip]="editableTip" [(editing)]="rowItem['deliveryQuantityEdit']"
             [rowItem]="rowItem" [field]="'deliveryQuantity'" [beforeEditStart]="beforeEditStart"
             [beforeEditEnd]="beforeEditEnd">
@@ -348,6 +356,23 @@
             <div *ngIf="rowItem['deliveryQuantityEdit']" class="edit-padding-fix">
               <input class="devui-form-control" name="quantity" [(ngModel)]="rowItem.deliveryQuantity" />
             </div>
+          </td>
+          <td dTableCell [rowItem]="rowItem" [field]="'unitName'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span style="margin-left: 6px">{{ rowItem.unitName }}</span>
+          </td>
+          <td dTableCell [editable]="isActive" [editableTip]="editableTip" [(editing)]="rowItem['unitPriceEdit']"
+            [rowItem]="rowItem" [field]="'unitPrice'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['unitPriceEdit']">
+              {{ rowItem?.unitPrice }}</span>
+            <div *ngIf="rowItem['unitPriceEdit']" class="edit-padding-fix">
+              <input class="devui-form-control" name="unitPrice" [(ngModel)]="rowItem.unitPrice" />
+            </div>
+          </td>
+          <td dTableCell [rowItem]="rowItem" [field]="'totalPrice'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span style="margin-left: 6px">{{ rowItem.totalPrice }}</span>
           </td>
           <td>
             <d-button icon="icon-delete" bsStyle="text-dark" title="delete"

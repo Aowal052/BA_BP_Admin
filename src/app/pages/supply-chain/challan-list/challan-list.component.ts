@@ -88,17 +88,26 @@ export class ChallanListComponent implements OnInit {
       field: 'id',
       width: '60px',
     },
+    
     {
       field: 'Product Name',
-      width: '300px',
-    },
-    {
-      field: 'Unit',
-      width: '200px',
+      width: '250px',
     },
     {
       field: 'Delivery Quantity',
-      width: '150px',
+      width: '120px',
+    },
+    {
+      field: 'Unit',
+      width: '100px',
+    },
+    {
+      field: 'Unit Price',
+      width: '120px',
+    },
+    {
+      field: 'Total Price',
+      width: '120px',
     },
     {
       field: 'Actions',
@@ -309,6 +318,7 @@ export class ChallanListComponent implements OnInit {
     });
   }
   async search(model: any) {
+    debugger
     var fromData = new FormData();
     //this.searchModel.fromDate = new Date((await this.comService.dateConvertion(this.searchModel.fromDate.toDateString())).toString())
     //this.searchModel.toDate = new Date((await this.comService.dateConvertion(this.searchModel.toDate.toDateString())).toString())
@@ -322,6 +332,7 @@ export class ChallanListComponent implements OnInit {
     debugger
     this.busy = (await this.service.getSalesOrders(ApiEndPoints.GetChallanMasterList, fromData)).subscribe((res: OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
+      debugger
       this.basicDataSource = data;
       this.pager.total = res.totalCount;
     });
@@ -342,6 +353,7 @@ export class ChallanListComponent implements OnInit {
     if (rowItem && rowItem[field].length < 1) {
       return false;
     } else {
+      rowItem.totalPrice = rowItem.unitPrice * rowItem.deliveryQuantity;
       return true;
     }
   };
@@ -356,33 +368,7 @@ export class ChallanListComponent implements OnInit {
 
     return formData;
   }
-  // async updateChallanDetails(item: any) {
-  //   const formData = await this.arrayToFormData(item);
-  //   (await this.challanService.updateChallanDetails(ApiEndPoints.UpdateChallanDetail, formData)).subscribe({
-  //     next: (res: DeliveryChallanResponse) => {
-  //       this.res = res;
-  //       if (this.res.statusCode == HttpStatusCode.Ok) {
-  //         this.toastMessage = [
-  //           {
-  //             severity: 'success',
-  //             summary: productPageNotification.productPage.noticeMessage.summary,
-  //             content: productPageNotification.productPage.noticeMessage.updateSuccess,
-  //           },
-  //         ];
-  //       }
-  //     },
-  //     error: (error) => {
-  //       debugger
-  //       this.toastMessage = [
-  //         {
-  //           severity: 'error',
-  //           summary: productPageNotification.productPage.noticeMessage.summary,
-  //           content: productPageNotification.productPage.noticeMessage.undateFailed,
-  //         },
-  //       ];
-  //     }
-  //   });
-  // }
+ 
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res: CustomerResponse) => {
       this.customerDropdownList = res.data;
@@ -390,6 +376,7 @@ export class ChallanListComponent implements OnInit {
     });
   }
   async getList() {
+    debugger
     var fromData = new FormData();
     fromData.append("PageIndex", this.searchModel.pageIndex.toString());
     fromData.append("PageSize", this.searchModel.pageSize.toString());
@@ -446,6 +433,7 @@ export class ChallanListComponent implements OnInit {
     this.search(this.searchModel);
   }
   async quickRowAdded(e: any) {
+    debugger
     e.unitName = e.unit.label;
     e.productName = e.product.label;
     e.unitId = e.unit.id;
@@ -479,7 +467,7 @@ export class ChallanListComponent implements OnInit {
     }
   }
   genarateTotalPrice(productRowData: any) {
-    this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
+    this.productRowData.totalPrice = productRowData.deliveryQuantity * productRowData.unitPrice;
     debugger
   }
   changeProduct(product: any) {
@@ -502,6 +490,7 @@ export class ChallanListComponent implements OnInit {
   }
 
   async placeOrder(master: any) {
+    debugger
     const masterData = this.master;
     const products = await this.comService.createFormData(this.listData);
     // Append master data
@@ -517,6 +506,7 @@ export class ChallanListComponent implements OnInit {
       formData.append(`ChallanDetailsDtos[${i}].quantity`, item.deliveryQuantity.toString());
       formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.deliveryQuantity.toString());
       formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
+      formData.append(`ChallanDetailsDtos[${i}].unitPrice`, item.unitPrice.toString());
     }
     debugger
     (await this.challanService.updateChallanDetails(ApiEndPoints.UpdateChallanDetail, formData)).subscribe({
@@ -564,12 +554,7 @@ export class ChallanListComponent implements OnInit {
           handler: async ($event: Event) => {
             this.listData.splice(index, 1);
             results.modalInstance.hide();
-            // const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
-            // this.masterData.netAmount = totalPrice - (this.masterData.genDiscount / 100) * totalPrice;
-            // this.masterData.totalPrice = totalPrice;
-            // var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
-            // this.masterData.netAmount = this.masterData.netAmount - (discount / 100) * this.masterData.netAmount;
-            // this.masterData.orderAmDiscount = discount;
+           
           },
         },
         {
