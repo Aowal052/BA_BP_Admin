@@ -8,11 +8,8 @@ export default {
     },
     basicdata: {
       title: 'Basic Data',
-      // catgory:{
-      //   title: 'Category',
-      //   addCategory: 'Add Category',
-      //   listCategory: 'Category',
-      // },
+      quantityWisePriecConfig:'Price Config By Quantity',
+      productPriceConfiguration:'Product Price Config',
     },
     inventory: {
       title: 'Inventory',
@@ -81,7 +78,6 @@ export default {
       title: 'Setting',
       commision: 'Commisions',
       offer: 'Offers',
-      priceConfiguration:'Price Configuration',
       vehicles:'Vehicle',
       branches:'Branch'
     },

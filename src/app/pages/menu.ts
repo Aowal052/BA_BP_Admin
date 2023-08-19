@@ -23,27 +23,15 @@ export default function (values: any) {
       title: values['basicdata']['title'],
       menuIcon: 'icon icon-modify',
       children: [
-        // {
-          
-        //       title: values.inventory.catgory['listCategory'],
-        //       link: '/pages/inventory/list-category'
-        // },
-        // {
-        //   title: values.inventory.sub_catgory['subCategory'],
-        //   link: '/pages/inventory/sub-category'
-        // },
-        // {
-        //       title: values.inventory.product['listProduct'],
-        //       link: '/pages/inventory/list-product'
-        // },
-        // {
-        //       title: values.inventory.customer['customer'],
-        //       link: '/pages/inventory/customer'
-        // },
-        // {
-        //   title: values.inventory.subCustomer['sub_customer'],
-        //   link: '/pages/inventory/sub-customer'
-        // },
+        {
+              title: values['basicdata']['quantityWisePriecConfig'],
+              link: '/pages/basicdata/quantity-wise-product-price'
+        },
+        
+        { 
+          title: values['basicdata']['productPriceConfiguration'],
+          link: '/pages/settings/configure-product-price'
+        },
       ]
     },
     {
@@ -168,7 +156,6 @@ export default function (values: any) {
       children: [
         { title: values['settings']['commision'], link: '/pages/settings/create-commission' },
         { title: values['settings']['offer'], link: '/pages/settings/create-offer' },
-        { title: values['settings']['priceConfiguration'],link: '/pages/settings/configure-product-price'},
         { title: values['settings']['vehicles'],link: '/pages/settings/vehicle'},
         { title: values['settings']['branches'],link: '/pages/settings/branch'}
       ],
