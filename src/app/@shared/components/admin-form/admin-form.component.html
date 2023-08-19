@@ -2,6 +2,33 @@
   <d-form-item *ngFor="let item of formConfig.items">
     <d-form-label [required]="item.required">{{ item.label }}：</d-form-label>
     <d-form-control [extraInfo]="item.extraInfo">
+      
+      <d-select
+        *ngIf="item.type === 'select' && item.prop === 'branchManager'"
+        [name]="item.prop"
+        [appendToBody]="true"
+        [placeholder]="item.placeholder??''"
+        [filterKey]="'name'"
+        [(ngModel)]="_formData[item.prop]"
+        [searchFn]="searchFnBm"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="false"
+      >
+      </d-select>
+      <d-select
+        *ngIf="item.type === 'select' && item.prop === 'DiscountType'"
+        [name]="item.prop"
+        [appendToBody]="true"
+        [placeholder]="item.placeholder??''"
+        [filterKey]="'name'"
+        [(ngModel)]="_formData[item.prop]"
+        [searchFn]="searchFnDy"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="false"
+      >
+      </d-select>
       <d-select
         *ngIf="item.type === 'select' && item.prop === 'category'"
         [name]="item.prop"
@@ -10,6 +37,20 @@
         [filterKey]="'name'"
         [(ngModel)]="_formData[item.prop]"
         [searchFn]="searchFn"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="false"
+      >
+      </d-select>
+      
+      <d-select
+        *ngIf="item.type === 'select' && item.prop === 'masterCustomer'"
+        [name]="item.prop"
+        [appendToBody]="true"
+        [placeholder]="item.placeholder??''"
+        [filterKey]="'name'"
+        [(ngModel)]="_formData[item.prop]"
+        [searchFn]="searchFnMc"
         [isSearch]="true"
         (change)="valueChange($event)"
         [enableLazyLoad]="false"

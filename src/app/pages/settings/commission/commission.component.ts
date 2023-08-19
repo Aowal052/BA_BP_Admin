@@ -257,7 +257,7 @@ export class CommissionComponent {
 
   updateFormConfigOptions() {
     debugger
-    //this.formConfig.items.find((item: { prop: string; }) => item.prop === 'KeyAccountManager').options = this.categoryDropdown;
+    this.formConfig.items.find((item: { prop: string; }) => item.prop === 'DiscountType').options = this.percentDropdown;
   }
   async quickRowAdded(e: any) {
     const formData = new FormData();
