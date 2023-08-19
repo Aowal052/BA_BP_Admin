@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MenuConfig, TableWidthConfig, FormLayout, EditableTip, DialogService } from 'ng-devui';
+import { MenuConfig, TableWidthConfig, FormLayout, EditableTip, DialogService, SelectComponent } from 'ng-devui';
 import { Subscription, Observable, of, delay, map } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
 import { Branch, BranchResponse } from 'src/app/@core/model/BranchResponse';
@@ -277,6 +277,7 @@ export class SalesReturnComponent implements OnInit{
     if (event.key === 'Enter') {
       event.preventDefault();
       this.quickRowAdded(this.productRowData);
+      this.productNameDropdown.toggle();
      
     }
   }
@@ -395,7 +396,7 @@ export class SalesReturnComponent implements OnInit{
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
 
-
+  @ViewChild('productNameDropdown') productNameDropdown!: SelectComponent;
   async getProductDropdown() {
     this.busy = (await this.proService.getProductDropdown(ApiEndPoints.GetProductForDropdown)).subscribe((res:ProductResponse) => {
       this.dropdownProductList = res.data;

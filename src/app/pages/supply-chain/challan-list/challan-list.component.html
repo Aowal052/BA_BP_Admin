@@ -125,14 +125,20 @@
                   </ng-template>
                 </d-cell>
               </d-column>
-              <d-column field="Actions" header="Actions" [width]="'150px'">
+              <d-column field="invoiceNo" header="Actions" [width]="'150px'">
                 <d-cell>
                   <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                     <div class="btn-group over-flow-ellipsis">
-                      <d-button icon="icon-preview" bsStyle="text-dark" title="View"
+                      <div *ngIf="rowItem.invoiceNo ==null; else elseBlock">
+                        <d-button icon="icon-preview" bsStyle="text-dark" title="View"
                         (click)="viewRow(rowItem, rowIndex, true)"></d-button>
                         <d-button icon="icon-edit" bsStyle="text-dark" title="Edit"
-                        (click)="viewRow(rowItem, rowIndex, true)"></d-button>
+                        (click)="EditRow(rowItem, rowIndex, true)"></d-button>
+                    </div>
+                    <ng-template #elseBlock>
+                      <d-button icon="icon-preview" bsStyle="text-dark" title="View"
+                      (click)="viewRow(rowItem, rowIndex, true)"></d-button>
+                    </ng-template>
                     </div>
                   </ng-template>
                 </d-cell>
@@ -161,14 +167,14 @@
           <da-col-item [daXs]="12" [daMs]="24">
             <div class="u-1-2">
               <d-form-item>
-                <d-form-label>Invoice No : {{master.invoiceNo}}</d-form-label>
+                <d-form-label>Challan No : {{master.challanNo}}</d-form-label>
               </d-form-item>
             </div>
           </da-col-item>
           <da-col-item [daXs]="12" [daMs]="24">
             <div class="u-1-2">
               <d-form-item>
-                <d-form-label>Invoice Date : {{master.invoiceDate}}</d-form-label>
+                <d-form-label>Challan Date : {{master.invoiceDate}}</d-form-label>
               </d-form-item>
             </div>
           </da-col-item>
@@ -390,6 +396,147 @@
         (btnClick)="placeOrder(masterData)">Submit</d-button>
       <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
       
+    </d-form-operation>
+  </div>
+</ng-template>
+
+
+<ng-template #ViewTemplate>
+  <h3>Master Info</h3>
+  <div class="grid">
+    <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
+      <da-row-item>
+        <da-layout-row [daGutter]="[0, 0]">
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Challan No : {{master.challanNo}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Challan Date : {{master.invoiceDate}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Customer Name : {{ master.customerName}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Gate Pass No : {{master.gatePassNo}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Customer Address : {{ master.customerAddress}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Ref No : {{master.orderNo}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <!-- <d-form-item>
+                          <d-form-label > Location : Main Location</d-form-label>
+                      </d-form-item> -->
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Order Date : {{master.orderDate}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+        </da-layout-row>
+      </da-row-item>
+
+      <da-row-item>
+        <da-layout-row [daGutter]="[0, 0]">
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label> Location : Main Location</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Despatch Thru : </d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+          <da-col-item [daXs]="12" [daMs]="24">
+            <div class="u-1-2">
+              <d-form-item>
+                <d-form-label>Destination : {{master.deliveryAddress}}</d-form-label>
+              </d-form-item>
+            </div>
+          </da-col-item>
+        </da-layout-row>
+      </da-row-item>
+    </da-layout-col>
+  </div>
+  <h3>Product Details Info</h3>
+  <d-data-table #dataTable [dataSource]="listData" [scrollable]="true" [tableWidthConfig]="viewTableWidthConfig">
+    <thead dTableHead>
+      <tr dTableRow>
+        <th dHeadCell>Id</th>
+        <th dHeadCell>Product Name</th>
+        <th dHeadCell>Delivery Qnty</th>
+      </tr>
+    </thead>
+    <tbody dTableBody>
+      <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex" let-nestedIndex="nestedIndex">
+        <tr dTableRow>
+
+          <td dTableCell [field]="'id'" [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+            <span>{{ rowIndex + 1 }}</span>
+
+          </td>
+          <td dTableCell [rowItem]="rowItem" [field]="'productName'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span> {{ rowItem?.productName }}</span>
+          </td>
+          <td dTableCell [editable]="isActive" [editableTip]="editableTip" [(editing)]="rowItem['deliveryQuantityEdit']"
+            [rowItem]="rowItem" [field]="'deliveryQuantity'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span *ngIf="!rowItem['deliveryQuantityEdit']">
+              {{ rowItem?.deliveryQuantity}} {{ rowItem.unitName }}</span>
+            <div *ngIf="rowItem['deliveryQuantityEdit']" class="edit-padding-fix">
+              <input class="devui-form-control" name="quantity" [(ngModel)]="rowItem.deliveryQuantity" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+
+  </d-data-table>
+
+  <div>
+    <d-form-operation>
+      <d-button bsStyle="common" circled="true" (btnClick)="cancelRequest()">Cancel</d-button>
     </d-form-operation>
   </div>
 </ng-template>

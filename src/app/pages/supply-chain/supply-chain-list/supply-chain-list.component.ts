@@ -104,6 +104,10 @@ export class SupplyChainListComponent implements OnInit {
       width: '100px',
     },
     {
+      field: 'Unit Price',
+      width: '100px',
+    },
+    {
       field: 'Prev Del Qnty',
       width: '150px',
     },
@@ -430,7 +434,7 @@ export class SupplyChainListComponent implements OnInit {
         this.productRowData.quantity = data[i].quantity,
         //this.productRowData[i].totalPrice = data[i].totalPrice,
         this.productRowData.unit = data[i].unitName,
-        //this.productRowData[i].unitPrice = data[i].unitPrice,
+        this.productRowData.unitPrice = data[i].unitPrice,
         this.productRowData.productId = data[i].productId,
         this.productRowData.unitId = data[i].unitId
 
@@ -579,7 +583,7 @@ export class SupplyChainListComponent implements OnInit {
       //formData.append(`InvoiceDetailsDto[${i}].productDescription`, item.productDescription);
       formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
       formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
-     // formData.append(`InvoiceDetailsDto[${i}].unitPrice`, item.unitPrice.toString());
+      formData.append(`ChallanDetailsDtos[${i}].unitPrice`, item.unitPrice.toString());
       formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.remainingQuantity?? 0);
       //formData.append(`InvoiceDetailsDto[${i}].totalPrice`, item.totalPrice.toString());
     }
