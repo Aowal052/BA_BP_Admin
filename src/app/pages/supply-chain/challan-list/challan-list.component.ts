@@ -114,6 +114,21 @@ export class ChallanListComponent implements OnInit {
       width: '100px',
     }
   ];
+  viewTableWidthConfig: TableWidthConfig[] = [
+    {
+      field: 'id',
+      width: '60px',
+    },
+    
+    {
+      field: 'Product Name',
+      width: '300px',
+    },
+    {
+      field: 'Delivery Quantity',
+      width: '200px',
+    }
+  ];
 
   breadItem: Array<MenuConfig> = [
     {
@@ -192,8 +207,10 @@ export class ChallanListComponent implements OnInit {
   addedLabelList = [];
 
   editForm: any = null;
+  viewForm: any = null;
 
   editRowIndex = -1;
+  viewRowIndex = -1;
 
   pager = {
     total: 0,
@@ -224,7 +241,10 @@ export class ChallanListComponent implements OnInit {
   busy!: Subscription;
   toastMessage: any;
   @ViewChild('EditorTemplate', { static: true })
+  //@ViewChild('ViewTemplate', { static: true })
   EditorTemplate!: TemplateRef<any>;
+  @ViewChild('ViewTemplate', { static: true })
+  ViewTemplate!: TemplateRef<any>;
   selectUnits = [
     {
       id: 1,
@@ -255,6 +275,7 @@ export class ChallanListComponent implements OnInit {
     netAmount: 0,
     deliveryInstruction: '',
     deliveryAddress: '',
+    invoiceNo: '',
     remarks: ''
   }
   currentDate = new Date();
@@ -395,6 +416,32 @@ export class ChallanListComponent implements OnInit {
   }
   isActive!: boolean;
   async viewRow(row: any, index: number, status: boolean) {
+    debugger;
+    this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id))
+      .subscribe((res: SalesInvoiceResponse) => {
+        const data = JSON.parse(JSON.stringify(res.data));
+        debugger
+        this.listData = data;
+      });
+
+    this.isActive = status;
+    this.master = this.basicDataSource.find(x => x.id == row.id);
+    this.editRowIndex = index;
+    this.formData = row;
+    this.editForm = this.dialogService.open({
+      id: 'edit-dialog',
+      width: '1000px',
+      maxHeight: 'auto',
+      title: 'Delivery Challan',
+      showAnimate: true,
+      contentTemplate: this.ViewTemplate,
+      backdropCloseable: true,
+      onClose: () => { },
+      buttons: [
+      ],
+    });
+  }
+  async EditRow(row: any, index: number, status: boolean) {
     debugger;
     this.busy = (await this.SaleInvservice.GetChallanDetailsList(ApiEndPoints.GetChallanDetailsList, row.id))
       .subscribe((res: SalesInvoiceResponse) => {

@@ -221,6 +221,7 @@
         <th dHeadCell>Product Name</th>
         <th dHeadCell>Quantity</th>
         <th dHeadCell>Unit</th>
+        <th dHeadCell>Unit Price</th>
         <th dHeadCell>Prev Del Qnty</th>
         <th dHeadCell>Del Qnty</th>
         <!-- <th dHeadCell>Total Price</th> -->
@@ -263,10 +264,11 @@
           </td>
           <td dTableCell [rowItem]="rowItem" [field]="'unit'" [beforeEditStart]="beforeEditStart"
             [beforeEditEnd]="beforeEditEnd">
-
             <span style="margin-left: 6px">{{ rowItem.unit }}</span>
-
-
+          </td>
+          <td dTableCell [rowItem]="rowItem" [field]="'unitPrice'" [beforeEditStart]="beforeEditStart"
+            [beforeEditEnd]="beforeEditEnd">
+            <span style="margin-left: 6px">{{ rowItem.unitPrice }}</span>
           </td>
           <td dTableCell [rowItem]="rowItem" [field]="'deliveryQuantity'" [beforeEditStart]="beforeEditStart"
             [beforeEditEnd]="beforeEditEnd">
