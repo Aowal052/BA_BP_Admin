@@ -14,9 +14,26 @@ export class AdminFormComponent implements OnInit {
   currentIndex = 12;
   category = [{ id: 48, name: 'আইটেম-৪৫' }];
   defaultUnit = [{ id: 48, name: 'আইটেম-৪৫' }];
+  KeyAccountManager = [{ id: 48, name: 'আইটেম-৪৫' }];
 
   private searchString: any;
-
+  searchFnKm = (term:any) => {
+    if (this.searchString === term) {
+      debugger
+      return of(
+        this.KeyAccountManager
+          .map((option, index) => ({ id: index, option: option }))
+          .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+      );
+    } else {
+      this.searchString = term;
+      return of(
+        this.KeyAccountManager
+          .map((option, index) => ({ id: index, option: option }))
+          .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+      );
+    }
+  };
   searchFn = (term:any) => {
     if (this.searchString === term) {
       debugger
@@ -35,7 +52,8 @@ export class AdminFormComponent implements OnInit {
     }
   };
   searchFnu = (term:any) => {
-    if (this.searchString === term) {
+    
+    if (this.defaultUnit != term) {
       debugger
       return of(
         this.defaultUnit
@@ -85,6 +103,11 @@ export class AdminFormComponent implements OnInit {
     
     this.defaultUnit = this.formConfig.items
     .filter((item: { type: string; prop:string }) => item.type === 'select' && item.prop === 'dUnit') // Filter items of type 'select'
+    .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
+    .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name }));
+
+    this.KeyAccountManager = this.formConfig.items
+    .filter((item: { type: string; prop:string }) => item.type === 'select' && item.prop === 'KeyAccountManager') // Filter items of type 'select'
     .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
     .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name }));
 

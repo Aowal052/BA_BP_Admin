@@ -28,6 +28,19 @@
         [enableLazyLoad]="false"
       >
       </d-select>
+      <d-select
+        *ngIf="item.type === 'select' && item.prop === 'KeyAccountManager'"
+        [name]="item.prop"
+        [appendToBody]="true"
+        [placeholder]="item.placeholder??''"
+        [filterKey]="'name'"
+        [(ngModel)]="_formData[item.prop]"
+        [searchFn]="searchFnKm"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="false"
+      >
+      </d-select>
       <input
         dTextInput
         [name]="item.prop"
