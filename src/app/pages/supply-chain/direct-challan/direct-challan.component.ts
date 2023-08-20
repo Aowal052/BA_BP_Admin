@@ -9,6 +9,7 @@ import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse
 import { DeliveryChallanResponse } from 'src/app/@core/model/DeliveryChallanResponse';
 import { Discount, DiscountResponse } from 'src/app/@core/model/DiscontResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
+import { PriecConfig, PriecConfigResponse } from 'src/app/@core/model/PriecConfigResponse';
 import { Product, ProductResponse } from 'src/app/@core/model/ProductResponse';
 import { SubCustomer, SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
@@ -242,7 +243,7 @@ export class DirectChallanComponent implements OnInit{
 
   //Product Detail Data
   productRowData = {
-    product: '',
+    product: {id:0,label:''},
     quantity: 0,
     unit: {id:0,label:''},
     unitPrice: 0,
@@ -274,7 +275,7 @@ export class DirectChallanComponent implements OnInit{
   toastMessage:any;
   busy !: Subscription;
   data:any;
-
+  priceConfigInfo!:PriecConfig;
 
   /// Product Data
   listData : any[] = [];
@@ -522,25 +523,77 @@ export class DirectChallanComponent implements OnInit{
     this.productRowData.totalPrice = this.productRowData.quantity * this.productRowData.unitPrice;
   }
 
+  
+ async genarateTotalPrice(productRowData:any){
+   debugger
+   var fromData = new FormData();
+   fromData.append("Quantity", this.productRowData.quantity.toString());
+   fromData.append("UnitId", this.productRowData.unit.id.toString());
+   fromData.append("ProductId", this.productRowData.product.id.toString());
+   this.busy = (await this.service.GetPriceRangeConfigsByQnty(ApiEndPoints.GetPriceRangeConfigsByQntyAsync, fromData)).subscribe((res: PriecConfigResponse) => {
+     const data = JSON.parse(JSON.stringify(res.data));
+     this.priceConfigInfo =data;
+     debugger
+     this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
+     this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.quantity;
+   });
+ }
 
+ genarateUnitTotalPrice(productRowData:any){
+   this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
+   debugger
+ }
 
-  genarateTotalPrice(productRowData:any){
-    this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
-    debugger
-  }
+ async modifyTotalPrice(event:any,productRow:any){
+   debugger
+   var fromData = new FormData();
+   fromData.append("Quantity", productRow.quantity.toString());
+   fromData.append("UnitId", event.id.toString());
+   fromData.append("ProductId", productRow.product.id.toString());
+   this.busy = (await this.service.GetPriceRangeConfigsByQnty(ApiEndPoints.GetPriceRangeConfigsByQntyAsync, fromData)).subscribe((res: PriecConfigResponse) => {
+     const data = JSON.parse(JSON.stringify(res.data));
+     this.priceConfigInfo =data.priceRangeConfigs;
+     debugger
+     if(data.priceRangeConfigs != null)
+     {
+       this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
+       this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.quantity;
+     }
+     else{
+       this.productRowData.unitPrice  = 0;
+       this.productRowData.totalPrice = 0;
+     }
+   });
+   
+   // debugger
+   // if(event.id===1 && productRow.unit.id != 1)
+   // {
+   //   this.productRowData.unitPrice = Number(this.productInfo?.dozenPrice)??0;
+   //   this.productRowData.totalPrice = Number(Number(this.productInfo?.dozenPrice) * this.productRowData.quantity)??0;
+   // }
+   // else if(event.id === 2){
+   //   this.productRowData.unitPrice = Number(this.productInfo?.piecePrice??this.productInfo?.defaultPrice)??0;
+   //   this.productRowData.totalPrice = Number(Number(this.productInfo?.piecePrice) * this.productRowData.quantity??(Number(this.productInfo?.defaultPrice) * Number(this.productInfo?.piecePrice)))??0;
+   // }
+ }
 
-  modifyTotalPrice(event:any,productRow:any){
-    debugger;
-    if(event.id===1 && productRow.unit.id != 1)
-    {
-      this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
-      this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
-    }
-    else if(event.id === 2){
-      this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-      this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
-    }
-  }
+  // genarateTotalPrice(productRowData:any){
+  //   this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
+  //   debugger
+  // }
+
+  // modifyTotalPrice(event:any,productRow:any){
+  //   debugger;
+  //   if(event.id===1 && productRow.unit.id != 1)
+  //   {
+  //     this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
+  //     this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
+  //   }
+  //   else if(event.id === 2){
+  //     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+  //     this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
+  //   }
+  // }
 
   getValue(value:any) {
     console.log(value);

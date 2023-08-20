@@ -9,6 +9,7 @@ import { ListDataService } from 'src/app/@core/mock/list-data.service';
 import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { DeliveryChallanResponse } from 'src/app/@core/model/DeliveryChallanResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
+import { PriecConfig, PriecConfigResponse } from 'src/app/@core/model/PriecConfigResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { SalesInvoiceResponse } from 'src/app/@core/model/SalesInvoiceResponse';
 import { SubCustomerResponse } from 'src/app/@core/model/SubCustomerResponse';
@@ -228,17 +229,18 @@ export class ChallanListComponent implements OnInit {
   listData!: any[];
   orderMaster!: any[];
   productRowData = {
-    product: '',
+    product: { id: 0, label: '' },
     deliveryQuantity: 0,
     unit: { id: 0, label: '' },
     unitPrice: 0,
     totalPrice: 0,
-
+    quantity:0
   };
   productInfo!: Product;
   dropdownProductList: any[] = [];
   productList: any[] = [];
   busy!: Subscription;
+  priceConfigInfo!:PriecConfig;
   toastMessage: any;
   @ViewChild('EditorTemplate', { static: true })
   //@ViewChild('ViewTemplate', { static: true })
@@ -247,11 +249,11 @@ export class ChallanListComponent implements OnInit {
   ViewTemplate!: TemplateRef<any>;
   selectUnits = [
     {
-      id: 1,
+      id: 2,
       label: 'Pcs',
     },
     {
-      id: 2,
+      id: 1,
       label: 'Dzn',
     }
   ];
@@ -503,20 +505,7 @@ export class ChallanListComponent implements OnInit {
     this.masterData.netAmount = this.masterData.netAmount - (discount / 100) * this.masterData.netAmount;
     this.masterData.orderAmDiscount = discount;
   }
-  modifyTotalPrice(event: any, productRow: any) {
-    if (event.id === 2 && productRow.unit.id != 2) {
-      this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
-      this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
-    }
-    else if (event.id === 1) {
-      this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice) ?? 0;
-      this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice) ?? 0;
-    }
-  }
-  genarateTotalPrice(productRowData: any) {
-    this.productRowData.totalPrice = productRowData.deliveryQuantity * productRowData.unitPrice;
-    debugger
-  }
+ 
   changeProduct(product: any) {
     debugger
     this.productInfo = this.dropdownProductList.find(x => x.id == product.id);
@@ -526,6 +515,62 @@ export class ChallanListComponent implements OnInit {
     this.productRowData.unitPrice = this.productRowData.unit.id == 1 ? Number(this.productInfo?.dozenPrice) : Number(this.productInfo?.piecePrice)
     this.productRowData.totalPrice = this.productRowData.deliveryQuantity * this.productRowData.unitPrice;
   }
+  async genarateTotalPrice(productRowData:any){
+    debugger
+    var fromData = new FormData();
+    fromData.append("Quantity", this.productRowData.deliveryQuantity.toString());
+    fromData.append("UnitId", this.productRowData.unit.id.toString());
+    fromData.append("ProductId", this.productRowData.product.id.toString());
+    this.busy = (await this.service.GetPriceRangeConfigsByQnty(ApiEndPoints.GetPriceRangeConfigsByQntyAsync, fromData)).subscribe((res: PriecConfigResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      this.priceConfigInfo =data;
+      debugger
+      this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
+      this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.deliveryQuantity;
+    });
+  }
+
+  genarateUnitTotalPrice(productRowData:any){
+    this.productRowData.totalPrice = productRowData.deliveryQuantity * productRowData.unitPrice;
+    debugger
+  }
+
+  async modifyTotalPrice(event:any,productRow:any){
+    debugger
+    var fromData = new FormData();
+    fromData.append("Quantity", productRow.deliveryQuantity.toString());
+    fromData.append("UnitId", event.id.toString());
+    fromData.append("ProductId", productRow.product.id.toString());
+    this.busy = (await this.service.GetPriceRangeConfigsByQnty(ApiEndPoints.GetPriceRangeConfigsByQntyAsync, fromData)).subscribe((res: PriecConfigResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      this.priceConfigInfo =data.priceRangeConfigs;
+      debugger
+      if(data.priceRangeConfigs != null)
+      {
+        this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
+        this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.deliveryQuantity;
+      }
+      else{
+        this.productRowData.unitPrice  = 0;
+        this.productRowData.totalPrice = 0;
+      }
+    });
+  }
+
+  // modifyTotalPrice(event: any, productRow: any) {
+  //   if (event.id === 2 && productRow.unit.id != 2) {
+  //     this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
+  //     this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
+  //   }
+  //   else if (event.id === 1) {
+  //     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice) ?? 0;
+  //     this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice) ?? 0;
+  //   }
+  // }
+  // genarateTotalPrice(productRowData: any) {
+  //   this.productRowData.totalPrice = productRowData.deliveryQuantity * productRowData.unitPrice;
+  //   debugger
+  // }
   reset() {
     this.searchForm = {
       borderType: '',

@@ -10,6 +10,7 @@ import { StringHelper } from 'src/app/@core/helper/StringHelper';
 import { ListDataService } from 'src/app/@core/mock/list-data.service';
 import { CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
+import { PriecConfig, PriecConfigResponse } from 'src/app/@core/model/PriecConfigResponse';
 import { Product } from 'src/app/@core/model/ProductResponse';
 import { CommonService } from 'src/app/@core/services/CommonService';
 import { OrderService } from 'src/app/@core/services/order/order.service';
@@ -26,6 +27,7 @@ export class WorkOrderListComponent {
   filterAreaShow = false;
   columnsLayout: FormLayout = FormLayout.Columns;
   multipleSelectConfig: any;
+  priceConfigInfo!:PriecConfig;
   selectOptions = [
     {
       id: 1,
@@ -172,7 +174,7 @@ export class WorkOrderListComponent {
   listData!:any[];
   orderMaster!:any[];
   productRowData = {
-    product: '',
+    product: {id:0,label:''},
     quantity: 0,
     unit: {id:0,label:''},
     unitPrice: 0,
@@ -188,11 +190,11 @@ export class WorkOrderListComponent {
   EditorTemplate!: TemplateRef<any>;
   selectUnits = [
     {
-      id: 1,
+      id: 2,
       label: 'Pcs',
     },
     {
-      id: 2,
+      id: 1,
       label: 'Dzn',
     }
   ];
@@ -303,21 +305,61 @@ export class WorkOrderListComponent {
   beforeEditStart = (rowItem: any, field: any) => {
     return true;
   };
-  modifyTotalPrice(event:any,productRow:any){
-    if(event.id===2 && productRow.unit.id != 2)
-    {
-      this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
-      this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
-    }
-    else if(event.id === 1){
-      this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
-      this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
-    }
+  async modifyTotalPrice(event:any,productRow:any){
+    debugger
+    var fromData = new FormData();
+    fromData.append("Quantity", productRow.quantity.toString());
+    fromData.append("UnitId", event.id.toString());
+    fromData.append("ProductId", productRow.product.id.toString());
+    this.busy = (await this.service.GetPriceRangeConfigsByQnty(ApiEndPoints.GetPriceRangeConfigsByQntyAsync, fromData)).subscribe((res: PriecConfigResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      this.priceConfigInfo =data.priceRangeConfigs;
+      debugger
+      if(data.priceRangeConfigs != null)
+      {
+        this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
+        this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.quantity;
+      }
+      else{
+        this.productRowData.unitPrice  = 0;
+        this.productRowData.totalPrice = 0;
+      }
+    });
   }
-  genarateTotalPrice(productRowData:any){
+  // modifyTotalPrice(event:any,productRow:any){
+  //   if(event.id===2 && productRow.unit.id != 2)
+  //   {
+  //     this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
+  //     this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
+  //   }
+  //   else if(event.id === 1){
+  //     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice)??0;
+  //     this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice)??0;
+  //   }
+  // }
+  async genarateTotalPrice(productRowData:any){
+    debugger
+    var fromData = new FormData();
+    fromData.append("Quantity", this.productRowData.quantity.toString());
+    fromData.append("UnitId", this.productRowData.unit.id.toString());
+    fromData.append("ProductId", this.productRowData.product.id.toString());
+    this.busy = (await this.service.GetPriceRangeConfigsByQnty(ApiEndPoints.GetPriceRangeConfigsByQntyAsync, fromData)).subscribe((res: PriecConfigResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      this.priceConfigInfo =data;
+      debugger
+      this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
+      this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.quantity;
+    });
+  }
+
+  genarateUnitTotalPrice(productRowData:any){
     this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
     debugger
   }
+  // genarateTotalPrice(productRowData:any){
+  //   this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
+  //   debugger
+  // }
    beforeEditEnd = async (rowItem: any, field: any) => {
     //await this.updateproduct(rowItem);
     if (rowItem && rowItem[field].length < 3) {

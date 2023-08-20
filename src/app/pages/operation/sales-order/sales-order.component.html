@@ -167,7 +167,8 @@
                       <d-form-item>
                         <d-form-label [required]="true">Quantity</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input dTextInput type="number" name="quantity" (change)="genarateTotalPrice(productRowData)"
+                          <input dTextInput type="number" name="quantity" 
+                          (change)="genarateTotalPrice(productRowData)"
                             [(ngModel)]="productRowData.quantity" #tabInput />
                         </d-form-control>
                       </d-form-item>
@@ -190,7 +191,7 @@
                       <d-form-item>
                         <d-form-label [required]="true">Unit Price</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input dTextInput (change)="genarateTotalPrice(productRowData)" name="unitPrice"
+                          <input dTextInput (change)="genarateUnitTotalPrice(productRowData)" name="unitPrice"
                             [(ngModel)]="productRowData.unitPrice" />
                         </d-form-control>
                       </d-form-item>

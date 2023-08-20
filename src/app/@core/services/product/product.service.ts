@@ -82,6 +82,7 @@ export class ProductService {
       })
     );
   }
+
   async getProductDropdown(endpoint:string):Promise<Observable<ProductResponse>>{
     const httpOptions = await this.service.getHttpOptions();
     return this.http.get<ProductResponse>(environment.baseUrl + endpoint, httpOptions).pipe(
