@@ -62,7 +62,8 @@
                         <d-form-label [required]="true">Customer</d-form-label>
                         <d-form-control class="form-control-width">
                           <d-select [options]="customerList" name="CustomerId" [isSearch]="true" [filterKey]="'label'"
-                            placeholder="Select Customer" (ngModelChange)="genarateMasterInfo($event)"
+                            placeholder="Select Customer" 
+                            (ngModelChange)="genarateMasterInfo($event)"
                             [(ngModel)]="masterData.selectedCustomer"></d-select>
                         </d-form-control>
                       </d-form-item>

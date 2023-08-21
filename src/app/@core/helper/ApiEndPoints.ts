@@ -67,8 +67,10 @@ export class ApiEndPoints{
     static readonly GetVehicleDropdown:string = 'v1/CRM/GetVehicles';
     static readonly GetDiscountByInvoiceId:string = 'v1/CRM/GetDiscountByInvoiceId';
 
+    static readonly GetCustomerReamingChallanQnty:string = 'SalesOrderReport/GetCustomerReamingChallanQntyAsync';
+
     //#region PriceConfigure
-    static readonly GetPriceRangeConfigsByQntyAsync:string = 'SalesOrderReport/GetPriceRangeConfigsByQntyAsync';
+     static readonly GetPriceRangeConfigsByQntyAsync:string = 'SalesOrderReport/GetPriceRangeConfigsByQntyAsync';
    
     //#endregion
 

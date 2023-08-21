@@ -6,6 +6,7 @@ import { OrderResponse } from '../../model/OrderResponse';
 import { CommonService } from '../CommonService';
 import { environment } from 'src/environments/environment';
 import { PriecConfigResponse } from '../../model/PriecConfigResponse';
+import { CustomerReamingChallanQntyResponse } from '../../model/CustomerReamingChallanQntyResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +67,19 @@ export class OrderService {
   async GetPriceRangeConfigsByQnty(endpoint:string,param:any): Promise<Observable<any>> {
     const httpOptions = await this.service.getHttpOptions();
     return this.http.post<PriecConfigResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
+      catchError((error) => {
+        debugger
+        if (error.status === HttpStatusCode.Unauthorized) {
+          this.router.navigate(['login']);
+        }
+        return throwError(error);
+      })
+    );
+  }
+
+  async CustomerReamingChallanQnty(endpoint:string,param:any): Promise<Observable<any>> {
+    const httpOptions = await this.service.getHttpOptions();
+    return this.http.post<CustomerReamingChallanQntyResponse>(environment.baseUrl + endpoint,param, httpOptions).pipe(
       catchError((error) => {
         debugger
         if (error.status === HttpStatusCode.Unauthorized) {

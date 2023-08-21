@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DialogService, EditableTip, FormLayout, MenuConfig, SelectComponent, TableWidthConfig } from 'ng-devui';
 import { Observable, Subscription, delay, map, of } from 'rxjs';
 import { ApiEndPoints } from 'src/app/@core/helper/ApiEndPoints';
+import { CustomerReamingChallanQntyResponse } from 'src/app/@core/model/CustomerReamingChallanQntyResponse';
 import { Customer, CustomerResponse } from 'src/app/@core/model/CustomerResponse';
 import { Discount, DiscountResponse } from 'src/app/@core/model/DiscontResponse';
 import { OrderResponse } from 'src/app/@core/model/OrderResponse';
@@ -454,7 +455,9 @@ export class SalesOrderComponent {
   
 
   async genarateMasterInfo(data:any){
+    debugger;
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
+    await this.CustomerReamingChallanQnty(data);
     const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
     this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
     this.masterData.totalPrice = totalPrice;
@@ -471,6 +474,47 @@ export class SalesOrderComponent {
     });
 
   }
+
+  async CustomerReamingChallanQnty(data:any){
+    debugger
+    var fromData = new FormData();
+    fromData.append("CustomerId", data.id.toString());
+    this.busy = (await this.service.CustomerReamingChallanQnty(ApiEndPoints.GetCustomerReamingChallanQnty, fromData)).subscribe((res: CustomerReamingChallanQntyResponse) => {
+      const data = JSON.parse(JSON.stringify(res.data));
+      debugger
+      this.quickRowAddedCustomerReamingChallanQnty(data);
+      this.priceConfigInfo =data;
+    });
+  }
+
+  async quickRowAddedCustomerReamingChallanQnty(e: any) {
+    debugger;
+    for (let i = 0; i < e.length; i++) {
+      const item = e[i];
+      e.unitName = e[i].unitName;
+      e.productName = e[i].productName;
+      e.unitId = e[i].unitId;
+      e.productId = e[i].productId;
+      e.quantity = e[i].quantity;
+      e.unitPrice = e[i].unitPrice;
+      e.totalPrice = e[i].totalPrice;
+      debugger;
+
+      // Check if product.id already exists in this.listData
+      const productExists = this.listData.some((item) => item.productId === e.productId);
+    
+      if (productExists) {
+        this.showToast('error', 'Error', 'Your product alredy is in the list.');
+        return;
+      }
+    
+      const newData = { ...e };
+      this.listData.unshift(newData);
+      
+    }
+   
+  }
+
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res:CustomerResponse) => {
       this.customerDropdownList = res.data;
@@ -526,6 +570,7 @@ export class SalesOrderComponent {
       this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.quantity;
     });
   }
+  
 
   genarateUnitTotalPrice(productRowData:any){
     this.productRowData.totalPrice = productRowData.quantity * productRowData.unitPrice;
