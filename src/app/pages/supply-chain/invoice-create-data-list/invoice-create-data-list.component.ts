@@ -568,7 +568,7 @@ export class InvoiceCreateDataListComponent {
     }
       
     this.invoiceMasterData.selectedCustomer.label = this.retrievedItem[0].customerName;
-    this.invoiceMasterData.challanNo = this.retrievedItem.map((item: { invoiceNo: any; }) => item.invoiceNo).join(', ');
+    this.invoiceMasterData.challanNo = this.retrievedItem.map((item: { challanNo: any; }) => item.challanNo).join(', ');
     this.invoiceMasterData.address = this.retrievedItem[0].customerAddress;
     this.invoiceMasterData.defaultDiscount = this.retrievedItem[0].generalDiscount;
     this.invoiceMasterData.selectedCustomer.id = this.retrievedItem[0].customerId;
