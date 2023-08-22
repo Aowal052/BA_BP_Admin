@@ -351,6 +351,7 @@ export class CreateInvoiceComponent implements OnInit{
     this.busy = (await this.SaleInvservice.post(ApiEndPoints.GetChallanMasterList, fromData))
                .subscribe((res:SalesInvoiceResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
+      debugger
       this.basicDataSource = data;
       this.searchModel.total = res.totalCount;
     });
