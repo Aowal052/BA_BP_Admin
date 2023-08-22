@@ -116,24 +116,28 @@
               <d-column field="Actions" header="Actions" [width]="'150px'">
                 <d-cell>
                   <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
-
-                    <div class="btn-group over-flow-ellipsis"
-                      *ngIf="rowItem.status == 'Approved' || rowItem.status == 'Rejected';  else elseBlock">
-                      <div *ngIf="retrievedUserRole.userRole == 'admin'; else elseBlock">
-                        <d-button icon="icon-undo" bsStyle="danger" title="Undo"
-                          (click)="deleteOrder(rowItem)"></d-button>
-                      </div>
-                      <ng-template #elseBlock>
-                        N/A
-                      </ng-template>
+                    <div class="btn-group over-flow-ellipsis" *ngIf="rowItem.challanNo !== null;  else elseBlock">
+                      Challan already created
                     </div>
                     <ng-template #elseBlock>
-                      <d-button icon="icon-edit" bsStyle="text-dark" title="edit"
-                        (click)="editRow(rowItem, rowIndex)"></d-button>
-                      <d-button icon="icon-right" bsStyle="text-dark" title="Approve"
-                        (click)="approveOrder(rowItem)"></d-button>
-                      <d-button icon="icon-error" bsStyle="text-dark" title="Rejet"
-                        (click)="rejectOrder(rowItem)"></d-button>
+                      <div class="btn-group over-flow-ellipsis"
+                        *ngIf="rowItem.status == 'Approved' || rowItem.status == 'Rejected';  else elseBlock">
+                        <div *ngIf="retrievedUserRole.userRole == 'admin'; else elseBlock">
+                          <d-button icon="icon-undo" bsStyle="danger" title="Undo"
+                            (click)="deleteOrder(rowItem)"></d-button>
+                        </div>
+                        <ng-template #elseBlock>
+                          N/A
+                        </ng-template>
+                      </div>
+                      <ng-template #elseBlock>
+                        <d-button icon="icon-edit" bsStyle="text-dark" title="edit"
+                          (click)="editRow(rowItem, rowIndex)"></d-button>
+                        <d-button icon="icon-right" bsStyle="text-dark" title="Approve"
+                          (click)="approveOrder(rowItem)"></d-button>
+                        <d-button icon="icon-error" bsStyle="text-dark" title="Rejet"
+                          (click)="rejectOrder(rowItem)"></d-button>
+                      </ng-template>
                     </ng-template>
                   </ng-template>
                 </d-cell>
