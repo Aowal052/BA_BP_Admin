@@ -275,7 +275,8 @@ export class InvoiceCreateDataListComponent {
   invoiceMaster!:any[];
   listData : any[] = [];
   netPriceinfo = [{
-    netTotal:0
+    netTotal:0,
+    subTotal:0
   }];
   productInfo?:Product;
   productList: any[] = [];
@@ -577,6 +578,7 @@ export class InvoiceCreateDataListComponent {
       debugger;
       this.listData = data;
       this.netPriceinfo[0].netTotal = this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
+      this.netPriceinfo[0].subTotal = this.listData.reduce((total,item)=>total+item.deliveryPrice,0);
 
        this.netPriceinfo[0].netTotal  = this.netPriceinfo[0].netTotal- (this.netPriceinfo[0].netTotal * this.retrievedItem[0].generalDiscount) / 100
     });
