@@ -278,6 +278,8 @@ export class SalesOrderComponent {
   startDate = new Date();
   datePicker2: any;
   endDate = null;
+  
+  detailsData!:any[];
   pager = {
     total: 0,
     pageIndex: 1,
@@ -372,8 +374,11 @@ export class SalesOrderComponent {
       formData.append('salesOrderMasterDto.remarks', master.remarks);
 
       // Append list data
-      for (let i = 0; i < this.listData.length; i++) {
-        const item = this.listData[i];
+      for (let i = 0; i < this.detailsData.length; i++) {
+        const item = this.detailsData[i];
+        formData.append(`salesOrderDetailsDto[${i}].isDeleted`, item.isDeleted.toString());
+        formData.append(`salesOrderDetailsDto[${i}].id`, item.id.toString());
+        formData.append(`salesOrderDetailsDto[${i}].salesOrderMasterId`, item.salesOrderMasterId.toString());
         formData.append(`salesOrderDetailsDto[${i}].productId`, item.productId.toString());
         formData.append(`salesOrderDetailsDto[${i}].productDescription`, item.productDescription);
         formData.append(`salesOrderDetailsDto[${i}].quantity`, item.quantity.toString());
@@ -468,9 +473,6 @@ export class SalesOrderComponent {
       this.masterData.netAmount =totalPrice - (this.customerInfo.defaultDiscount / 100)* totalPrice;
       this.masterData.totalPrice = totalPrice;
       this.masterData.genDiscount = this.customerInfo.defaultDiscount;
-      //var discount = this.comService.getDiscountByParcent(this.masterData.netAmount)
-      //this.masterData.netAmount =this.masterData.netAmount - (discount / 100)* this.masterData.netAmount;
-      //this.masterData.orderAmDiscount = discount;
     });
 
   }
@@ -481,39 +483,35 @@ export class SalesOrderComponent {
     fromData.append("CustomerId", data.id.toString());
     this.busy = (await this.service.CustomerReamingChallanQnty(ApiEndPoints.GetCustomerReamingChallanQnty, fromData)).subscribe((res: CustomerReamingChallanQntyResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
-      debugger
-      this.quickRowAddedCustomerReamingChallanQnty(data);
-      this.priceConfigInfo =data;
-    });
-  }
+      
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      data.id = data[i].id;
+      data.isDeleted = 0;
+      data.salesOrderMasterId = data[i].salesOrderMasterId;
+      data.unitName = data[i].unitName;
+      data.productName =data[i].productName;
+      data.unitId =data[i].unitId;
+      data.productId =data[i].productId;
+      data.quantity =data[i].quantity;
+      data.unitPrice =data[i].unitPrice;
+      data.totalPrice =data[i].totalPrice;
 
-  async quickRowAddedCustomerReamingChallanQnty(e: any) {
-    debugger;
-    for (let i = 0; i < e.length; i++) {
-      const item = e[i];
-      e.unitName = e[i].unitName;
-      e.productName = e[i].productName;
-      e.unitId = e[i].unitId;
-      e.productId = e[i].productId;
-      e.quantity = e[i].quantity;
-      e.unitPrice = e[i].unitPrice;
-      e.totalPrice = e[i].totalPrice;
-      debugger;
-
-      // Check if product.id already exists in this.listData
-      const productExists = this.listData.some((item) => item.productId === e.productId);
+      // Check if product.id alreadydataxists in this.listData
+      const productExists = this.listData.some((item) => item.productId ===data.productId);
     
       if (productExists) {
         this.showToast('error', 'Error', 'Your product alredy is in the list.');
         return;
       }
     
-      const newData = { ...e };
+      const newData = { ...data };
       this.listData.unshift(newData);
-      
     }
-   
+    });
+    this.detailsData = this.listData;
   }
+
 
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe((res:CustomerResponse) => {
@@ -650,6 +648,9 @@ export class SalesOrderComponent {
       this.showToast('error', 'Error', 'You must Select product with required Quantity.');
       return;
     }
+    e.id = 0;
+    e.isDeleted = 0;
+    e.salesOrderMasterId = 0;
     e.unitName = e.unit.label;
     e.productName = e.product.label;
     e.unitId = e.unit.id;
@@ -665,6 +666,7 @@ export class SalesOrderComponent {
   
     const newData = { ...e };
     this.listData.unshift(newData);
+    this.detailsData = this.listData;
   }
 
   
@@ -691,7 +693,6 @@ export class SalesOrderComponent {
       return true;
     }
   };
-
   deleteRow(index: number) {
     debugger
     const results = this.dialogService.open({
@@ -709,8 +710,13 @@ export class SalesOrderComponent {
           text: 'Ok',
           disabled: false,
           handler: () => {
-            this.listData.splice(index, 1);
-            const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
+            this.listData[index].isDeleted = 1;
+            // const newData = { ...this.deletedData };
+            // this.listData.unshift(newData);
+            this.detailsData = this.listData;
+            this.listData = this.listData.filter(item => !item.isDeleted);
+            //this.listData.splice(index, 1);
+            const totalPrice = this.listData.filter(item => !item.isDeleted).reduce((sum, item) => sum + item.totalPrice, 0);
             this.masterData.totalPrice = totalPrice;
             this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;
             results.modalInstance.hide();

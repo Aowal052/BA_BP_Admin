@@ -260,9 +260,12 @@
                                 [attr.maxlength]="200" [attr.minlength]="50" />
                             </div>
                           </td>
-                          <td dTableCell [editable]="true" [editableTip]="editableTip"
-                            [(editing)]="rowItem['quantityEdit']" [rowItem]="rowItem" [field]="'quantity'"
-                            [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
+                          <td dTableCell [editable]="!rowItem['id']"
+                          [editableTip]="editableTip"
+                          [(editing)]="rowItem['quantityEdit']"
+                          [rowItem]="rowItem" [field]="'quantity'"
+                          [beforeEditStart]="beforeEditStart"
+                          [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['quantityEdit']">
                               {{ rowItem?.quantity }}</span>
                             <div *ngIf="rowItem['quantityEdit']" class="edit-padding-fix">
@@ -270,7 +273,8 @@
                             </div>
                           </td>
                           <td dTableCell [editable]="false" [editableTip]="editableTip"
-                            [(editing)]="rowItem['unitNameEdit']" [rowItem]="rowItem" [field]="'unitName'"
+                            [(editing)]="rowItem['unitNameEdit']"
+                             [rowItem]="rowItem" [field]="'unitName'"
                             [beforeEditStart]="beforeEditStart" [beforeEditEnd]="beforeEditEnd">
                             <span *ngIf="!rowItem['unitNameEdit']">
                               <span style="margin-left: 6px">{{

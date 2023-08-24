@@ -7,6 +7,8 @@ export class CustomerReamingChallanQntyResponse{
 }
 
 export interface CustomerReamingChallanQnty {
+    id:number;
+    salesOrderMasterId:number
     orderNo:string;
     customerId:number;
     customerName:string;
