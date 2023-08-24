@@ -256,8 +256,8 @@
 
     </da-layout-col>
   </div>
-  <h3>Add new Product</h3>
-  <div class="grid">
+  <h3 *ngIf="master.orderNo === null">Add new Product</h3>
+  <div class="grid" *ngIf="master.orderNo === null">
     <da-layout-col [daGutter]="[0, 0]" [daSpan]="24">
       <da-row-item>
         <da-layout-row [daGutter]="[0, 0]">

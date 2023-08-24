@@ -557,20 +557,7 @@ export class ChallanListComponent implements OnInit {
     });
   }
 
-  // modifyTotalPrice(event: any, productRow: any) {
-  //   if (event.id === 2 && productRow.unit.id != 2) {
-  //     this.productRowData.unitPrice = this.productRowData.unitPrice * 12;
-  //     this.productRowData.totalPrice = this.productRowData.totalPrice * 12;
-  //   }
-  //   else if (event.id === 1) {
-  //     this.productRowData.unitPrice = Number(this.productInfo?.defaultPrice) ?? 0;
-  //     this.productRowData.totalPrice = Number(this.productInfo?.defaultPrice) ?? 0;
-  //   }
-  // }
-  // genarateTotalPrice(productRowData: any) {
-  //   this.productRowData.totalPrice = productRowData.deliveryQuantity * productRowData.unitPrice;
-  //   debugger
-  // }
+  
   reset() {
     this.searchForm = {
       borderType: '',
@@ -593,9 +580,18 @@ export class ChallanListComponent implements OnInit {
     formData.append('ChallanMasterDto.CustomerId', masterData.customerId.toString());
     // Append list data
     for (let i = 0; i < this.listData.length; i++) {
+      debugger
       const item = this.listData[i];
       formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
-      formData.append(`ChallanDetailsDtos[${i}].quantity`, item.deliveryQuantity.toString());
+      if(this.master.orderNo === null)
+      {
+        formData.append(`ChallanDetailsDtos[${i}].quantity`, item.deliveryQuantity.toString());
+      }
+      else
+      {
+        formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
+      }
+      
       formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.deliveryQuantity.toString());
       formData.append(`ChallanDetailsDtos[${i}].unitId`, item.unitId.toString());
       formData.append(`ChallanDetailsDtos[${i}].unitPrice`, item.unitPrice.toString());
