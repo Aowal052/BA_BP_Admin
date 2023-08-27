@@ -186,7 +186,14 @@ export class QuantityWisePriceConfigComponent {
                 content: orderPageNotification.orderPage.createMessage.addSuccess,
               },
             ];
-            this.router.navigate(['/pages', 'user', 'center']);
+            this.formData = {
+              selectUnit: {id:0,label:''},
+              selectProduct: {id:0,label:''},
+              applicableDate: new Date(),
+              unitPrice:0,
+              toQuantity:0,
+              fromQuantity:0
+            };
           }
         },
         error: (error) => {

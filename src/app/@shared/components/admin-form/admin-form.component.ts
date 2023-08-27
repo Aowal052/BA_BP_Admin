@@ -18,6 +18,7 @@ export class AdminFormComponent implements OnInit {
   masterCustomer= [{ id: 48, name: 'আইটেম-৪৫' }];
   DiscountType = [{ id: 48, name: 'আইটেম-৪৫' }];
   branchManager = [{ id: 48, name: 'আইটেম-৪৫' }];
+  UserRoleId = [{ id: 48, name: 'আইটেম-৪৫' }];
   private searchString: any;
   
   searchFnBm = (term:any) => {
@@ -126,6 +127,25 @@ export class AdminFormComponent implements OnInit {
     }
   };
 
+  searchRole = (term:any) => {
+    
+    if (this.UserRoleId != term) {
+      debugger
+      return of(
+        this.UserRoleId
+          .map((option, index) => ({ id: index, option: option }))
+          .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+      );
+    } else {
+      this.searchString = term;
+      return of(
+        this.UserRoleId
+          .map((option, index) => ({ id: index, option: option }))
+          .filter((item) => item.option.name.toLowerCase().indexOf(term.toLowerCase()) !== -1)
+      );
+    }
+  };
+
   loadMore(data: any) {
     debugger
     console.log('load more');
@@ -180,6 +200,11 @@ export class AdminFormComponent implements OnInit {
 
     this.branchManager = this.formConfig.items
     .filter((item: { type: string; prop:string }) => item.type === 'select' && item.prop === 'branchManager') // Filter items of type 'select'
+    .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
+    .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name }));
+
+    this.UserRoleId = this.formConfig.items
+    .filter((item: { type: string; prop:string }) => item.type === 'select' && item.prop === 'UserRoleId') // Filter items of type 'select'
     .flatMap((item: { options: any; }) => item.options || []) // Extract the options array from each item
     .map((option: { id: any; name: any; }) => ({ id: option.id, name: option.name }));
 

@@ -4,6 +4,19 @@
     <d-form-control [extraInfo]="item.extraInfo">
       
       <d-select
+        *ngIf="item.type === 'select' && item.prop === 'UserRoleId'"
+        [name]="item.prop"
+        [appendToBody]="true"
+        [placeholder]="item.placeholder??''"
+        [filterKey]="'name'"
+        [(ngModel)]="_formData[item.prop]"
+        [searchFn]="searchRole"
+        [isSearch]="true"
+        (change)="valueChange($event)"
+        [enableLazyLoad]="false"
+      >
+      </d-select>
+      <d-select
         *ngIf="item.type === 'select' && item.prop === 'branchManager'"
         [name]="item.prop"
         [appendToBody]="true"

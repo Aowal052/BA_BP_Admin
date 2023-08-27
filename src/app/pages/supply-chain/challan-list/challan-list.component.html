@@ -129,7 +129,7 @@
                 <d-cell>
                   <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
                     <div class="btn-group over-flow-ellipsis">
-                      <div *ngIf="rowItem.invoiceNo ==null; else elseBlock">
+                      <div *ngIf="rowItem.orderNo==null; else elseBlock">
                         <d-button icon="icon-preview" bsStyle="text-dark" title="View"
                         (click)="viewRow(rowItem, rowIndex, true)"></d-button>
                         <d-button icon="icon-edit" bsStyle="text-dark" title="Edit"

@@ -40,7 +40,6 @@
       }
     }
   }
-
   .da-floor {
     padding: 20px 0;
     border-bottom: 1px solid $devui-dividing-line;
@@ -177,4 +176,14 @@ a:hover {
     width: 100% !important;
     margin-right: 0 !important;
   }
+}
+
+
+.Stuck{
+  color: hsl(340, 70%, 42%);
+    font-weight: 600;
+}
+.Done{
+  color: var(--devui-success, #50d4ab);
+    font-weight: 600;
 }

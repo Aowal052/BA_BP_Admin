@@ -74,7 +74,7 @@
                       <d-form-item>
                         <d-form-label [required]="true">Total Price</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input dTextInput readonly name="totalPrice" [(ngModel)]="masterData.totalPrice" />
+                          <input dTextInput readonly name="subtotal" [(ngModel)]="masterData.totalPrices" />
                            
                         </d-form-control>
                       </d-form-item>
@@ -96,7 +96,7 @@
                       <d-form-item>
                         <d-form-label [required]="true">NetAmount</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input dTextInput name="netAmount" [(ngModel)]="masterData.netAmount" />
+                          <input dTextInput name="netAmount" [(ngModel)]="masterData.netAmount" readonly/>
                         </d-form-control>
                       </d-form-item>
                     </div>
@@ -168,9 +168,9 @@
                       <d-form-item>
                         <d-form-label [required]="true">Quantity</d-form-label>
                         <d-form-control class="form-control-width">
-                          <input dTextInput type="number" name="quantity" 
+                          <input #tabInput dTextInput type="number" name="quantity" 
                           (change)="genarateTotalPrice(productRowData)"
-                            [(ngModel)]="productRowData.quantity" #tabInput />
+                            [(ngModel)]="productRowData.quantity" />
                         </d-form-control>
                       </d-form-item>
                     </div>

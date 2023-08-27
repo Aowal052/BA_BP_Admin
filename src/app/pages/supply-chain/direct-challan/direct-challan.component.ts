@@ -301,7 +301,7 @@ export class DirectChallanComponent implements OnInit{
   branchDropdownList:any[] = [];
 
   editableTip = EditableTip.btn;
-
+  detailsData!:any[];
 
   constructor(
     private dialogService: DialogService,
@@ -351,8 +351,6 @@ export class DirectChallanComponent implements OnInit{
   async getCustomerDropdown() {
     this.busy = (await this.proService.getCustomerDropdown(ApiEndPoints.GetCustomerFoDropdown)).subscribe(async (res:CustomerResponse) => {
       this.customerDropdownList = res.data;
-      
-      debugger
       this.customerList = [
         { id: 0, label: 'Select Customer' }, // Add the default option
         ...res.data.map(({ id, customerName }) => ({ id: id, label: customerName }))
@@ -374,13 +372,21 @@ export class DirectChallanComponent implements OnInit{
   async getBranchDropdown() {
      this.busy = (await this.challanService.getBranchDropdown(ApiEndPoints.GetBranchList)).subscribe((res:BranchResponse) => {
        this.branchDropdownList = res.data;
-       debugger
        this.branchList = res.data.map(({ id, branchName }) => ({ id: id, label: branchName }));
      });
    }
   async placeOrder(master:any){
     const masterData = this.createFormData(master);
     const products = this.createFormData(this.listData);
+    if(master.selectedCustomer==null||master.selectedBranch==null){
+      this.toastMessage = [
+        {
+          severity: 'warn',
+          summary: 'Warning',
+          content: 'Please FillUp Mendetory field first',
+        },
+      ];
+    }
     debugger
     // Append master data
     const formData = new FormData();
@@ -396,8 +402,11 @@ export class DirectChallanComponent implements OnInit{
       formData.append('ChallanMasterDto.remarks', master.remarks??'');
 
       // Append list data
-      for (let i = 0; i < this.listData.length; i++) {
-        const item = this.listData[i];
+      for (let i = 0; i < this.detailsData.length; i++) {
+        const item = this.detailsData[i];
+        formData.append(`ChallanDetailsDtos[${i}].isDeleted`, item.isDeleted.toString());
+        formData.append(`ChallanDetailsDtos[${i}].id`, item.id.toString());
+        formData.append(`ChallanDetailsDtos[${i}].salesOrderMasterId`, item.salesOrderMasterId.toString());
         formData.append(`ChallanDetailsDtos[${i}].productId`, item.productId.toString());
         formData.append(`ChallanDetailsDtos[${i}].quantity`, item.quantity.toString());
         formData.append(`ChallanDetailsDtos[${i}].deliveryQuantity`, item.quantity.toString())
@@ -483,7 +492,6 @@ export class DirectChallanComponent implements OnInit{
   async genarateMasterInfo(data:any){
     const customer = this.customerDropdownList.find(x=>x.id == data.id);
     await this.CustomerReamingChallanQnty(data);
-    debugger
     await this.getSubCustomerDropdown(customer.id);
     this.masterData.customerDeliveryAddress = customer?.deliveryAddress??'';
   }
@@ -536,8 +544,8 @@ export class DirectChallanComponent implements OnInit{
      const data = JSON.parse(JSON.stringify(res.data));
      this.priceConfigInfo =data;
      debugger
-     this.productRowData.unitPrice = data.priceRangeConfigs.unitPrice;
-     this.productRowData.totalPrice = data.priceRangeConfigs.unitPrice * this.productRowData.quantity;
+     this.productRowData.unitPrice = data.priceRangeConfigs==null?productRowData.unitPrice:data.priceRangeConfigs.unitPrice;
+     this.productRowData.totalPrice = this.productRowData.unitPrice * this.productRowData.quantity;
    });
  }
 
@@ -634,6 +642,9 @@ export class DirectChallanComponent implements OnInit{
 
   async quickRowAdded(e: any) {
     debugger;
+    e.id = 0;
+    e.isDeleted = 0;
+    e.salesOrderMasterId = 0;
     e.unitName = e.unit.label;
     e.productName = e.product.label;
     e.unitId = e.unit.id;
@@ -649,17 +660,40 @@ export class DirectChallanComponent implements OnInit{
   
     const newData = { ...e };
     this.listData.unshift(newData);
+    this.detailsData = this.listData;
   }
   async CustomerReamingChallanQnty(data:any){
-    debugger
     var fromData = new FormData();
     fromData.append("CustomerId", data.id.toString());
     this.busy = (await this.service.CustomerReamingChallanQnty(ApiEndPoints.GetCustomerReamingChallanQnty, fromData)).subscribe((res: CustomerReamingChallanQntyResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
-      debugger
-      this.quickRowAddedCustomerReamingChallanQnty(data);
-      this.priceConfigInfo =data;
+      
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      data.id = data[i].id;
+      data.isDeleted = 0;
+      data.salesOrderMasterId = data[i].salesOrderMasterId;
+      data.unitName = data[i].unitName;
+      data.productName =data[i].productName;
+      data.unitId =data[i].unitId;
+      data.productId =data[i].productId;
+      data.quantity =data[i].quantity;
+      data.unitPrice =data[i].unitPrice;
+      data.totalPrice =data[i].totalPrice;
+
+      // Check if product.id alreadydataxists in this.listData
+      const productExists = this.listData.some((item) => item.productId ===data.productId);
+    
+      if (productExists) {
+        this.showToast('error', 'Error', 'Your product alredy is in the list.');
+        return;
+      }
+    
+      const newData = { ...data };
+      this.listData.unshift(newData);
+    }
     });
+    this.detailsData = this.listData;
   }
   async quickRowAddedCustomerReamingChallanQnty(e: any) {
     debugger;
@@ -741,7 +775,11 @@ export class DirectChallanComponent implements OnInit{
           text: 'Ok',
           disabled: false,
           handler: () => {
-            this.listData.splice(index, 1);
+            this.listData[index].isDeleted = 1;
+            this.detailsData = this.listData;
+            this.listData = this.listData.filter(item => !item.isDeleted);
+            //this.listData.splice(index, 1);
+            this.detailsData = this.detailsData.filter(item => !(item.id == 0 && item.isDeleted == 1));
             const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
             this.masterData.totalPrice = totalPrice;
             this.masterData.netAmount =totalPrice - (this.masterData.genDiscount / 100)* totalPrice;

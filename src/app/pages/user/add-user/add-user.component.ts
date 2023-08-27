@@ -126,6 +126,14 @@ export class AddUserComponent {
     },
     {
       field: 'userRole',
+      width: '100px',
+    },
+    {
+      field: 'Status',
+      width: '100px',
+    },
+    {
+      field: 'Action',
       width: '200px',
     },
     
@@ -193,6 +201,16 @@ export class AddUserComponent {
     } else {
       return true;
     }
+  }
+
+  async changeStatus(rowItem:any,field:string){
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:!rowItem.isActive
+    }
+    await this.updateUser(data);
   }
   async deleteRow(index: number) {
     const results = this.dialogService.open({
@@ -286,7 +304,34 @@ export class AddUserComponent {
   get elseBlock(): boolean {
     return !this.isSelect;
   }
-  
+  async onSearch(e:any){
+    debugger
+    if(e=='' || e==null){
+      this.getList();
+      return;
+    }
+    const formData = new FormData();
+    formData.append('Keyword', e||'');
+    formData.append('PageNumber', this.pager.pageIndex.toString());
+    formData.append('PageSize', this.pager.pageSize.toString());
+    this.busy = (await this.usrservice.createUser(ApiEndPoints.SearchUser, formData)).subscribe({
+      next: (res: UserResponse) => {
+        res.$expandConfig = { expand: false };
+        this.listData = res.data;
+        this.pager.total = res.totalCount;
+      },
+      error: (error) => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.createMessage.summary,
+            content: 'Invalid Product Info',
+          },
+        ];
+      }
+    });
+  }
  
 
   onPageChange(e: number) {
@@ -353,21 +398,21 @@ export class AddUserComponent {
     return true;
   };
 
-  //  beforeEditEnd = async (rowItem: any, field: any) => {
-  //   debugger
-  //   var data = {
-  //     id:rowItem.id,
-  //     key:field,
-  //     value:rowItem[field]
-  //   }
-  //   await this.updateBranch(data);
-  //   debugger;
-  //   if (rowItem && rowItem[field].length < 3) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // };
+   beforeEditEnd = async (rowItem: any, field: any) => {
+    debugger
+    var data = {
+      id:rowItem.id,
+      key:field,
+      value:rowItem[field]
+    }
+    await this.updateUser(data);
+    debugger;
+    if (rowItem && rowItem[field].length < 3) {
+      return false;
+    } else {
+      return true;
+    }
+  };
   
   breadItem: Array<MenuConfig> = [
     {
@@ -387,34 +432,34 @@ export class AddUserComponent {
     }
   ];
 
-  // async updateBranch(item:any){
-  //   debugger
-  //   const formData = await this.arrayToFormData(item);
-  //   (await this.branchService.updateBranch(ApiEndPoints.UpdateBranch, formData)).subscribe({
-  //     next: (res: BranchResponse) => {
-  //       this.res = res;
-  //       if (this.res.statusCode == HttpStatusCode.Ok) {
-  //         this.toastMessage = [
-  //           {
-  //             severity: 'success',
-  //             summary: productPageNotification.productPage.noticeMessage.summary,
-  //             content: productPageNotification.productPage.noticeMessage.updateSuccess,
-  //           },
-  //         ];
-  //       }
-  //     },
-  //     error: () => {
-  //       debugger
-  //       this.toastMessage = [
-  //         {
-  //           severity: 'error',
-  //           summary: productPageNotification.productPage.noticeMessage.summary,
-  //           content: productPageNotification.productPage.noticeMessage.undateFailed,
-  //         },
-  //       ];
-  //     }
-  //   });
-  // }
+  async updateUser(item:any){
+    debugger
+    const formData = await this.arrayToFormData(item);
+    (await this.usrservice.createUser(ApiEndPoints.UpdateUser, formData)).subscribe({
+      next: (res: UserResponse) => {
+        this.res = res;
+        if (this.res.statusCode == HttpStatusCode.Ok) {
+          this.toastMessage = [
+            {
+              severity: 'success',
+              summary: productPageNotification.productPage.noticeMessage.summary,
+              content: productPageNotification.productPage.noticeMessage.updateSuccess,
+            },
+          ];
+        }
+      },
+      error: () => {
+        debugger
+        this.toastMessage = [
+          {
+            severity: 'error',
+            summary: productPageNotification.productPage.noticeMessage.summary,
+            content: productPageNotification.productPage.noticeMessage.undateFailed,
+          },
+        ];
+      }
+    });
+  }
 
   async arrayToFormData(array:any) {
     const formData = new FormData();
