@@ -403,7 +403,6 @@ export class WorkOrderListComponent {
       const data = JSON.parse(JSON.stringify(res.data));
       this.basicDataSource = data;
       this.searchModel.total = res.totalCount;
-      debugger
     });
   }
   async getCustomerDropdown() {
@@ -415,7 +414,6 @@ export class WorkOrderListComponent {
   async editRow(row: any, index: number) {
     this.busy = (await this.service.getOrderDetails(ApiEndPoints.GetOrderDetailById, row.id)).subscribe((res:OrderResponse) => {
       const data = JSON.parse(JSON.stringify(res.data));
-      debugger
       this.listData = data;
       const totalPrice = this.listData.reduce((sum, item) => sum + item.totalPrice, 0);
     });
