@@ -119,6 +119,10 @@ export class ApiEndPoints{
     static readonly GetSalesReturnDetailsList:string = 'v1/CRM/GetSalesReturnDetailsAsync';
     //#endregion
 
+    //#region SalesReturn
+    static readonly GetAllMenuParent: string = '/Menus/GetAllMenuParentId';
+    //#endregion
+
     // Additional static messages can be added here
 
     // Private constructor to prevent instantiation

@@ -157,7 +157,9 @@ export default function (values: any) {
         { title: values['settings']['commision'], link: '/pages/settings/create-commission' },
         { title: values['settings']['offer'], link: '/pages/settings/create-offer' },
         { title: values['settings']['vehicles'],link: '/pages/settings/vehicle'},
-        { title: values['settings']['branches'],link: '/pages/settings/branch'}
+        { title: values['settings']['branches'],link: '/pages/settings/branch'},
+        { title: values['settings']['modules'],link: '/pages/settings/create-module'},
+        { title: values['settings']['menus'],link: '/pages/settings/create-menu'}
       ],
       link: '/pages/settings',
       menuIcon: 'icon icon-mine',

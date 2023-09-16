@@ -13,6 +13,8 @@ import { FormRoutingModule } from '../form/form-routing.module';
 import { ProductPriceConfigComponent } from './product-price-config/product-price-config.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
 import { BranchComponent } from './branch/branch.component';
+import { CreateMenuComponent } from './create-menu/create-menu.component';
+import { CreateModuleComponent } from './create-module/create-module.component';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import { BranchComponent } from './branch/branch.component';
     SettingsComponent,
     ProductPriceConfigComponent,
     VehicleComponent,
-    BranchComponent
+    BranchComponent,
+    CreateMenuComponent,
+    CreateModuleComponent,
   ],
   imports: [
     CommonModule,

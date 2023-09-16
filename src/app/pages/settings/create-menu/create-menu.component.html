@@ -1,0 +1,323 @@
+<div class="da-content-banner">
+    <d-breadcrumb>
+        <d-breadcrumb-item *ngFor="let item of breadItem">
+          <!-- <a rel="noopener" (click)="navigate($event, item)">{{ item.name }}</a> -->
+          <a rel="noopener">{{ item.name }}</a>
+        </d-breadcrumb-item>
+      </d-breadcrumb>
+</div>
+
+<div class="da-content-wrapper">
+    <d-toast [value]="toastMessage"></d-toast>
+    <da-layout-row [daGutter]="[24, 24]">
+      <da-col-item [daSpan]="24" [daXs]="24">
+        <div class="da-list-header">
+        <d-search class="da-header-search" [iconPosition]="'left'" [noBorder]="false" (searchFn)="onSearch($event)"></d-search>
+      </div>
+        <div class="da-advance-form" dLoading [loading]="busy">
+          <div class="da-advace-form-content">
+            <d-data-table
+             #dataTable 
+             [dataSource]="listData" 
+             [scrollable]="true" 
+             [tableWidthConfig]="tableWidthConfig">
+              <thead dTableHead>
+                <tr dTableRow>
+                  <th dHeadCell>Id</th>
+                  <th dHeadCell>Customer Name</th>
+                  <th dHeadCell>Address</th>
+                  <th dHeadCell>Default Discount</th>
+                  <th dHeadCell>Contact Person</th>
+                  <th dHeadCell>CpMobile</th>
+                  <th dHeadCell>Credit Limit</th>
+                  <th dHeadCell>Credit Balance</th>
+                  <th dHeadCell>Status</th>
+                  <th dHeadCell>Action</th>
+                </tr>
+              </thead>
+              <tbody dTableBody>
+                <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                  <tr dTableRow *ngIf="rowIndex === 0">
+                    <td dTableCell [attr.colspan]="tableWidthConfig.length">
+                      <div
+                        *ngIf="!headerNewForm"
+                        (click)="newRow()"
+                        class="cursor-pointer"
+                      >
+                        <span class="tips-icon icon-add"></span>
+                        <span style="margin-left: 10px">Create new data</span>
+                      </div>
+                      <div *ngIf="headerNewForm" class="edit-padding-fix">
+                        <da-admin-form
+                          [formConfig]="formConfig"
+                          [formData]="defaultRowData"
+                          class="editable-row"
+                          (submitted)="quickRowAdded($event)"
+                          (canceled)="quickRowCancel()"
+                        ></da-admin-form>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr dTableRow>
+                    <td
+                      dTableCell
+                      [(editing)]="rowItem['idEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'id'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['idEdit']">{{ rowIndex + 1 }}</span>
+                      <div *ngIf="rowItem['idEdit']" class="edit-padding-fix">
+                        <input
+                          class="devui-form-control"
+                          name="id"
+                          [(ngModel)]="rowItem.id"
+                          [attr.maxlength]="50"
+                          [attr.minlength]="3"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['titleEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'customerName'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['titleEdit']"
+                        >
+                        <!-- <d-tag [tag]="'Epic'" [labelStyle]="'epic'"></d-tag> -->
+                        {{ rowItem?.customerName }}</span
+                      >
+                      <div *ngIf="rowItem['titleEdit']" class="edit-padding-fix">
+                        <input
+                          class="devui-form-control"
+                          name="customerName"
+                          [(ngModel)]="rowItem.customerName"
+                          [attr.maxlength]="300"
+                          [attr.minlength]="100"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['AddressEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'address'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['AddressEdit']">{{
+                        rowItem?.address
+                      }}</span>
+                      <div
+                        *ngIf="rowItem['AddressEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.address"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['iterationEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'defaultDiscount'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['iterationEdit']">{{
+                        rowItem?.defaultDiscount
+                      }}</span>
+                      <div
+                        *ngIf="rowItem['iterationEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.defaultDiscount"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['contactPEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'contactPerson'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['contactPEdit']">
+                        <!-- <d-avatar
+                          [name]="rowItem.description"
+                          [width]="24"
+                          [height]="24"
+                        ></d-avatar> -->
+                        <span style="margin-left: 6px">{{
+                          rowItem.contactPerson
+                        }}</span>
+                      </span>
+                      <div
+                        *ngIf="rowItem['contactPEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.contactPerson"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['assigneeEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'cpMobile'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['assigneeEdit']">
+                        <!-- <d-avatar
+                          [name]="rowItem.description"
+                          [width]="24"
+                          [height]="24"
+                        ></d-avatar> -->
+                        <span style="margin-left: 6px">{{
+                          rowItem.cpMobile
+                        }}</span>
+                      </span>
+                      <div
+                        *ngIf="rowItem['assigneeEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.cpMobile"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['creditBalanceEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'creditBalance'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                      <span *ngIf="!rowItem['creditBalanceEdit']">
+                        <!-- <d-avatar
+                          [name]="rowItem.description"
+                          [width]="24"
+                          [height]="24"
+                        ></d-avatar> -->
+                        <span style="margin-left: 6px">{{
+                          rowItem.creditBalance
+                        }}</span>
+                      </span>
+                      <div
+                        *ngIf="rowItem['creditBalanceEdit']"
+                        class="edit-padding-fix"
+                      >
+                        <input
+                          dTextInput
+                          size="sm"
+                          [(ngModel)]="rowItem.creditBalance"
+                        />
+                      </div>
+                    </td>
+                    <td
+                      dTableCell
+                      [editable]="true"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['creditLimitEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'creditLimit'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd"
+                    >
+                    <span *ngIf="!rowItem['creditLimitEdit']">
+                      <!-- <d-avatar
+                        [name]="rowItem.description"
+                        [width]="24"
+                        [height]="24"
+                      ></d-avatar> -->
+                      <span style="margin-left: 6px">{{
+                        rowItem.creditLimit
+                      }}</span>
+                    </span>
+                    <div
+                      *ngIf="rowItem['creditLimitEdit']"
+                      class="edit-padding-fix"
+                    >
+                      <input
+                        dTextInput
+                        size="sm"
+                        [(ngModel)]="rowItem.creditLimit"
+                      />
+                    </div>
+                    </td>
+                    
+                    <td
+                      dTableCell
+                      [editable]="false"
+                      [editableTip]="editableTip"
+                      [(editing)]="rowItem['statusEdit']"
+                      [rowItem]="rowItem"
+                      [field]="'status'"
+                      [beforeEditStart]="beforeEditStart"
+                      [beforeEditEnd]="beforeEditEnd">
+                      <span [ngClass]="rowItem.isActive==true?'Done':'Stuck'">{{ rowItem.isActive==true?'Active':'Inactive' }}</span>
+                      <!-- <span style="margin-left: 6px">{{
+                        rowItem.status
+                      }}</span> -->
+                    </td>
+                    <td>
+                      <d-toggle (ngModelChange)="changeStatus(rowItem,'IsActive')" [(ngModel)]="rowItem.isActive"></d-toggle>
+                      ||<d-button
+                        icon="icon-delete"
+                        bsStyle="text-dark"
+                        title="delete"
+                        (click)="deleteRow(rowItem.id)"
+                      ></d-button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </tbody>
+            </d-data-table>
+          </div>
+          <d-pagination
+            [size]="'sm'"
+            [total]="pager.total"
+            [(pageSize)]="pager.pageSize"
+            [(pageIndex)]="pager.pageIndex"
+            [canViewTotal]="true"
+            [canChangePageSize]="true"
+            [canJumpPage]="true"
+            [maxItems]="5"
+            (pageIndexChange)="onPageChange($event)"
+            (pageSizeChange)="onSizeChange($event)"
+          >
+          </d-pagination>
+        </div>
+      </da-col-item>
+    </da-layout-row>
+  </div>

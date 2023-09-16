@@ -79,7 +79,9 @@ export default {
       commision: 'Commisions',
       offer: 'Offers',
       vehicles:'Vehicle',
-      branches:'Branch'
+      branches:'Branch',
+      modules:'Module',
+      menus:'Menu'
     },
     workorders: {
       title: 'Work Orders',
